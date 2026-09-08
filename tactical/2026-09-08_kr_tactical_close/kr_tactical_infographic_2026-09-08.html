@@ -1,0 +1,8 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KR tactical 인포그래픽 2026-09-08</title><style>:root{color-scheme:dark}body{margin:0;background:#14161B;color:#E8EAED;font:14px -apple-system,system-ui,sans-serif}
+header{padding:10px 16px;border-bottom:1px solid #23272F;background:#1C1F26}h1{font-size:14px;margin:0 0 8px;font-weight:800}
+.tab{padding:6px 16px;border:1px solid #2c313a;border-radius:8px;background:#23272F;color:#c7cdd6;cursor:pointer;font-weight:700;margin-right:6px}
+.tab.on{background:#E8645F;color:#17181c;border-color:#E8645F}.frame{width:100%;height:calc(100vh - 60px);border:0;display:none;background:#14161B}.frame.on{display:block}</style></head>
+<body><header><h1>KR tactical 인포그래픽 2026-09-08</h1><button class="tab on" data-t="1">1페이지</button><button class="tab" data-t="2">2페이지</button></header>
+<iframe class="frame on" data-t="1" src="kr_tactical_infographic_2026-09-08_p1.html"></iframe><iframe class="frame" data-t="2" src="kr_tactical_infographic_2026-09-08_p2.html"></iframe>
+<script>document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{var t=b.dataset.t;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x.dataset.t===t));document.querySelectorAll('.frame').forEach(f=>f.classList.toggle('on',f.dataset.t===t));});</script></body></html>

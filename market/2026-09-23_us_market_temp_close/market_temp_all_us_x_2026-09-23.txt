@@ -1,0 +1,96 @@
+US #market_temp 종합(전체 링크) · 2026-09-23 마감 · By Opus 4.8
+
+US #market_temp 4지수 종합 #NixStock · 2026-09-23 장마감 (2026-09-24 06:03 KST) By Opus 4.8
+
+📎 [인포그래픽] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/infographic/market_temp_us_comparison_infographic_2026-09-23.html
+📎 [리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us500/market_temp_us500_2026-09-23.html
+📎 [데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us500/market_temp_web_us500_dwm_2026-09-23.html
+
+■ US 4지수 온도 — US500 WARM 66.5℃ · US100 HOT 70℃ · MidCap400 NEUTRAL 53.73℃ · Russell2000 NEUTRAL 49℃
+   온도·팬·반전검증·부트스트랩·포지셔닝·FOMC 종합(2장 인포그래픽) · 4지수 모두 미armed(중립)
+
+▶ 쉬운 해석: US500·US100 따뜻~과열권(온도 높음=비쌈) · MidCap400·Russell2000 중립 · 매도신호 켜진 곳 없음(미armed) · 단 US500·US100·MidCap400·Russell2000 시장폭 약세=표면 낙관 vs 내부 취약(확증 부족)
+
+◆ 온도 (일·주·월 V2)
+· 4지수 단순평균 V2 59.8075℃ (공식 통합 아님) — US100 최온·Russell2000 최냉
+· US500: 일 WARM 66.5·주 WARM 67.33·월 NEUTRAL 54.82 (Δ일 -4.3)
+· US100: 일 HOT 70·주 HOT 70.83·월 NEUTRAL 59.09 (Δ일 -2.8)
+· MidCap400: 일 NEUTRAL 53.73·주 NEUTRAL 54.98·월 NEUTRAL 48.43 (Δ일 +19.2)
+· Russell2000: 일 NEUTRAL 49·주 NEUTRAL 58.83·월 NEUTRAL 44.45 (Δ일 +1.6)
+
+◆ 시장폭 · 포지셔닝 (F&G·NixB&B·BofA)
+· 폭: US500 39% BEARISH · US100 48% BEARISH · MidCap400 38% BEARISH · Russell2000 29% BEARISH
+· 포지셔닝: F&G 34.69(Fear·09-23) · NixB&B 6.04/10(Neutral·4구성·09-22) · BofA 9.5/10(Extreme Bullish·09-09)
+
+◆ 지수 고점/저점 팬 (구조+ATR+온도존)
+· US500(종가 767.81): 1차 고점 +1.7%·저점 −1.2% (1달 ATR22 비대칭)
+· US100(종가 741.21): 1차 고점 +2.5%·저점 −2.1% (1달 ATR22 비대칭)
+· MidCap400(종가 666.33): 1차 고점 +3.3%·저점 −2.5% (1달 ATR22 비대칭)
+· Russell2000(종가 281.92): 1차 고점 +3.9%·저점 −2.6% (1달 ATR22 비대칭)
+
+◆ 반전 신호 스캔 (M1 고정존 · 2008~ 검증)
+· US500: 저점 edge +18pp(hit 94%)✅ / 고점 -2pp❌ · 미armed(대기)
+· US100: 저점 edge -13pp(hit 61%)❌ / 고점 -1pp❌ · 미armed(대기)
+· MidCap400: 저점 edge +10pp(hit 80%)✅ / 고점 -8pp❌ · 미armed(대기)
+· Russell2000: 저점 edge +9pp(hit 75%)✅ / 고점 +3pp✅ · 미armed(대기)
+
+◆ 반전 검증 (지평별 초과수익 · baseline 대비 · 2008~)
+· US500: h5 과냉후 +0.8pp(승 63%)/과열후 +0.0pp · h12 과냉후 +1.3pp(승 69%)/과열후 -0.1pp · h22 과냉후 +2.0pp(승 74%)/과열후 -0.0pp · h54 과냉후 +3.5pp(승 94%)/과열후 -0.9pp · h120 과냉후 +5.4pp(승 84%)/과열후 -0.7pp · h245 과냉후 +6.8pp(승 100%)/과열후 -0.2pp
+· US100: h5 과냉후 +0.1pp(승 56%)/과열후 +0.1pp · h12 과냉후 +0.4pp(승 57%)/과열후 -0.2pp · h22 과냉후 +1.2pp(승 61%)/과열후 -0.1pp · h54 과냉후 +0.2pp(승 61%)/과열후 -1.0pp · h120 과냉후 +1.9pp(승 61%)/과열후 -0.2pp · h245 과냉후 +4.8pp(승 84%)/과열후 +1.1pp
+· MidCap400: h5 과냉후 +0.9pp(승 60%)/과열후 +0.0pp · h12 과냉후 +0.6pp(승 70%)/과열후 -0.2pp · h22 과냉후 +1.8pp(승 70%)/과열후 -1.0pp · h54 과냉후 +3.2pp(승 80%)/과열후 -0.4pp · h120 과냉후 +1.5pp(승 80%)/과열후 -4.5pp · h245 과냉후 -1.4pp(승 90%)/과열후 -1.0pp
+· Russell2000: h5 과냉후 +0.1pp(승 60%)/과열후 -0.4pp · h12 과냉후 +0.9pp(승 65%)/과열후 -1.1pp · h22 과냉후 +1.8pp(승 68%)/과열후 -1.3pp · h54 과냉후 +3.2pp(승 75%)/과열후 -1.9pp · h120 과냉후 +5.4pp(승 78%)/과열후 -4.0pp · h245 과냉후 +8.2pp(승 74%)/과열후 -3.9pp
+· US500 최근검출(O성공/△진행/X실패): 12-16tO 02-12tX 04-10tX 04-14tX 04-14tX 06-17tX
+· US100 최근검출(O성공/△진행/X실패): 07-15t△ 07-17t△ 07-23t△ 07-30t△ 08-05t△ 08-25t△
+· MidCap400 최근검출(O성공/△진행/X실패): 06-12tO 06-29tO 07-31t△ 08-05t△ 08-13t△ 08-25t△
+· Russell2000 최근검출(O성공/△진행/X실패): 04-09tX 04-14tX 04-14tX 06-15tO 08-05t△ 08-10t△
+
+◆ 전방 확률 · forward 부트스트랩 (현재존 조건부)
+· US500 전방 h54: 상승 76%/하락 24%(신뢰 99.7) · 현재존(WARM) fwd 수익 +0.40%·낙폭 -2.39%(n50)
+· US100 전방 h54: 상승 67%/하락 33%(신뢰 91.9) · 현재존(HOT) fwd 수익 +1.55%·낙폭 -2.40%(n25)
+· MidCap400 전방 h54: 상승 71%/하락 29%(신뢰 99.9) · 현재존(NEUTRAL) fwd 수익 +0.84%·낙폭 -3.04%(n92)
+· Russell2000 전방 h54: 상승 66%/하락 34%(신뢰 95.4) · 현재존(NEUTRAL) fwd 수익 +1.28%·낙폭 -3.38%(n71)
+
+◆ 촉매 · 시나리오
+· FOMC D--7(2026-09-16) 인상 55% / 동결 43% (Polymarket · 조사 2026-09-03)
+· A(반등): MidCap400·Russell2000 존 성숙 + 반전 저점 edge + 전방 h54 상승우위(4/4지수 >50%) → 시장폭 회복 시 반등
+· B(냉각): 과열 초입 + 대형주 시장폭 약세(BEARISH) 지속 → 평균회귀 조정 리스크
+
+◆ 매크로: VIX 15.2·-6.98% · WTI 90.7·+0.53% · US10Y 4.796% · F&G 54.43(Neutral)
+
+◆ 읽는 법 (약어·쉬운 뜻)
+· 온도 0~100: 낮을수록 싸다(과냉=반등 여지)·높을수록 비쌈(과열) · 27=과냉/77=과열 트리거선
+· ret=구간 끝 평균 수익% · dd=보유 중 최저점까지 평균 낙폭% · ★순서 아님=같은 구간의 두 측정
+· ★위험/보상: |dd|가 ret보다 크면 낙폭 대비 기대수익 작음 = 손절 걸리기 쉬움·매력 낮음
+· 반전 edge(지평별): h5/12/22/54/120/245=신호 뒤 거래일수(1주·2~3주·1달·2.5달·6달·1년) · 과냉후 +pp=평상시보다 더 오름(초록)·과열후 −pp=더 빠짐(빨강)·h길수록·클수록 반전 강함
+· n=표본수(⚠20 미만 소표본) · edge=기저 대비 초과%p · hit=적중률 · armed=신호 켜짐 · verified✅=백테스트 우위 확인(2008~)
+· 요점: 과열=비쌈(조정 여지)·과냉=싸다(반등 기대), 단 dd(낙폭)·위험보상비·표본수·verified(확증) 같이 봐야
+
+
+◆ 사용 수식 (약식 · 상세=리포트 끝 용어/수식/레퍼런스)
+· 팬(1달) = 종가 ± macroATR22_5MA × 존별 배수 · 분기 = 종가 ± macroATR54_12MA × 대칭 배수
+· 전방확률 = 현재 온도존 조건부 부트스트랩(2008~) — 상승/하락% + 신뢰
+· edge(pp) = 신호 후 수익 − baseline(평상시) · hit = 적중률 · n = 표본수
+· 온도 V1/V2 = 자체 종합(0~100) — 값·존·검증 공개
+
+◆ 참조
+· 상세 용어·수식·레퍼런스 = 각 지수 리포트 마지막 섹션
+· 존 밴드 = 자체 SSOT · F&G = CNN(cnn.com/markets/fear-and-greed) · 데이터 = Yahoo Finance
+
+※ 확률적 참고 · 투자자문 아님 · 알고리즘 비공개 · #toss 아님(자체계산)
+
+━━━ 📎 전체 리포트 링크 (대표 + 서브 6종 + 인포) ━━━
+📎 [대표·인포그래픽] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/infographic/market_temp_us_comparison_infographic_2026-09-23.html
+📎 [대표·리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us500/market_temp_us500_2026-09-23.html
+📎 [대표·데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us500/market_temp_web_us500_dwm_2026-09-23.html
+📎 [us30·리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us30/market_temp_us30_2026-09-23.html
+📎 [us30·데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us30/market_temp_web_us30_dwm_2026-09-23.html
+📎 [us100·리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us100/market_temp_us100_2026-09-23.html
+📎 [us100·데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us100/market_temp_web_us100_dwm_2026-09-23.html
+📎 [us400·리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us400/market_temp_us400_2026-09-23.html
+📎 [us400·데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us400/market_temp_web_us400_dwm_2026-09-23.html
+📎 [us1500·리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us1500/market_temp_us1500_2026-09-23.html
+📎 [us1500·데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us1500/market_temp_web_us1500_dwm_2026-09-23.html
+📎 [us2000·리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us2000/market_temp_us2000_2026-09-23.html
+📎 [us2000·데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us2000/market_temp_web_us2000_dwm_2026-09-23.html
+
+🔒 자체 알고리즘 · 산식·임계·가중 비공개 (값·등급·검증 결과만 공개)

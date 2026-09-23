@@ -6,23 +6,23 @@ KR #tactical V1.0 · 2026-09-23 15:30 KST 마감 By Opus 4.8
 📎 [데이터] https://nixstock.github.io/nixstock-reports/tactical/2026-09-23_kr_tactical_close/overview/tactical_web_kr_2026-09-23.html
 📎 [인포그래픽] https://nixstock.github.io/nixstock-reports/tactical/2026-09-23_kr_tactical_close/infographic/kr_tactical_infographic_2026-09-23.html
 
-★결론 — 반등 우위 · 온도 NEUTRAL(55.84) · 폭 BEARISH · RRG 개선 22·지연 13 (근거·수식은 아래+리포트)
+★결론 — 반등 우위 · 온도 NEUTRAL(47.67) · 폭 BEARISH · RRG 개선 22·지연 13 (근거·수식은 아래+리포트)
 
-▶ 쉬운 해석: 온도 NEUTRAL = 보통(중립) · 내린 종목이 많음(폭 약함) (45.11%) · 업종 자금은 '개선' 쪽이 가장 많음(주도 0·개선 22·지연 13) · 방향이 바뀐 자산 상승 6종 / 하락 5종
+▶ 쉬운 해석: 온도 NEUTRAL = 보통(중립) · 내린 종목이 많음(폭 약함) (45.11%) · 업종 자금은 '개선' 쪽이 가장 많음(주도 0·개선 22·약화 3·지연 13) · 방향이 바뀐 자산 상승 6종 / 하락 5종
 
 - 판정
 
   · 반등 우위
   · 온도 NEUTRAL(47.67)
   · 폭 BEARISH 🌧️
-  · RRG 주도 0·개선 22·지연 13
+  · RRG 주도 0·개선 22·약화 3·지연 13
 
 - 세부
 
   · 종합 판정 반등 우위 — 온도 NEUTRAL·RRG 개선 22·상승전환 6종.
   · 시장 폭 BEARISH 🌧️ —  composite.
-  · RRG 리더십: Leading 0·Improving 22·Lagging 13 — 개선 우위.
-  · 로테이션 IN 반도체·IT·반도체·건설 / OUT 헬스케어·헬스케어/바이오·자동차·바이오.
+  · RRG 리더십: Leading 0·Improving 22·Weakening 3·Lagging 13 — 개선 우위.
+  · 로테이션 IN 반도체·IT·건설·보험 / OUT 헬스케어·헬스케어/바이오·자동차·바이오.
   · 추세 전환 스캔: 상승전환 6(S&P500·KOSDAQ·은·비트코인·이더리움·美장기국채) · 하락전환 5(러셀2000·원달러·항셍·닛케이·유로스톡스50).
 
 ◆ 읽는 법 (약어·쉬운 뜻 · 공통 SSOT)

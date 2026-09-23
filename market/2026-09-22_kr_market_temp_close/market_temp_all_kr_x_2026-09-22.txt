@@ -1,0 +1,78 @@
+KR #market_temp 종합(전체 링크) · 2026-09-22 마감 · By Opus 4.8
+
+KR #market_temp 3지수 종합 #NixStock V1.1 · 2026-09-22 정규장 마감 (17:46 KST/04:46 ET) By Opus 4.8
+
+📎 [인포그래픽] https://nixstock.github.io/nixstock-reports/market/2026-09-22_kr_market_temp_close/infographic/market_temp_kr_comparison_infographic_2026-09-22.html
+📎 [리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-22_kr_market_temp_close/overview/kr/market_temp_web_kr_report_kr_2026-09-22.html
+📎 [데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-22_kr_market_temp_close/overview/kr/market_temp_web_kr_dwm_2026-09-22.html
+
+■ 통합 NEUTRAL 48.78℃ · 코스피200 NEUTRAL 55.67℃ · 코스닥150 COOL 33.78℃
+   온도·이중선·팬·반전검증·부트스트랩·수급·FOMC 15섹션 · 반전 미armed
+
+▶ 쉬운 해석: 한국 증시 온도 NEUTRAL = 중립(방향 탐색) · 반전신호 꺼짐(대기) · 외인 순매수(기관 순매도) · 방향 신호 대기 · 양극화 부분 양극화(온도차 22) · 쏠림: 폭 대형 47%·성장 31%(Δ17%p) · 좁은 참여=지수 착시 주의(소수 주도) · 지수 이격: 대형(코스피200 NEUTRAL) vs 성장(코스닥150 COOL) — 성장주 저점 분산 우선(대형은 관망)
+
+◆ 온도 (일·주·월 V2)
+· 통합: NEUTRAL V2 48.78℃ (V1 57.21) — 지수별 V2 코스피200 최온·코스닥150 최냉
+· 코스피200: 일 NEUTRAL 55.67·주 NEUTRAL 56.2·월 NEUTRAL 54.72 (Δ일 -5.3)
+· 코스닥150: 일 COOL 33.78·주 COOL 34.57·월 COOL 38.55 (Δ일 -7.7)
+
+◆ 시장폭 · 수급 3주체
+· 폭: 코스피200 47% BEARISH 🌧️ · 코스닥150 31% BEARISH 🌧️
+· 코스피: 외국인 +668·기관 -1,301·개인 -15,777 (억원)
+· 코스닥: 외국인 -614·기관 -953·개인 +1,621 (억원)
+
+◆ 지수 고점/저점 팬 (구조+ATR+온도존)
+· 코스피200(종가 111,880): 1차 고점 +5.7%·저점 −5.8% (1달 ATR22 비대칭)
+· 코스닥150(종가 13,920): 1차 고점 +4.8%·저점 −6.5% (1달 ATR22 비대칭)
+
+◆ 반전 신호 스캔 (M1 고정존 · 2008~ 검증)
+· 코스피200: 저점 edge +18pp(hit 76%)✅ / 고점 +22pp✅ · 미armed(대기)
+· 코스닥150: 저점 edge +4pp(hit 53%)✅ / 고점 +3pp✅ · 미armed(대기)
+
+◆ 반전 검증 (지평별 초과수익 · baseline 대비 · 2008~)
+· 코스피200: h5 과냉후 -0.2pp(승 60%)/과열후 +0.2pp · h12 과냉후 +0.3pp(승 52%)/과열후 -0.5pp · h22 과냉후 +0.1pp(승 59%)/과열후 -1.7pp · h54 과냉후 +2.5pp(승 76%)/과열후 -5.9pp · h120 과냉후 +1.8pp(승 74%)/과열후 -7.5pp · h245 과냉후 +11.8pp(승 83%)/과열후 -3.1pp
+· 코스닥150: h5 과냉후 +0.4pp(승 55%)/과열후 +0.9pp · h12 과냉후 +0.4pp(승 56%)/과열후 +1.6pp · h22 과냉후 -0.2pp(승 56%)/과열후 +1.9pp · h54 과냉후 +0.2pp(승 53%)/과열후 +3.2pp · h120 과냉후 +0.8pp(승 48%)/과열후 +5.5pp · h245 과냉후 +8.0pp(승 67%)/과열후 -3.9pp
+· 코스피200 최근검출(O성공/△진행/X실패): 08-04t△ 08-21b△ 08-26t△ 09-02b△ 09-07t△ 09-14b△
+· 코스닥150 최근검출(O성공/△진행/X실패): 09-01b△ 09-07b△ 09-14b△ 09-14b△ 09-17b△ 09-17b△
+
+◆ 전방 확률 · forward 부트스트랩 (현재존 조건부)
+· 코스피200 전방 h54: 상승 52%/하락 48%(신뢰 57.8) · 현재존(NEUTRAL) fwd 수익 +0.49%·낙폭 -3.48%(n62)
+· 코스닥150 전방 h54: 상승 45%/하락 55%(신뢰 58.9) · 현재존(COOL) fwd 수익 -0.96%·낙폭 -6.33%(n10)
+
+◆ 촉매 · 시나리오
+· FOMC D-36(2026-10-28) 인상 56% / 동결 44% (Kalshi·Polymarket·CME · 조사 2026-09-21 13:16)
+· A(반등): 코스닥150 COOL(V2 33.78) + M1 저점 edge +4pp(hit 53%)✅ → 외인 순매수 유입 = 반등 확증
+· B(냉각): 외인 순매수(기관 순매도) 지속 + 반전 미armed → 저점 재확인·성장주 압박
+
+◆ 매크로: VIX 14.87·1년저점권 · MOVE 80.64·중립권 · 원/달러 1,374.96·1년저점권 · 美10Y 4.96·1년고점권 (기준 09-21)
+
+◆ 읽는 법 (약어·쉬운 뜻)
+· 온도 0~100: 낮을수록 싸다(과냉=반등 여지)·높을수록 비쌈(과열) · 27=과냉/77=과열 트리거선
+· ret=구간 끝 평균 수익% · dd=보유 중 최저점까지 평균 낙폭% · ★순서 아님(6%↓후 1.86%↑ 아님)=같은 구간의 두 측정
+· ★위험/보상: |dd|가 ret보다 크면(예 -6.33 vs +1.86) 낙폭 대비 기대수익 작음 = 손절 걸리기 쉬움·매력 낮음
+· 반전 edge(지평별): h5/12/22/54/120/245=신호 뒤 거래일수(1주·2~3주·1달·2.5달·6달·1년) · 과냉후 +pp=평상시보다 더 오름(빨강)·과열후 −pp=더 빠짐(파랑)·h길수록·클수록 반전 강함
+· n=표본수(⚠20 미만 소표본) · edge=기저 대비 초과%p · hit=적중률 · armed=신호 켜짐 · verified✅=백테스트 우위 확인(2008~)
+· 요점: 차가움=싸다(반등 기대), 단 dd(낙폭)·위험보상비·표본수·verified(확증) 같이 봐야
+
+◆ 사용 수식 (약식 · 상세=리포트 끝 용어/수식/레퍼런스)
+· 팬(1달) = 종가 ± macroATR22_5MA × 존별 배수 · 분기 = 종가 ± macroATR54_12MA × 대칭 배수
+· 전방확률 = 현재 온도존 조건부 부트스트랩 — 상승/하락% + 신뢰
+· edge(pp) = 신호 후 수익 − baseline(평상시) · hit = 적중률 · n = 표본수
+· 온도 V1/V2 = 자체 종합(0~100) — 값·존·검증 공개
+
+◆ 참조
+· 상세 용어·수식·레퍼런스 = 각 리포트 마지막 섹션
+· 존 밴드 = 자체 SSOT · F&G(KR) = 자체 산출 프록시 · 데이터 = KRX·Yahoo Finance
+
+※ 확률적 참고 · 투자자문 아님 · 알고리즘 비공개 · #toss 아님(자체계산)
+
+━━━ 📎 전체 리포트 링크 (대표 + 서브 3종 + 인포) ━━━
+📎 [대표·인포그래픽] https://nixstock.github.io/nixstock-reports/market/2026-09-22_kr_market_temp_close/infographic/market_temp_kr_comparison_infographic_2026-09-22.html
+📎 [대표·리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-22_kr_market_temp_close/overview/kr/market_temp_web_kr_report_kr_2026-09-22.html
+📎 [대표·데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-22_kr_market_temp_close/overview/kr/market_temp_web_kr_dwm_2026-09-22.html
+📎 [kosdaq150·리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-22_kr_market_temp_close/overview/kosdaq150/market_temp_web_kr_report_kosdaq150_2026-09-22.html
+📎 [kosdaq150·데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-22_kr_market_temp_close/overview/kosdaq150/market_temp_web_kr_kosdaq150_dwm_2026-09-22.html
+📎 [kospi200·리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-22_kr_market_temp_close/overview/kospi200/market_temp_web_kr_report_kospi200_2026-09-22.html
+📎 [kospi200·데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-22_kr_market_temp_close/overview/kospi200/market_temp_web_kr_kospi200_dwm_2026-09-22.html
+
+🔒 자체 알고리즘 · 산식·임계·가중 비공개 (값·등급·검증 결과만 공개)

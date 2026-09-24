@@ -3,8 +3,18 @@ US #market_temp 종합(전체 링크) · 2026-09-23 마감 · By Opus 4.8
 US #market_temp 4지수 종합 #NixStock · 2026-09-23 장마감 (2026-09-24 06:03 KST) By Opus 4.8
 
 📎 [인포그래픽] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/infographic/market_temp_us_comparison_infographic_2026-09-23.html
-📎 [리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us500/market_temp_us500_2026-09-23.html
-📎 [데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us500/market_temp_web_us500_dwm_2026-09-23.html
+📎 [US500 리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us500/market_temp_us500_2026-09-23.html
+📎 [US500 데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us500/market_temp_web_us500_dwm_2026-09-23.html
+📎 [US100 리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us100/market_temp_us100_2026-09-23.html
+📎 [US100 데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us100/market_temp_web_us100_dwm_2026-09-23.html
+📎 [US30(다우) 리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us30/market_temp_us30_2026-09-23.html
+📎 [US30(다우) 데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us30/market_temp_web_us30_dwm_2026-09-23.html
+📎 [MidCap400 리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us400/market_temp_us400_2026-09-23.html
+📎 [MidCap400 데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us400/market_temp_web_us400_dwm_2026-09-23.html
+📎 [US1500(종합) 리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us1500/market_temp_us1500_2026-09-23.html
+📎 [US1500(종합) 데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us1500/market_temp_web_us1500_dwm_2026-09-23.html
+📎 [Russell2000 리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us2000/market_temp_us2000_2026-09-23.html
+📎 [Russell2000 데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us2000/market_temp_web_us2000_dwm_2026-09-23.html
 
 ■ US 4지수 온도 — US500 WARM 66.5℃ · US100 HOT 70℃ · MidCap400 NEUTRAL 53.73℃ · Russell2000 NEUTRAL 49℃
    온도·팬·반전검증·부트스트랩·포지셔닝·FOMC 종합(2장 인포그래픽) · 4지수 모두 미armed(중립)
@@ -65,7 +75,6 @@ US #market_temp 4지수 종합 #NixStock · 2026-09-23 장마감 (2026-09-24 06:
 · n=표본수(⚠20 미만 소표본) · edge=기저 대비 초과%p · hit=적중률 · armed=신호 켜짐 · verified✅=백테스트 우위 확인(2008~)
 · 요점: 과열=비쌈(조정 여지)·과냉=싸다(반등 기대), 단 dd(낙폭)·위험보상비·표본수·verified(확증) 같이 봐야
 
-
 ◆ 사용 수식 (약식 · 상세=리포트 끝 용어/수식/레퍼런스)
 · 팬(1달) = 종가 ± macroATR22_5MA × 존별 배수 · 분기 = 종가 ± macroATR54_12MA × 대칭 배수
 · 전방확률 = 현재 온도존 조건부 부트스트랩(2008~) — 상승/하락% + 신뢰
@@ -78,19 +87,7 @@ US #market_temp 4지수 종합 #NixStock · 2026-09-23 장마감 (2026-09-24 06:
 
 ※ 확률적 참고 · 투자자문 아님 · 알고리즘 비공개 · #toss 아님(자체계산)
 
-━━━ 📎 전체 리포트 링크 (대표 + 서브 6종 + 인포) ━━━
-📎 [대표·인포그래픽] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/infographic/market_temp_us_comparison_infographic_2026-09-23.html
-📎 [대표·리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us500/market_temp_us500_2026-09-23.html
-📎 [대표·데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us500/market_temp_web_us500_dwm_2026-09-23.html
-📎 [us30·리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us30/market_temp_us30_2026-09-23.html
-📎 [us30·데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us30/market_temp_web_us30_dwm_2026-09-23.html
-📎 [us100·리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us100/market_temp_us100_2026-09-23.html
-📎 [us100·데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us100/market_temp_web_us100_dwm_2026-09-23.html
-📎 [us400·리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us400/market_temp_us400_2026-09-23.html
-📎 [us400·데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us400/market_temp_web_us400_dwm_2026-09-23.html
-📎 [us1500·리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us1500/market_temp_us1500_2026-09-23.html
-📎 [us1500·데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us1500/market_temp_web_us1500_dwm_2026-09-23.html
-📎 [us2000·리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us2000/market_temp_us2000_2026-09-23.html
-📎 [us2000·데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-23_us_market_temp_close/overview/us2000/market_temp_web_us2000_dwm_2026-09-23.html
-
 🔒 자체 알고리즘 · 산식·임계·가중 비공개 (값·등급·검증 결과만 공개)
+
+$SPY $VOO $IVV $QQQ $QQQM $DIA $MDY $IJH $ITOT $IWM
+#SP500 #SPX #에스앤피500 #미국대형주 #나스닥100 #나스닥 #NASDAQ100 #NDX #기술주 #다우 #다우지수 #다우존스 #DowJones #DJIA #SP400 #MidCap400 #미드캡 #미국중형주 #SP1500 #SPComposite1500 #미국종합지수 #미국전체시장 #러셀2000 #Russell2000 #미국소형주 #RUT #마켓온도 #시장온도 #공포탐욕지수 #시장폭 #반전신호 #미국주식 #미국증시 #뉴욕증시 #미국지수 #증시전망 #NixStock

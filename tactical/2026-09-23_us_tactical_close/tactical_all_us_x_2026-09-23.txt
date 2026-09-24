@@ -5,6 +5,7 @@ US #tactical · 2026-09-24 05:00 KST / 2026-09-23 16:00 ET 마감 By Claude Opus
 📎 [리포트] https://nixstock.github.io/nixstock-reports/tactical/2026-09-23_us_tactical_close/overview/daily_trend_buysell_us_2026-09-23.html
 📎 [데이터] https://nixstock.github.io/nixstock-reports/tactical/2026-09-23_us_tactical_close/overview/tactical_backdata_us_2026-09-23.html
 📎 [인포그래픽] https://nixstock.github.io/nixstock-reports/tactical/2026-09-23_us_tactical_close/infographic/us_tactical_infographic_2026-09-23.html
+📎 [인포 리포트] https://nixstock.github.io/nixstock-reports/tactical/2026-09-23_us_tactical_close/overview/us_tactical_overview_2026-09-23.html
 
 ★결론 — 반등 우위 · 온도 NEUTRAL(59) · 폭 BEARISH · RRG 개선 53·지연 29 · 크레딧 NONE · killswitch 주의 (근거·수식은 아래+리포트)
 
@@ -64,18 +65,9 @@ US #tactical · 2026-09-24 05:00 KST / 2026-09-23 16:00 ET 마감 By Claude Opus
 · 크레딧 — FRED — ICE BofA US High Yield OAS (BAMLH0A0HYM2) https://fred.stlouisfed.org/series/BAMLH0A0HYM2
 · 투자심리 — CNN Fear & Greed Index https://edition.cnn.com/markets/fear-and-greed
 
-
-
-
-$SPY $QQQ $IWM
-#SP500 #나스닥 #RRG #택티컬 #killswitch #미국증시 #섹터로테이션 #NixStock
-
 ※ 확률적 참고 · 예측 아님 · 과열은 타이밍 신호 아님(WARM 존 수익 최약) · 매수/매도 추천 아님.
 
-━━━ 📎 전체 리포트 링크 (대표 + 서브 0종 + 인포) ━━━
-📎 [대표·리포트] https://nixstock.github.io/nixstock-reports/tactical/2026-09-23_us_tactical_close/overview/daily_trend_buysell_us_2026-09-23.html
-📎 [대표·데이터] https://nixstock.github.io/nixstock-reports/tactical/2026-09-23_us_tactical_close/overview/tactical_backdata_us_2026-09-23.html
-📎 [대표·인포그래픽] https://nixstock.github.io/nixstock-reports/tactical/2026-09-23_us_tactical_close/infographic/us_tactical_infographic_2026-09-23.html
-📎 [인포·리포트] https://nixstock.github.io/nixstock-reports/tactical/2026-09-23_us_tactical_close/overview/us_tactical_overview_2026-09-23.html
-
 🔒 자체 알고리즘 · 산식·임계·가중 비공개 (값·등급·검증 결과만 공개)
+
+$SPY $VOO $IVV $QQQ $QQQM $IWM
+#택티컬 #RRG #섹터로테이션 #시장폭 #미국주식 #미국증시 #뉴욕증시 #미국지수 #증시전망 #SP500 #SPX #에스앤피500 #미국대형주 #나스닥100 #나스닥 #NASDAQ100 #NDX #기술주 #러셀2000 #Russell2000 #미국소형주 #RUT #killswitch #debasement #NixStock

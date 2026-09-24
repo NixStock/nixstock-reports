@@ -5,6 +5,7 @@ KR #tactical V1.0 · 2026-09-23 15:30 KST 마감 By Opus 4.8
 📎 [리포트] https://nixstock.github.io/nixstock-reports/tactical/2026-09-23_kr_tactical_close/overview/daily_trend_buysell_kr_2026-09-23.html
 📎 [데이터] https://nixstock.github.io/nixstock-reports/tactical/2026-09-23_kr_tactical_close/overview/tactical_web_kr_2026-09-23.html
 📎 [인포그래픽] https://nixstock.github.io/nixstock-reports/tactical/2026-09-23_kr_tactical_close/infographic/kr_tactical_infographic_2026-09-23.html
+📎 [인포 리포트] https://nixstock.github.io/nixstock-reports/tactical/2026-09-23_kr_tactical_close/overview/kr_tactical_overview_2026-09-23.html
 
 ★결론 — 반등 우위 · 온도 NEUTRAL(47.67) · 폭 BEARISH · RRG 개선 22·지연 13 (근거·수식은 아래+리포트)
 
@@ -60,15 +61,8 @@ KR #tactical V1.0 · 2026-09-23 15:30 KST 마감 By Opus 4.8
 · 자체 검증 — NixStock 추이·반전 백테스트 (본문에 n·적중·edge 그대로 표기) · 자작 알고리즘 비공개
 · 마감 확정 수급·지수 — KRX 정보데이터시스템 http://data.krx.co.kr
 
-$KOSPI200 $KOSDAQ150
-#코스피 #코스닥 #RRG #택티컬 #수급 #한국증시 #섹터로테이션 #NixStock
-
 ※ 확률적 참고 · 예측 아님 · 과열은 타이밍 신호 아님(WARM 존 수익 최약) · 매수/매도 추천 아님.
 
-━━━ 📎 전체 리포트 링크 (대표 + 서브 0종 + 인포) ━━━
-📎 [대표·리포트] https://nixstock.github.io/nixstock-reports/tactical/2026-09-23_kr_tactical_close/overview/daily_trend_buysell_kr_2026-09-23.html
-📎 [대표·데이터] https://nixstock.github.io/nixstock-reports/tactical/2026-09-23_kr_tactical_close/overview/tactical_web_kr_2026-09-23.html
-📎 [대표·인포그래픽] https://nixstock.github.io/nixstock-reports/tactical/2026-09-23_kr_tactical_close/infographic/kr_tactical_infographic_2026-09-23.html
-📎 [인포·리포트] https://nixstock.github.io/nixstock-reports/tactical/2026-09-23_kr_tactical_close/overview/kr_tactical_overview_2026-09-23.html
-
 🔒 자체 알고리즘 · 산식·임계·가중 비공개 (값·등급·검증 결과만 공개)
+
+#택티컬 #RRG #섹터로테이션 #시장폭 #국내주식 #한국증시 #코스피 #코스닥 #증시전망 #코스피200 #KOSPI200 #KOSPI #국내대형주 #코스닥150 #KOSDAQ150 #KOSDAQ #국내중소형주 #수급 #NixStock

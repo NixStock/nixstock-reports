@@ -3,8 +3,12 @@ KR #market_temp 종합(전체 링크) · 2026-09-23 마감 · By Opus 4.8
 KR #market_temp 3지수 종합 #NixStock V1.1 · 2026-09-23 정규장 마감 (16:02 KST/03:02 ET) By Opus 4.8
 
 📎 [인포그래픽] https://nixstock.github.io/nixstock-reports/market/2026-09-23_kr_market_temp_close/infographic/market_temp_kr_comparison_infographic_2026-09-23.html
-📎 [리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-23_kr_market_temp_close/overview/kr/market_temp_web_kr_report_kr_2026-09-23.html
-📎 [데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-23_kr_market_temp_close/overview/kr/market_temp_web_kr_dwm_2026-09-23.html
+📎 [KR 통합 리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-23_kr_market_temp_close/overview/kr/market_temp_web_kr_report_kr_2026-09-23.html
+📎 [KR 통합 데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-23_kr_market_temp_close/overview/kr/market_temp_web_kr_dwm_2026-09-23.html
+📎 [코스피200 리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-23_kr_market_temp_close/overview/kospi200/market_temp_web_kr_report_kospi200_2026-09-23.html
+📎 [코스피200 데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-23_kr_market_temp_close/overview/kospi200/market_temp_web_kr_kospi200_dwm_2026-09-23.html
+📎 [코스닥150 리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-23_kr_market_temp_close/overview/kosdaq150/market_temp_web_kr_report_kosdaq150_2026-09-23.html
+📎 [코스닥150 데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-23_kr_market_temp_close/overview/kosdaq150/market_temp_web_kr_kosdaq150_dwm_2026-09-23.html
 
 ■ 통합 NEUTRAL 47.67℃ · 코스피200 NEUTRAL 54.5℃ · 코스닥150 COOL 35.15℃
    온도·이중선·팬·반전검증·부트스트랩·수급·FOMC 15섹션 · 반전 미armed
@@ -66,13 +70,6 @@ KR #market_temp 3지수 종합 #NixStock V1.1 · 2026-09-23 정규장 마감 (16
 
 ※ 확률적 참고 · 투자자문 아님 · 알고리즘 비공개 · #toss 아님(자체계산)
 
-━━━ 📎 전체 리포트 링크 (대표 + 서브 3종 + 인포) ━━━
-📎 [대표·인포그래픽] https://nixstock.github.io/nixstock-reports/market/2026-09-23_kr_market_temp_close/infographic/market_temp_kr_comparison_infographic_2026-09-23.html
-📎 [대표·리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-23_kr_market_temp_close/overview/kr/market_temp_web_kr_report_kr_2026-09-23.html
-📎 [대표·데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-23_kr_market_temp_close/overview/kr/market_temp_web_kr_dwm_2026-09-23.html
-📎 [kosdaq150·리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-23_kr_market_temp_close/overview/kosdaq150/market_temp_web_kr_report_kosdaq150_2026-09-23.html
-📎 [kosdaq150·데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-23_kr_market_temp_close/overview/kosdaq150/market_temp_web_kr_kosdaq150_dwm_2026-09-23.html
-📎 [kospi200·리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-23_kr_market_temp_close/overview/kospi200/market_temp_web_kr_report_kospi200_2026-09-23.html
-📎 [kospi200·데이터] https://nixstock.github.io/nixstock-reports/market/2026-09-23_kr_market_temp_close/overview/kospi200/market_temp_web_kr_kospi200_dwm_2026-09-23.html
-
 🔒 자체 알고리즘 · 산식·임계·가중 비공개 (값·등급·검증 결과만 공개)
+
+#코스피200 #코스닥150 #KOSPI #KOSDAQ #KOSPI200 #국내대형주 #KOSDAQ150 #국내중소형주 #마켓온도 #시장온도 #공포탐욕지수 #시장폭 #반전신호 #국내주식 #한국증시 #코스피 #코스닥 #증시전망 #NixStock

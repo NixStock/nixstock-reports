@@ -54,17 +54,9 @@ US #index · 2026-09-24 05:00 KST / 2026-09-23 16:00 ET 마감 By Claude Opus 4.
 · 가격 데이터 — Yahoo Finance
 · 자체 검증 — NixStock 추이·반전 백테스트 (본문에 n·적중·edge 그대로 표기) · 자작 알고리즘 비공개
 
-
-
-
-$SPY $QQQ $IWM
-#크로스에셋 #레짐 #RRG #금리 #원자재 #환율 #미국증시 #NixStock
-
 ※ 확률적 참고 · 예측 아님 · 과열은 타이밍 신호 아님(WARM 존 수익 최약) · 매수/매도 추천 아님.
 
-━━━ 📎 전체 리포트 링크 (대표 + 서브 0종 + 인포) ━━━
-📎 [대표·리포트] https://nixstock.github.io/nixstock-reports/index/2026-09-23_us_index_overview_close/overview/index_overview_us_2026-09-23.html
-📎 [대표·데이터] https://nixstock.github.io/nixstock-reports/index/2026-09-23_us_index_overview_close/overview/index_backdata_us_2026-09-23.html
-📎 [대표·인포그래픽] https://nixstock.github.io/nixstock-reports/index/2026-09-23_us_index_overview_close/infographic/index_overview_us_infographic_2026-09-23.html
-
 🔒 자체 알고리즘 · 산식·임계·가중 비공개 (값·등급·검증 결과만 공개)
+
+$SPY $VOO $IVV $QQQ $QQQM $IWM
+#크로스에셋 #레짐 #RRG #금리 #원자재 #환율 #미국주식 #미국증시 #뉴욕증시 #미국지수 #증시전망 #SP500 #SPX #에스앤피500 #미국대형주 #나스닥100 #나스닥 #NASDAQ100 #NDX #기술주 #러셀2000 #Russell2000 #미국소형주 #RUT #debasement #Quad2 #NixStock

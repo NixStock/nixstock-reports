@@ -1,0 +1,73 @@
+US #tactical 종합(전체 링크) · 2026-09-25 마감 · By Claude Opus 4.8
+
+US #tactical · 2026-09-26 05:00 KST / 2026-09-25 16:00 ET 마감 By Claude Opus 4.8
+
+📎 [리포트] https://nixstock.github.io/nixstock-reports/tactical/2026-09-25_us_tactical_close/overview/daily_trend_buysell_us_2026-09-25.html
+📎 [데이터] https://nixstock.github.io/nixstock-reports/tactical/2026-09-25_us_tactical_close/overview/tactical_backdata_us_2026-09-25.html
+📎 [인포그래픽] https://nixstock.github.io/nixstock-reports/tactical/2026-09-25_us_tactical_close/infographic/us_tactical_infographic_2026-09-25.html
+📎 [인포 리포트] https://nixstock.github.io/nixstock-reports/tactical/2026-09-25_us_tactical_close/overview/us_tactical_overview_2026-09-25.html
+
+★결론 — 반등 우위 · 온도 NEUTRAL(47.64) · 폭 NEUTRAL · RRG 개선 52·지연 30 · 크레딧 NONE · killswitch 주의 (근거·수식은 아래+리포트)
+
+▶ 쉬운 해석: 온도 NEUTRAL = 보통(중립) · 오른 종목·내린 종목 반반(폭 중립) (62.68%) · 업종 자금은 '개선' 쪽이 가장 많음(주도 8·개선 52·약화 42·지연 30) · 방향이 바뀐 자산 상승 4종 / 하락 5종 · 방어 전환 점검(killswitch) 주의 단계
+
+- 판정
+
+  · 반등 우위
+  · 온도 NEUTRAL(47.64)
+  · 폭 NEUTRAL ⚖️
+  · RRG 주도 8·개선 52·약화 42·지연 30
+  · 크레딧 NONE
+
+- 세부
+
+  · 종합 판정 반등 우위 — 온도 NEUTRAL·RRG 개선 52·상승전환 4종.
+  · 시장 폭 NEUTRAL ⚖️ — 62.68 composite.
+  · RRG 리더십: Leading 8·Improving 52·Weakening 42·Lagging 30 — 개선 우위.
+  · 로테이션 IN 포토닉스 커넥티비티IC/DSP (4종 EW)·사이버보안 Top12 (EW)·DISK ETF 역산 (아시아 메모리 EW)·DRAM ETF 역산 (7종 EW) / OUT Invesco Solar·Crown Castle (통신타워)·VanEck Uranium & Nuclear·NextEra Energy.
+  · 추세 전환 스캔: 상승전환 4(S&P500·KOSDAQ·비트코인·이더리움) · 하락전환 5(러셀2000·원달러·항셍·닛케이·유로스톡스50).
+
+◆ 읽는 법 (약어·쉬운 뜻 · 공통 SSOT)
+· V1 / V2 — 온도를 재는 두 버전. V2가 등급 판정 기준.
+· 온도 존 7단 — 온도를 7구간으로 나눈 이름표. COLD=싸짐·HOT=비쌈.
+· 시장폭(폭) — 오른 종목이 전체의 몇 %인가. 낮으면 몇 종목만 올리는 좁은 장.
+· RRG 사분면 — 벤치마크 대비 강한지(상대강도)·강해지는 중인지(모멘텀)로 4칸에 배치.
+· RRG-TF6 — 짧은 기간부터 긴 기간까지 6개로 보면, 몇 개가 돌아섰는지로 전환의 조기성·확신도를 봄.
+· 로테이션 IN/OUT — 돈이 어느 섹터로 옮겨가고 있나.
+· tilt(편향) — 섹터가 강세/약세/혼조 어디로 쏠렸나.
+· armed — 반전 신호가 켜졌나(켜짐=armed).
+· edge(%p) — 이 신호가 그냥 찍는 것보다 얼마나 더 맞나(%p). 클수록 강함.
+· hit(적중률) — 신호가 맞은 비율.
+· n(표본수) — 몇 번 검증했나. 적으면 우연일 수 있음.
+· 7 Cycle Stack — 경기 사이클 7개로 왜 지금 이 자산이 유리한지 이야기로 풀어본 것. 예측 신호는 아님.
+· O / △ / X — 지난 신호가 맞았나(O)·아직 진행중(△)·틀렸나(X).
+· 크레딧 다이버전스 — 주가는 신고점인데 하이일드 채권이 못 따라가면 돈줄이 먼저 조심하는 신호.
+· killswitch — 위험 방아쇠 3단계. 켜지면 조심하라는 경고.
+· F&G (공포·탐욕) — 사람들이 지금 겁먹었나 들떴나를 0~100 으로.
+
+◆ 사용 수식 (약식 · 상세 = 리포트 마지막 §G)
+· 온도 존 = 🔒 자체 알고리즘 · 산식·임계·가중 비공개 (값·등급·검증 결과만 공개)
+· RRG = RS = 대상 종가 ÷ 벤치 종가 × 100 · RS-Ratio = (SMA_N(RS) − 평균) ÷ 표준편차 × 10 + 100 · RS-Mom = (SMA_N(RS-Ratio 변화) − 평균) ÷ 표준편차 × 10 + 100 · 사분면 = Ratio≥100∧Mom≥100 Leading / Ratio<100∧Mom≥100 Improving / Ratio≥100∧Mom<100 Weakening / 그 외 Lagging (N = 5·12·22·54·120·245)
+· RRG-TF6 = 🔒 자체 알고리즘 · 산식·임계·가중 비공개 (값·등급·검증 결과만 공개)
+· tilt = 🔒 자체 알고리즘 · 산식·임계·가중 비공개 (값·등급·검증 결과만 공개)
+· edge = 🔒 자체 알고리즘 · 산식·임계·가중 비공개 (값·등급·검증 결과만 공개)
+· 적중률 hit = mean(r_fwd > 0) × 100 (신호 점등 표본만) (50%=동전)
+· killswitch = 🔒 자체 알고리즘 · 산식·임계·가중 비공개 (값·등급·검증 결과만 공개)
+· 크레딧 다이버전스 = SPY 신고점(HH) ∧ HYG·JNK·BKLN 중 k개 저고점(LH) · k=3 STRONG·2 MEDIUM·1 WEAK (평균 4~8주 선행)
+
+◆ 참조 (레퍼런스)
+· 내부 · 표준 — nix_report_master_procedure.md §0b — 전 리포트 3요소 표준(결론 먼저·쉬운 인과·마지막 용어/수식/레퍼런스)
+· 내부 · 지표 읽는 법 — nix_5gauge_reading_guide.md — 온도 V1/V2 · F&G · NixB&B · BofA 5종 읽는 법
+· RRG 원저 — Julius de Kempenaer · RRG Research https://www.relativerotationgraphs.com
+· 외부 · 용어사전 — Wikipedia — 'Market breadth' · 'Sector rotation' (Investopedia 는 봇차단(CF)으로 접속 검증 불가 → 제외, 2026-09-05 사용자 확인) https://en.wikipedia.org/wiki/Market_breadth
+· 가격 데이터 — Yahoo Finance
+· 자체 검증 — NixStock 추이·반전 백테스트 (본문에 n·적중·edge 그대로 표기) · 자작 알고리즘 비공개
+· 크레딧 — FRED — ICE BofA US High Yield OAS (BAMLH0A0HYM2) https://fred.stlouisfed.org/series/BAMLH0A0HYM2
+· 투자심리 — CNN Fear & Greed Index https://edition.cnn.com/markets/fear-and-greed
+
+※ 확률적 참고 · 예측 아님 · 과열은 타이밍 신호 아님(WARM 존 수익 최약) · 투자권유(매수·매도·비중) 아님.
+
+🔒 자체 알고리즘 · 산식·임계·가중 비공개 (값·등급·검증 결과만 공개)
+
+$SPY $VOO $IVV $QQQ $QQQM $IWM
+#택티컬 #RRG #섹터로테이션 #시장폭 #미국주식 #미국증시 #뉴욕증시 #미국지수 #증시전망 #SP500 #SPX #에스앤피500 #미국대형주 #나스닥100 #나스닥 #NASDAQ100 #NDX #기술주 #러셀2000 #Russell2000 #미국소형주 #RUT #killswitch #debasement #NixStock

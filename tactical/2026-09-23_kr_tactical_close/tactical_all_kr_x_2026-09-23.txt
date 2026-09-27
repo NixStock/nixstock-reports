@@ -23,7 +23,7 @@ KR #tactical V1.0 · 2026-09-23 15:30 KST 마감 By Opus 4.8
   · 종합 판정 반등 우위 — 온도 NEUTRAL·RRG 개선 22·상승전환 4종.
   · 시장 폭 BEARISH 🌧️ —  composite.
   · RRG 리더십: Leading 0·Improving 22·Weakening 3·Lagging 13 — 개선 우위.
-  · 로테이션 IN 반도체·IT·건설·보험 / OUT 헬스케어·헬스케어/바이오·자동차·바이오.
+  · 로테이션 IN 반도체 밸류체인 EW (KR)·반도체 장비 EW (KR)·반도체 공정주도주 EW (KR)·반도체 비메모리 EW (KR) / OUT 헬스케어·헬스케어/바이오·자동차·바이오.
   · 추세 전환 스캔: 상승전환 4(S&P500·KOSDAQ·비트코인·이더리움) · 하락전환 5(러셀2000·원달러·항셍·닛케이·유로스톡스50).
 
 ◆ 읽는 법 (약어·쉬운 뜻 · 공통 SSOT)

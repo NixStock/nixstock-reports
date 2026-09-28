@@ -1,6 +1,6 @@
 US #market_temp 종합(전체 링크) · 2026-09-28 마감 · By Opus 4.8
 
-US #market_temp 4지수 종합 #NixStock · 2026-09-28 장마감 (2026-09-29 06:04 KST) By Opus 4.8
+US #market_temp 4지수 종합 #NixStock · 2026-09-28 장마감 (2026-09-29 06:40 KST) By Opus 4.8
 
 📎 [인포그래픽] https://nixstock.github.io/nixstock-reports/market/2026-09-28_us_market_temp_close/infographic/market_temp_us_comparison_infographic_2026-09-28.html
 📎 [US500 리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-28_us_market_temp_close/overview/us500/market_temp_us500_2026-09-28.html
@@ -61,7 +61,7 @@ US #market_temp 4지수 종합 #NixStock · 2026-09-28 장마감 (2026-09-29 06:
 · Russell2000 전방 h54: 표본 부족(n6.0<10) 확률 단정 억제 · 참고 상승 67%* · 현재존(COOL) fwd 수익 +1.66%·낙폭 -4.39%(n16)
 
 ◆ 촉매 · 시나리오
-· FOMC D--12(2026-09-16) 인상 55% / 동결 43% (Polymarket · 조사 2026-09-03)
+· FOMC D-30(2026-10-28) 인상 69% ▲+3%p(매파) / 동결 30% (Kalshi · 조사 2026-09-29 03:31)
 · A(반등): MidCap400·Russell2000·US500·US100 존 성숙 + 반전 저점 edge + 전방 h54 상승우위(2/2지수 >50%·검증가능 2/4지수(n≥10)) → 시장폭 회복 시 반등
 · B(냉각): 과열 초입 + 대형주 시장폭 약세(BEARISH) 지속 → 평균회귀 조정 리스크
 

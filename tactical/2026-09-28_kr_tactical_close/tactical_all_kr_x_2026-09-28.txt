@@ -3,7 +3,7 @@ KR #tactical 종합(전체 링크) · 2026-09-28 마감 · By Opus 4.8
 KR #tactical V1.0 · 2026-09-28 15:30 KST 마감 By Opus 4.8
 
 📎 [리포트] https://nixstock.github.io/nixstock-reports/tactical/2026-09-28_kr_tactical_close/overview/daily_trend_buysell_kr_2026-09-28.html
-📎 [데이터] https://nixstock.github.io/nixstock-reports/tactical/2026-09-28_kr_tactical_close/overview/tactical_web_kr_2026-09-28.html
+📎 [데이터] https://nixstock.github.io/nixstock-reports/tactical/2026-09-28_kr_tactical_close/overview/tactical_backdata_kr_2026-09-28.html
 📎 [인포그래픽] https://nixstock.github.io/nixstock-reports/tactical/2026-09-28_kr_tactical_close/infographic/kr_tactical_infographic_2026-09-28.html
 📎 [인포 리포트] https://nixstock.github.io/nixstock-reports/tactical/2026-09-28_kr_tactical_close/overview/kr_tactical_overview_2026-09-28.html
 

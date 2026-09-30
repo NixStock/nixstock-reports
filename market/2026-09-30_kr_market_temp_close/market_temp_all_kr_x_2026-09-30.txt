@@ -1,6 +1,6 @@
 KR #market_temp 종합(전체 링크) · 2026-09-30 마감 · By Opus 4.8
 
-KR #market_temp 3지수 종합 #NixStock V1.3 · 2026-09-30 정규장 마감 (19:44 KST/06:44 ET) By Opus 4.8
+KR #market_temp 3지수 종합 #NixStock V1.3 · 2026-09-30 정규장 마감 (19:47 KST/06:47 ET) By Opus 4.8
 
 📎 [인포그래픽] https://nixstock.github.io/nixstock-reports/market/2026-09-30_kr_market_temp_close/infographic/market_temp_kr_comparison_infographic_2026-09-30.html
 📎 [KR 통합 리포트] https://nixstock.github.io/nixstock-reports/market/2026-09-30_kr_market_temp_close/overview/kr/market_temp_web_kr_report_kr_2026-09-30.html
@@ -22,8 +22,8 @@ KR #market_temp 3지수 종합 #NixStock V1.3 · 2026-09-30 정규장 마감 (19
 
 ◆ 시장폭 · 수급 3주체
 · 폭: 코스피200 38% BEARISH 🌧️ · 코스닥150 54% NEUTRAL ⚖️
-· 코스피: 외국인 -20,638·기관 -7,904·개인 +11,969 (억원) · 확정
-· 코스닥: 외국인 -714·기관 +482·개인 +161 (억원) · 확정
+· 코스피: 외국인 -20,678·기관 -7,905·개인 +12,010 (억원) · 확정
+· 코스닥: 외국인 -712·기관 +482·개인 +158 (억원) · 확정
 
 ◆ 지수 고점/저점 팬 (구조+ATR+온도존)
 · 코스피200(종가 109,545): 1차 고점 +5.6%·저점 −5.9% (1달 ATR22 비대칭)

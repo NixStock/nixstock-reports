@@ -1,0 +1,95 @@
+US #market_temp 종합(전체 링크) · 2026-10-01 마감 · By Opus 4.8
+
+US #market_temp 4지수 종합 #NixStock · 2026-10-01 장마감 (2026-10-02 07:49 KST) By Opus 4.8
+
+📎 [인포그래픽] https://nixstock.github.io/nixstock-reports/market/2026-10-01_us_market_temp_close/infographic/market_temp_us_comparison_infographic_2026-10-01.html
+📎 [US500 리포트] https://nixstock.github.io/nixstock-reports/market/2026-10-01_us_market_temp_close/overview/us500/market_temp_us500_2026-10-01.html
+📎 [US500 데이터] https://nixstock.github.io/nixstock-reports/market/2026-10-01_us_market_temp_close/overview/us500/market_temp_web_us500_dwm_2026-10-01.html
+📎 [US100 리포트] https://nixstock.github.io/nixstock-reports/market/2026-10-01_us_market_temp_close/overview/us100/market_temp_us100_2026-10-01.html
+📎 [US100 데이터] https://nixstock.github.io/nixstock-reports/market/2026-10-01_us_market_temp_close/overview/us100/market_temp_web_us100_dwm_2026-10-01.html
+📎 [US30(다우) 리포트] https://nixstock.github.io/nixstock-reports/market/2026-10-01_us_market_temp_close/overview/us30/market_temp_us30_2026-10-01.html
+📎 [US30(다우) 데이터] https://nixstock.github.io/nixstock-reports/market/2026-10-01_us_market_temp_close/overview/us30/market_temp_web_us30_dwm_2026-10-01.html
+📎 [MidCap400 리포트] https://nixstock.github.io/nixstock-reports/market/2026-10-01_us_market_temp_close/overview/us400/market_temp_us400_2026-10-01.html
+📎 [MidCap400 데이터] https://nixstock.github.io/nixstock-reports/market/2026-10-01_us_market_temp_close/overview/us400/market_temp_web_us400_dwm_2026-10-01.html
+📎 [US1500(종합) 리포트] https://nixstock.github.io/nixstock-reports/market/2026-10-01_us_market_temp_close/overview/us1500/market_temp_us1500_2026-10-01.html
+📎 [US1500(종합) 데이터] https://nixstock.github.io/nixstock-reports/market/2026-10-01_us_market_temp_close/overview/us1500/market_temp_web_us1500_dwm_2026-10-01.html
+📎 [Russell2000 리포트] https://nixstock.github.io/nixstock-reports/market/2026-10-01_us_market_temp_close/overview/us2000/market_temp_us2000_2026-10-01.html
+📎 [Russell2000 데이터] https://nixstock.github.io/nixstock-reports/market/2026-10-01_us_market_temp_close/overview/us2000/market_temp_web_us2000_dwm_2026-10-01.html
+
+■ US 4지수 온도 — US500 NEUTRAL 54.62℃ · US100 WARM 61.37℃ · MidCap400 NEUTRAL 44.2℃ · Russell2000 COOL 38.12℃
+   온도·팬·반전검증·부트스트랩·포지셔닝·FOMC 종합(2장 인포그래픽) · 4지수 모두 미armed(중립)
+
+▶ 쉬운 해석: US100 따뜻~과열권(온도 높음=비쌈) · US500·MidCap400 중립 · Russell2000 과냉(반등 여지) · 매도신호 켜진 곳 없음(미armed)
+
+◆ 온도 (일·주·월 V2)
+· 4지수 단순평균 V2 49.5775℃ (공식 통합 아님) — US100 최온·Russell2000 최냉
+· US500: 일 NEUTRAL 54.62·주 NEUTRAL 59.12·월 WARM 64.62 (Δ일 +4.1)
+· US100: 일 WARM 61.37·주 WARM 61.37·월 WARM 66.87 (Δ일 +3.9)
+· MidCap400: 일 NEUTRAL 44.2·주 NEUTRAL 44.2·월 NEUTRAL 52.41 (Δ일 +7.3)
+· Russell2000: 일 COOL 38.12·주 NEUTRAL 42.62·월 NEUTRAL 52.62 (Δ일 +3.4)
+
+◆ 시장폭 · 포지셔닝 (F&G·NixB&B·BofA)
+· 폭: US500 58% BULLISH · US100 55% BULLISH · MidCap400 68% BULLISH · Russell2000 58% BULLISH
+· 포지셔닝: F&G 28.09(Fear·10-01) · NixB&B 5.56/10(Neutral·4구성·10-01) · BofA B&B(2026-09-23 D+8) 9.3/10·Extreme Bullish
+
+◆ 지수 고점/저점 팬 (구조+ATR+온도존)
+· US500(종가 763.99): 1차 고점 +1.9%·저점 −1.2% (1달 ATR22 비대칭)
+· US100(종가 742.03): 1차 고점 +3.2%·저점 −2.1% (1달 ATR22 비대칭)
+· MidCap400(종가 663.38): 1차 고점 +3.1%·저점 −2.4% (1달 ATR22 비대칭)
+· Russell2000(종가 279.02): 1차 고점 +3.4%·저점 −2.7% (1달 ATR22 비대칭)
+
+◆ 반전 신호 스캔 (M1 고정존 · 2008~ 검증)
+· US500: 저점 edge +9pp(hit 85%)✅ / 고점 +0pp✅ · 미armed(대기)
+· US100: 저점 edge -2pp(hit 73%)❌ / 고점 +0pp✅ · 미armed(대기)
+· MidCap400: 저점 edge +13pp(hit 84%)✅ / 고점 +0pp✅ · 미armed(대기)
+· Russell2000: 저점 edge +8pp(hit 76%)✅ / 고점 +6pp✅ · 미armed(대기)
+
+◆ 반전 검증 (지평별 초과수익 · baseline 대비 · 2008~)
+· US500: h5 과냉후 +0.8pp(승 64%)/과열후 -0.0pp · h12 과냉후 +1.2pp(승 65%)/과열후 -0.1pp · h22 과냉후 +1.6pp(승 66%)/과열후 -0.0pp · h54 과냉후 +4.5pp(승 85%)/과열후 -1.2pp · h120 과냉후 +8.3pp(승 85%)/과열후 -1.4pp · h245 과냉후 +11.3pp(승 97%)/과열후 -0.7pp
+· US100: h5 과냉후 +0.7pp(승 56%)/과열후 -0.2pp · h12 과냉후 +1.1pp(승 61%)/과열후 -0.5pp · h22 과냉후 +2.0pp(승 67%)/과열후 -0.3pp · h54 과냉후 +4.2pp(승 73%)/과열후 -1.4pp · h120 과냉후 +7.9pp(승 73%)/과열후 -1.1pp · h245 과냉후 +11.4pp(승 89%)/과열후 +0.1pp
+· MidCap400: h5 과냉후 +0.7pp(승 59%)/과열후 -0.4pp · h12 과냉후 +1.0pp(승 62%)/과열후 -0.7pp · h22 과냉후 +1.8pp(승 66%)/과열후 -1.7pp · h54 과냉후 +6.5pp(승 84%)/과열후 -1.0pp · h120 과냉후 +12.0pp(승 95%)/과열후 -3.4pp · h245 과냉후 +16.8pp(승 98%)/과열후 -3.3pp
+· Russell2000: h5 과냉후 -0.0pp(승 56%)/과열후 -0.4pp · h12 과냉후 +0.5pp(승 60%)/과열후 -1.3pp · h22 과냉후 +0.8pp(승 62%)/과열후 -1.4pp · h54 과냉후 +4.0pp(승 76%)/과열후 -2.3pp · h120 과냉후 +6.0pp(승 79%)/과열후 -4.8pp · h245 과냉후 +10.1pp(승 80%)/과열후 -6.4pp
+· US500 최근검출(O성공/△진행/X실패 · M1 고정존/M2 동적존): 12-01tX(M2) 12-16tO(M2) 02-12tX(M2) 03-20bO(M2) 04-10tX(M2) 06-17tX(M2)
+· US100 최근검출(O성공/△진행/X실패 · M1 고정존/M2 동적존): 07-15tX(M2) 07-17t△(M2) 07-30t△(M2) 08-05t△(M2) 08-25t△(M2) 09-09t△(M2)
+· MidCap400 최근검출(O성공/△진행/X실패 · M1 고정존/M2 동적존): 08-05t△(M2) 08-13t△(M2) 08-25t△(M2) 08-27t△(M2) 09-09t△(M2) 09-18t△(M2)
+· Russell2000 최근검출(O성공/△진행/X실패 · M1 고정존/M2 동적존): 04-10tX(M2) 06-16tX(M2) 07-31t△(M2) 08-05t△(M2) 08-10t△(M2) 09-09t△(M2)
+
+◆ 전방 확률 · forward 부트스트랩 (현재존 조건부)
+· US500 전방 h54: 표본 부족(n22.0<10) 확률 단정 억제 · 참고 상승 76%* · 현재존(NEUTRAL) fwd 수익 +1.39%·낙폭 -2.43%(n73)
+· US100 전방 h54: 표본 부족(n21.0<10) 확률 단정 억제 · 참고 상승 74%* · 현재존(WARM) fwd 수익 +0.76%·낙폭 -2.99%(n50)
+· MidCap400 전방 h54: 표본 부족(n44.0<10) 확률 단정 억제 · 참고 상승 71%* · 현재존(NEUTRAL) fwd 수익 +0.93%·낙폭 -3.06%(n96)
+· Russell2000 전방 h54: 표본 부족(n7.0<10) 확률 단정 억제 · 참고 상승 68%* · 현재존(COOL) fwd 수익 +1.78%·낙폭 -4.57%(n18)
+
+◆ 촉매 · 시나리오
+· FOMC(2026-10-28 D-27) 인상확률 27% ▼2026-10-01 조사 대비 36%·-9%p(비둘기)·동결확률 71%(Kalshi · 조사 2026-10-02 07:34 KST) · 지난 FOMC(2026-09-16 D+15) 25bp 인상 → 3.75~4.00%
+· A(반등): Russell2000·US500·MidCap400 존 성숙 + 반전 저점 edge + 전방 h54 상승우위(3/3지수 >50%·검증가능 3/4지수(n≥10)) → 시장폭 회복 시 반등
+· B(냉각): 과열권 확대 + 반전 미armed → 고점 재확인·상방 여력 약화
+
+◆ 매크로: VIX 15.2·-6.98% · WTI 90.7·+0.53% · US10Y 4.796% · F&G 54.43(Neutral)
+
+◆ 읽는 법 (약어·쉬운 뜻)
+· 온도 0~100: 낮을수록 싸다(과냉=반등 여지)·높을수록 비쌈(과열) · 27=과냉/77=과열 트리거선
+· V1=6팩터·V2=9팩터(등급 기준) · 자체 검증 모델 (값·등급·검증 공개)
+· ret=구간 끝 평균 수익% · dd=보유 중 최저점까지 평균 낙폭% · ★순서 아님=같은 구간의 두 측정
+· ★위험/보상: |dd|가 ret보다 크면 낙폭 대비 기대수익 작음 = 손절 걸리기 쉬움·매력 낮음
+· 반전 edge(지평별): h5/12/22/54/120/245=신호 뒤 거래일수(1주·2~3주·1달·2.5달·6달·1년) · 과냉후 +pp=평상시보다 더 오름(빨강)·과열후 −pp=더 빠짐(파랑)·h길수록·클수록 반전 강함
+· n=표본수(⚠20 미만 소표본) · edge=기저 대비 초과%p · hit=적중률 · armed=신호 켜짐 · verified✅=백테스트 우위 확인(2008~)
+· 요점: 과열=비쌈(조정 여지)·과냉=싸다(반등 기대), 단 dd(낙폭)·위험보상비·표본수·verified(확증) 같이 봐야
+
+◆ 사용 수식 (약식 · 상세=리포트 끝 용어/수식/레퍼런스)
+· 팬(1달) = 종가 ± macroATR22_5MA × 존별 배수 · 분기 = 종가 ± macroATR54_12MA × 대칭 배수
+· 전방확률 = 현재 온도존 조건부 부트스트랩(2008~) — 상승/하락% + 신뢰 + baseline대비 edge(pp)
+· 전방확률 * = 베이지안 축소(소표본 보정) · n<10 = 표본 부족 → 확률 단정 억제(참고만)
+· edge(pp) = 신호 후 수익 − baseline(평상시) · hit = 적중률 · n = 표본수
+· 온도 V1/V2 = 자체 종합(0~100) — 값·존·검증 공개
+
+◆ 참조
+· 상세 용어·수식·레퍼런스 = 각 지수 리포트 마지막 섹션
+· 존 밴드 = 자체 SSOT · F&G = CNN(cnn.com/markets/fear-and-greed) · 데이터 = Yahoo Finance
+
+※ 확률적 참고 · 투자권유(매수·매도·비중) 아님 · 알고리즘 비공개 · #toss 아님(자체계산)
+
+🔒 자체 알고리즘 · 학습방법·산식·가중 비공개 (이름·값·임계·등급·검증 결과 공개)
+
+$SPY $VOO $IVV $QQQ $QQQM $DIA $MDY $IJH $ITOT $IWM
+#SP500 #SPX #에스앤피500 #미국대형주 #나스닥100 #나스닥 #NASDAQ100 #NDX #기술주 #다우 #다우지수 #다우존스 #DowJones #DJIA #SP400 #MidCap400 #미드캡 #미국중형주 #SP1500 #SPComposite1500 #미국종합지수 #미국전체시장 #러셀2000 #Russell2000 #미국소형주 #RUT #마켓온도 #시장온도 #공포탐욕지수 #시장폭 #반전신호 #미국주식 #미국증시 #뉴욕증시 #미국지수 #증시전망 #NixStock

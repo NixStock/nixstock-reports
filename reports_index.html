@@ -5,12 +5,17 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark light">
 <title>NixStock 리포트 목록</title>
-<meta name="description" content="nixstock-reports 에 올라간 리포트를 타입·날짜별로 찾는 목록. 열 때마다 GitHub 저장소 트리에서 새로 구성한다.">
+<meta name="description" content="nixstock-reports 에 올라간 리포트를 타입·날짜별로 찾는 목록. 열 때마다 같은 사이트의 목록 파일(reports_manifest.json)에서 새로 구성한다.">
 <!--
   reports_index.html — 정본: StockProjectV2.0/docs/nix_report_directives/reports_index.html
   배포: ~/nixstock-reports 루트에 복사(1회). 리포트가 새로 올라와도 이 파일은 다시 올리지 않는다.
-  동작: 열 때 GitHub 트리 API 1회 GET → *.html 경로만 추려 분류(RULES 표 하나) → 타입별·날짜별 목록.
-  테스트: ?tree=<같은 사이트 상대경로 .json>  (GitHub 트리 API 와 같은 형식) · ?q=<검색어> 미리 채움.
+  동작: 열 때 같은 사이트의 목록 파일 reports_manifest.json 1회 GET → 경로 복원 → 분류(RULES 표 하나) → 타입별·날짜별 목록.
+        목록 파일 = scripts/nix_pages_manifest.py 가 배포(deploy_reports_ghpages.sh) 커밋마다 자동 갱신(schema 1 · 폴더별 묶음).
+        (2026-10-04 전환: GitHub 트리 API 는 응답 7MB ≈ 2만 항목 한도 · 비인증 시간당 60회 → 같은 사이트 파일은 둘 다 없음)
+        목록 파일을 못 읽으면 원인을 화면에 표시한다(조용한 대체 없음) + "GitHub API 로 보기"(?src=api) 수동 링크.
+  진단: ?src=api = GitHub 트리 API 로 보기 (이전 방식 · 10분 캐시 · 레이트 리밋 있음).
+  테스트: ?tree=<같은 사이트 상대경로 .json>  (GitHub 트리 API 와 같은 형식)
+          ?manifest=<같은 사이트 상대경로 .json> (목록 파일 형식) · ?q=<검색어> 미리 채움.
   색: docs/nix_report_directives/nix_style_tokens.py PAL(다크)·PALETTE["light"] 값 그대로.
 -->
 <style>
@@ -173,7 +178,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
       <label class="q"><span class="sr">검색어</span><input id="q" type="search" autocomplete="off" spellcheck="false"
         placeholder="검색 — 파일명·리포트·타입 (예: 코스피, 장마감, 2026-10-02)"></label>
       <label class="tog"><input type="checkbox" id="allf"> 모든 파일 보기</label>
-      <button class="btn" id="reload" type="button" title="캐시를 무시하고 저장소 트리를 다시 가져옵니다">새로 불러오기</button>
+      <button class="btn" id="reload" type="button" title="캐시를 무시하고 목록을 다시 가져옵니다">새로 불러오기</button>
     </div>
   </div>
 </header>
@@ -182,10 +187,10 @@ tr.dhr,.cty.m,.nt.m{display:none}
   <div class="status" id="status" aria-live="polite">목록 불러오는 중…</div>
   <nav class="jump" id="jump" aria-label="리포트 타입 바로가기"></nav>
 </div>
-<main class="wrap" id="main"><div class="loading">GitHub 저장소 트리에서 리포트 목록을 가져오는 중…</div></main>
+<main class="wrap" id="main"><div class="loading">리포트 목록을 가져오는 중…</div></main>
 <footer class="wrap">
   <div class="dis">투자권유 아님 — 올라간 리포트를 찾기 위한 정보 제공용 목록입니다.</div>
-  <div>목록 출처: GitHub 저장소 트리 (NixStock/nixstock-reports · main). 페이지를 열 때마다 새로 구성하며(10분 캐시), 리포트가 올라와도 이 페이지는 다시 올리지 않습니다.</div>
+  <div>목록 출처: 같은 사이트의 목록 파일 reports_manifest.json (NixStock/nixstock-reports · 리포트를 올릴 때마다 자동 갱신). 페이지를 열 때마다 새로 구성하며, 리포트가 올라와도 이 페이지는 다시 올리지 않습니다.</div>
   <div>기본은 묶음마다 대표 리포트만 보입니다. 분할 쪽(p1~p4)·데이터 표·백데이터·장중 슬롯 등은 "모든 파일 보기"로 봅니다.</div>
 </footer>
 
@@ -432,8 +437,10 @@ tr.dhr,.cty.m,.nt.m{display:none}
 (function () {
   'use strict';
   var API_URL = 'https://api.github.com/repos/NixStock/nixstock-reports/git/trees/main?recursive=1';
+  var MANIFEST_URL = 'reports_manifest.json';   // 같은 사이트 목록 파일 (생성 = scripts/nix_pages_manifest.py · 배포 커밋마다 갱신)
+  var MANIFEST_SCHEMA = 1;                      // 이 페이지가 읽는 목록 파일 형식 (생성기 SCHEMA 와 같이 바꾼다)
   var PAGES_BASE = 'https://nixstock.github.io/nixstock-reports/';
-  var CACHE_KEY = 'nix_reports_index_tree_v1';
+  var CACHE_KEY = 'nix_reports_index_tree_v1';  // GitHub API(?src=api) 응답만 캐시 — 레이트 리밋 때문 (목록 파일은 캐시 안 함)
   var CACHE_TTL = 10 * 60 * 1000;   // 10분
   var UI_KEY = 'nix_reports_index_ui_v1';
   var N_RECENT = 10;                // 기본 = 최신 날짜 10개
@@ -473,22 +480,41 @@ tr.dhr,.cty.m,.nt.m{display:none}
   function num(n) { return Number(n).toLocaleString('ko-KR'); }
   function href(p) { return p.split('/').map(encodeURIComponent).join('/'); }
 
-  // ── 트리 소스: 운영 = GitHub API · 테스트 = ?tree=<같은 사이트 상대경로 .json> ──
-  function treeSource() {
-    var t = new URLSearchParams(location.search).get('tree');
-    if (!t) return { url: API_URL, test: false };
+  // ── 목록 소스: 운영 = 같은 사이트 목록 파일 · 진단 = ?src=api (GitHub 트리 API · 이전 방식)
+  //    테스트 = ?tree=<상대경로 .json>(트리 API 형식) · ?manifest=<상대경로 .json>(목록 파일 형식) ──
+  function relJson(what, t) {
     if (!/^[A-Za-z0-9_\-][A-Za-z0-9_\-\/.]*\.json$/.test(t) || t.indexOf('..') >= 0)
-      throw new Error('테스트 트리 주소가 허용 형식이 아닙니다 — 같은 사이트의 상대 경로 .json 만 됩니다: ' + t);
-    return { url: t, test: true };
+      throw new Error('테스트 ' + what + ' 주소가 허용 형식이 아닙니다 — 같은 사이트의 상대 경로 .json 만 됩니다: ' + t);
+    return t;
+  }
+  // 브라우저·CDN 캐시 회피: 분 단위 쿼리 + no-cache (목록 파일은 배포 커밋마다 바뀐다)
+  function bust(u) { return u + (u.indexOf('?') < 0 ? '?' : '&') + 'v=' + Math.floor(Date.now() / 60000); }
+  function treeSource() {
+    var qs = new URLSearchParams(location.search);
+    var t = qs.get('tree'), m = qs.get('manifest'), s = qs.get('src');
+    if (t) return { kind: 'tree', url: relJson('트리', t), name: t, test: true };
+    if (m) return { kind: 'manifest', url: bust(relJson('목록 파일', m)), name: m, test: true };
+    if (s === 'api') return { kind: 'tree', url: API_URL, name: 'GitHub 트리 API', api: true };
+    if (s && s !== 'manifest') throw new Error('알 수 없는 목록 소스입니다: src=' + s + ' (허용: api)');
+    return { kind: 'manifest', url: bust(MANIFEST_URL), name: MANIFEST_URL };
+  }
+  // 같은 페이지의 다른 소스 링크 (검색어 유지)
+  function srcHref(src) {
+    var qs = new URLSearchParams();
+    if (src) qs.set('src', src);
+    if (Q.length) qs.set('q', Q.join(' '));
+    var s = qs.toString();
+    return location.pathname + (s ? '?' + s : '');
   }
 
-  // 소스 목록을 받아 합친다 (지금은 1개 = 저장소 트리 1회 GET).
+  // 소스 목록을 받아 합친다 (지금은 1개 = 목록 파일 또는 저장소 트리 1회 GET).
   function fetchTrees(srcs) {
     return Promise.all(srcs.map(fetchTree)).then(function (rs) {
-      var out = { at: Date.now(), lm: '', rem: null, lim: null, total: 0, paths: [] };
+      var out = { at: Date.now(), lm: '', gen: '', rem: null, lim: null, total: 0, paths: [] };
       rs.forEach(function (r) {
         out.total += r.total; out.paths = out.paths.concat(r.paths);
         if (r.lm && (!out.lm || Date.parse(r.lm) > Date.parse(out.lm))) out.lm = r.lm;
+        if (r.gen && (!out.gen || Date.parse(r.gen) > Date.parse(out.gen))) out.gen = r.gen;
         if (r.rem != null) { out.rem = r.rem; out.lim = r.lim; }
       });
       return out;
@@ -496,7 +522,8 @@ tr.dhr,.cty.m,.nt.m{display:none}
   }
   function fetchTree(src) {
     return fetch(src.url, { cache: 'no-cache', credentials: 'omit' }).catch(function (err) {
-      throw new Error('네트워크 오류로 목록을 가져오지 못했습니다 (' + (err && err.message || err) + '). 인터넷 연결 또는 GitHub 접속을 확인하세요.');
+      throw new Error('네트워크 오류로 목록을 가져오지 못했습니다 (' + (err && err.message || err) + '). 인터넷 연결 또는 ' +
+        (src.api ? 'GitHub' : '사이트') + ' 접속을 확인하세요.');
     }).then(function (res) {
       var rem = res.headers.get('x-ratelimit-remaining'), lim = res.headers.get('x-ratelimit-limit'),
           reset = res.headers.get('x-ratelimit-reset');
@@ -507,8 +534,12 @@ tr.dhr,.cty.m,.nt.m{display:none}
           catch (e) {   // JSON 아닌 본문(HTML 오류 페이지 등) → 태그 걷고 앞부분만
             msg = txt.replace(/<(script|style)[\s\S]*?<\/\1>/gi, ' ').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 160);
           }
-          var why = (src.url === API_URL ? 'GitHub 응답' : '응답') + ' HTTP ' + res.status + (msg ? ' — ' + msg : '');
-          if ((res.status === 403 || res.status === 429) && rem === '0') {
+          var why = (src.api ? 'GitHub 응답' : '응답') + ' HTTP ' + res.status + (msg ? ' — ' + msg : '');
+          if (src.kind === 'manifest' && res.status === 404) {
+            why = '목록 파일 ' + src.name + ' 이 사이트에 없습니다 (HTTP 404). 배포 스크립트(deploy_reports_ghpages.sh)가 아직 목록 파일을 올리지 않았거나 ' +
+              '파일 이름·위치가 바뀌었습니다.';
+          }
+          if (src.api && (res.status === 403 || res.status === 429) && rem === '0') {
             why += ' · GitHub API 시간당 요청 한도(IP 당 ' + (lim || 60) + '회)를 다 썼습니다.' +
               (reset ? ' ' + kst(Number(reset) * 1000) + ' 이후 다시 열면 됩니다.' : '');
           }
@@ -516,21 +547,49 @@ tr.dhr,.cty.m,.nt.m{display:none}
         });
       }
       return res.json().catch(function (err) {
-        throw new Error('응답 JSON 을 해석하지 못했습니다 — ' + (err && err.message || err));
+        throw new Error('응답 JSON 을 해석하지 못했습니다 — ' + (err && err.message || err) +
+          (src.kind === 'manifest' ? ' (목록 파일이 깨졌거나 JSON 이 아닌 응답이 왔습니다)' : ''));
       }).then(function (j) {
-        if (!j || !Array.isArray(j.tree)) throw new Error('응답에 tree 배열이 없습니다 (주소 오류 또는 응답 형식 변경).');
-        if (j.truncated === true)
-          throw new Error('저장소 트리가 GitHub 한 번 응답 한도(항목 10만 개 또는 7MB)를 넘어 잘렸습니다 (truncated=true · 받은 항목 ' +
-            num(j.tree.length) + '개). 목록이 불완전하므로 표시하지 않습니다 — 관리자 조치가 필요합니다.');
-        var paths = [];
-        for (var i = 0; i < j.tree.length; i++) {
-          var t = j.tree[i];
-          if (t && t.type === 'blob' && typeof t.path === 'string' && /\.html$/i.test(t.path)) paths.push(t.path);
-        }
-        return { total: j.tree.length, paths: paths, lm: res.headers.get('last-modified') || '',
-                 rem: rem, lim: lim };
+        return src.kind === 'manifest' ? parseManifest(j, res) : parseTree(j, res, rem, lim);
       });
     });
+  }
+  // GitHub 트리 API 형식 → *.html 경로
+  function parseTree(j, res, rem, lim) {
+    if (!j || !Array.isArray(j.tree)) throw new Error('응답에 tree 배열이 없습니다 (주소 오류 또는 응답 형식 변경).');
+    if (j.truncated === true)
+      throw new Error('저장소 트리가 GitHub 한 번 응답 한도(항목 10만 개 또는 7MB)를 넘어 잘렸습니다 (truncated=true · 받은 항목 ' +
+        num(j.tree.length) + '개). 목록이 불완전하므로 표시하지 않습니다 — 관리자 조치가 필요합니다.');
+    var paths = [];
+    for (var i = 0; i < j.tree.length; i++) {
+      var t = j.tree[i];
+      if (t && t.type === 'blob' && typeof t.path === 'string' && /\.html$/i.test(t.path)) paths.push(t.path);
+    }
+    return { total: j.tree.length, paths: paths, lm: res.headers.get('last-modified') || '', rem: rem, lim: lim };
+  }
+  // 목록 파일(schema 1) → 경로 복원. 무결성: schema 일치 · dirs = {폴더: [파일명…]} · count = 파일명 총수 · generated_at = 시각.
+  //   하나라도 어긋나면 표시하지 않는다 (불완전한 목록을 완전한 것처럼 보이지 않게).
+  function parseManifest(j, res) {
+    var bad = function (why) { throw new Error('목록 파일 형식 오류 — ' + why + ' 목록이 불완전할 수 있어 표시하지 않습니다.'); };
+    if (!j || typeof j !== 'object' || Array.isArray(j)) bad('최상위가 객체가 아닙니다.');
+    if (j.schema !== MANIFEST_SCHEMA)
+      bad('schema 불일치 (받은 값 ' + JSON.stringify(j.schema) + ' · 이 페이지가 읽는 값 ' + MANIFEST_SCHEMA + ').');
+    var d = j.dirs;
+    if (!d || typeof d !== 'object' || Array.isArray(d)) bad('dirs 가 객체가 아닙니다.');
+    var paths = [];
+    Object.keys(d).forEach(function (k) {
+      var v = d[k];
+      if (!Array.isArray(v)) bad('dirs["' + k + '"] 가 배열이 아닙니다.');
+      for (var i = 0; i < v.length; i++) {
+        if (typeof v[i] !== 'string' || !v[i]) bad('dirs["' + k + '"] 에 빈 값·문자열 아닌 항목이 있습니다.');
+        paths.push(k ? k + '/' + v[i] : v[i]);
+      }
+    });
+    if (typeof j.count !== 'number' || j.count !== paths.length)
+      bad('count(' + JSON.stringify(j.count) + ')와 실제 파일명 수(' + paths.length + ')가 다릅니다.');
+    var gen = typeof j.generated_at === 'string' ? j.generated_at : '';
+    if (!gen || isNaN(Date.parse(gen))) bad('generated_at 이 시각 형식이 아닙니다 (' + JSON.stringify(j.generated_at) + ').');
+    return { total: j.count, paths: paths, gen: gen, lm: res.headers.get('last-modified') || '', rem: null, lim: null };
   }
 
   // ── 화면 상태 ──
@@ -576,7 +635,8 @@ tr.dhr,.cty.m,.nt.m{display:none}
     RES.entries.forEach(function (e) { if (e.date > latest) latest = e.date; });
     var finals = RES.entries.filter(function (e) { return e.final; }).length;
     var parts = [];
-    if (DATA.lm) parts.push(['저장소 최종 변경 ', h('b', { text: kst(Date.parse(DATA.lm)) })]);
+    if (DATA.kind === 'manifest') parts.push(['목록 생성 시각 ', h('b', { text: kst(Date.parse(DATA.gen)) })]);   // 목록 내용이 마지막으로 바뀐 배포
+    else if (DATA.lm) parts.push(['저장소 최종 변경 ', h('b', { text: kst(Date.parse(DATA.lm)) })]);
     var age = Math.max(0, Math.round((Date.now() - DATA.at) / 60000));
     parts.push(['목록 가져온 시각 ', h('b', { text: kst(DATA.at) }), DATA.cached ? ' (캐시 · ' + age + '분 전)' : '']);
     parts.push(['리포트 HTML ', h('b', { text: num(RES.entries.length) }), '개 · 대표 ', h('b', { text: num(finals) }), '개']);
@@ -741,30 +801,38 @@ tr.dhr,.cty.m,.nt.m{display:none}
       h('h2', { text: '리포트 목록을 만들 수 없습니다' }),
       h('p', { class: 'why', text: String(err && err.message || err) }),
       h('p', { text: '요청 주소: ' + (SRC ? SRC.url : '(없음)') }),
+      (SRC && SRC.api)
+        ? h('p', null, h('a', { href: srcHref(null), text: '목록 파일로 보기' }), ' (기본 방식)')
+        : h('p', null, '진단: ', h('a', { href: srcHref('api'), text: 'GitHub API 로 보기' }),
+            ' (이전 방식 · 저장소 트리를 직접 읽음 · 비인증 시간당 60회 한도)'),
       h('p', null, h('button', { class: 'btn', type: 'button', onclick: function () { load(true); }, text: '다시 시도' }))));
   }
 
   function load(force) {
     $('main').textContent = '';
-    $('main').append(h('div', { class: 'loading', text: 'GitHub 저장소 트리에서 리포트 목록을 가져오는 중…' }));
     $('status').textContent = '목록 불러오는 중…';
-    try { SRC = treeSource(); } catch (e) { showError(e); return; }
-    var tb = $('testb'); tb.textContent = ''; tb.hidden = !SRC.test;
-    if (SRC.test) tb.append(h('div', null, h('strong', { text: '테스트 트리 사용 중' }), ' — ' + SRC.url + ' (GitHub API 아님 · 캐시 안 함)'));
-    var cached = (!SRC.test && !force) ? sget('sessionStorage', CACHE_KEY) : null;
+    var tb = $('testb'); tb.textContent = '';
+    try { SRC = treeSource(); } catch (e) { SRC = null; tb.hidden = true; showError(e); return; }
+    $('main').append(h('div', { class: 'loading', text: (SRC.api ? 'GitHub 저장소 트리' : '목록 파일') + '에서 리포트 목록을 가져오는 중…' }));
+    tb.hidden = !(SRC.test || SRC.api);
+    if (SRC.test) tb.append(h('div', null, h('strong', { text: '테스트 ' + (SRC.kind === 'manifest' ? '목록 파일' : '트리') + ' 사용 중' }),
+      ' — ' + SRC.name + ' (운영 목록 아님 · 캐시 안 함)'));
+    else if (SRC.api) tb.append(h('div', null, h('strong', { text: 'GitHub API 로 보는 중' }),
+      ' — 진단용 이전 방식 (비인증 시간당 60회 · 응답 7MB 한도 · 10분 캐시) · ', h('a', { href: srcHref(null), text: '목록 파일로 보기' })));
+    var cached = (SRC.api && !force) ? sget('sessionStorage', CACHE_KEY) : null;
     if (cached && cached.v === 1 && Array.isArray(cached.paths) && Date.now() - cached.at < CACHE_TTL) {
       cached.cached = true; build(cached); return;
     }
     fetchTrees([SRC]).then(function (data) {
-      data.v = 1;
-      if (build(data) && !SRC.test) sset('sessionStorage', CACHE_KEY, data);   // 목록을 만들 수 있었던 응답만 캐시
+      data.v = 1; data.kind = SRC.kind;
+      if (build(data) && SRC.api) sset('sessionStorage', CACHE_KEY, data);   // API 응답만 · 목록을 만들 수 있었던 것만 캐시
     }).catch(showError);
   }
 
   function build(data) {
     DATA = data;
     RES = window.NIX.classify(data.paths);
-    if (!RES.entries.length) { showError(new Error('저장소 트리에 리포트 HTML 이 없습니다 (전체 항목 ' + num(data.total || 0) + '개).')); return false; }
+    if (!RES.entries.length) { showError(new Error('목록에 리포트 HTML 이 없습니다 (전체 항목 ' + num(data.total || 0) + '개).')); return false; }
     index(RES);
     renderStatus();
     renderAll();

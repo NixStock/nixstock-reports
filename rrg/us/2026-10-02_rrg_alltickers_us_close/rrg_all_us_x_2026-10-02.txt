@@ -2,7 +2,7 @@ US #rrg 종합(전체 링크) · 2026-10-02 · By Claude Opus 4.8
 
 📊 US RS·RRG 전수 스캔 (10/2)
 SPY 대비 6TF 3,729종(스캔 4,019·미산출 290 제외) — 지연 38% 우세
-🔄 리딩 595·개선 864·약화 858·지연 1,412 · 신규 개선→리딩 75종
+🔄 리딩 592·개선 866·약화 856·지연 1,415 · 신규 개선→리딩 75종
 🔗 전종목 6TF·RS/Mom·검증에지·TV차트 ↓
 https://nixstock.github.io/nixstock-reports/rrg/us/2026-10-02_rrg_alltickers_us_close/rrg_alltickers_us_2026-10-02.html
 ※ RS=상태 컨텍스트·투자권유(매수·매도·비중) 아님

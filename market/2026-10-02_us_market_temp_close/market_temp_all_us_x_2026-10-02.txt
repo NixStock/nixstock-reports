@@ -1,6 +1,6 @@
 US #market_temp 종합(전체 링크) · 2026-10-02 마감 · By Opus 4.8
 
-US #market_temp 4지수 종합 #NixStock · 2026-10-02 장마감 (2026-10-03 10:36 KST) By Opus 4.8
+US #market_temp 4지수 종합 #NixStock · 2026-10-02 장마감 (2026-10-04 08:28 KST) By Opus 4.8
 
 📎 [인포그래픽] https://nixstock.github.io/nixstock-reports/market/2026-10-02_us_market_temp_close/infographic/market_temp_us_comparison_infographic_2026-10-02.html
 📎 [US500 리포트] https://nixstock.github.io/nixstock-reports/market/2026-10-02_us_market_temp_close/overview/us500/market_temp_us500_2026-10-02.html
@@ -16,27 +16,27 @@ US #market_temp 4지수 종합 #NixStock · 2026-10-02 장마감 (2026-10-03 10:
 📎 [Russell2000 리포트] https://nixstock.github.io/nixstock-reports/market/2026-10-02_us_market_temp_close/overview/us2000/market_temp_us2000_2026-10-02.html
 📎 [Russell2000 데이터] https://nixstock.github.io/nixstock-reports/market/2026-10-02_us_market_temp_close/overview/us2000/market_temp_web_us2000_dwm_2026-10-02.html
 
-■ US 4지수 온도 — US500 WARM 68.46℃ · US100 HOT 72.13℃ · MidCap400 NEUTRAL 48℃ · Russell2000 COOL 37.94℃
+■ US 4지수 온도 — US500 WARM 63.42℃ · US100 WARM 65.42℃ · MidCap400 NEUTRAL 51℃ · Russell2000 NEUTRAL 42.92℃
    온도·팬·반전검증·부트스트랩·포지셔닝·FOMC 종합(2장 인포그래픽) · 4지수 모두 미armed(중립)
 
-▶ 쉬운 해석: US500·US100 따뜻~과열권(온도 높음=비쌈) · MidCap400 중립 · Russell2000 과냉(반등 여지) · 매도신호 켜진 곳 없음(미armed)
+▶ 쉬운 해석: US500·US100 따뜻~과열권(온도 높음=비쌈) · MidCap400·Russell2000 중립 · 매도신호 켜진 곳 없음(미armed)
 
 ◆ 온도 (일·주·월 V2)
-· 4지수 단순평균 V2 56.6325℃ (공식 통합 아님) — US100 최온·Russell2000 최냉
-· US500: 일 WARM 68.46·주 WARM 69.07·월 HOT 71.2 (Δ일 +13.8)
-· US100: 일 HOT 72.13·주 HOT 72.75·월 HOT 74.88 (Δ일 +10.8)
-· MidCap400: 일 NEUTRAL 48·주 NEUTRAL 49.19·월 NEUTRAL 53.33 (Δ일 +3.8)
-· Russell2000: 일 COOL 37.94·주 NEUTRAL 45.17·월 NEUTRAL 53.92 (Δ일 -0.2)
+· 4지수 단순평균 V2 55.69℃ (공식 통합 아님) — US100 최온·Russell2000 최냉
+· US500: 일 WARM 63.42·주 WARM 63.42·월 WARM 68.03 (Δ일 +8.8)
+· US100: 일 WARM 65.42·주 WARM 65.42·월 HOT 70.03 (Δ일 +4.0)
+· MidCap400: 일 NEUTRAL 51·주 NEUTRAL 51·월 NEUTRAL 57.89 (Δ일 +6.8)
+· Russell2000: 일 NEUTRAL 42.92·주 NEUTRAL 47.42·월 NEUTRAL 56.53 (Δ일 +4.8)
 
 ◆ 시장폭 · 포지셔닝 (F&G·NixB&B·BofA)
-· 폭: US500 49% BULLISH · US100 48% BULLISH · MidCap400 58% BULLISH · Russell2000 55% BULLISH
-· 포지셔닝: F&G 31.17(Fear·10-02) · NixB&B 5.96/10(Neutral·4구성·10-02) · BofA B&B(2026-09-23 D+9) 9.3/10·Extreme Bullish
+· 폭: US500 57% BULLISH · US100 52% BULLISH · MidCap400 68% BULLISH · Russell2000 62% BULLISH
+· 포지셔닝: F&G 31.17(Fear·10-02) · NixB&B 5.56/10(Neutral·4구성·10-02) · BofA B&B(2026-09-23 D+9) 9.3/10·Extreme Bullish
 
 ◆ 지수 고점/저점 팬 (구조+ATR+온도존)
 · US500(종가 769.64): 1차 고점 +1.7%·저점 −1.2% (1달 ATR22 비대칭)
-· US100(종가 749.58): 1차 고점 +3.0%·저점 −2.5% (1달 ATR22 비대칭)
+· US100(종가 749.58): 1차 고점 +3.3%·저점 −2.2% (1달 ATR22 비대칭)
 · MidCap400(종가 669.66): 1차 고점 +3.0%·저점 −2.4% (1달 ATR22 비대칭)
-· Russell2000(종가 281.52): 1차 고점 +3.4%·저점 −2.6% (1달 ATR22 비대칭)
+· Russell2000(종가 281.52): 1차 고점 +4.0%·저점 −2.8% (1달 ATR22 비대칭)
 
 ◆ 반전 신호 스캔 (M1 고정존 · 2008~ 검증)
 · US500: 저점 edge +9pp(hit 85%)✅ / 고점 +0pp✅ · 미armed(대기)
@@ -50,19 +50,19 @@ US #market_temp 4지수 종합 #NixStock · 2026-10-02 장마감 (2026-10-03 10:
 · MidCap400: h5 과냉후 +0.7pp(승 59%)/과열후 -0.4pp · h12 과냉후 +1.0pp(승 62%)/과열후 -0.7pp · h22 과냉후 +1.8pp(승 66%)/과열후 -1.7pp · h54 과냉후 +6.5pp(승 84%)/과열후 -1.0pp · h120 과냉후 +12.0pp(승 95%)/과열후 -3.4pp · h245 과냉후 +16.8pp(승 98%)/과열후 -3.3pp
 · Russell2000: h5 과냉후 -0.0pp(승 56%)/과열후 -0.4pp · h12 과냉후 +0.5pp(승 60%)/과열후 -1.3pp · h22 과냉후 +0.8pp(승 62%)/과열후 -1.4pp · h54 과냉후 +4.0pp(승 76%)/과열후 -2.3pp · h120 과냉후 +6.0pp(승 79%)/과열후 -4.8pp · h245 과냉후 +10.1pp(승 80%)/과열후 -6.4pp
 · US500 최근검출(O성공/△진행/X실패 · M1 고정존/M2 동적존): 12-01tX(M2) 12-16tO(M2) 02-12tX(M2) 03-20bO(M2) 04-10tX(M2) 06-17tX(M2)
-· US100 최근검출(O성공/△진행/X실패 · M1 고정존/M2 동적존): 07-15tX(M2) 07-17t△(M2) 07-30t△(M2) 08-05t△(M2) 08-25t△(M2) 09-09t△(M2)
+· US100 최근검출(O성공/△진행/X실패 · M1 고정존/M2 동적존): 07-15tX(M2) 07-17tX(M2) 07-30t△(M2) 08-05t△(M2) 08-25t△(M2) 09-09t△(M2)
 · MidCap400 최근검출(O성공/△진행/X실패 · M1 고정존/M2 동적존): 08-05t△(M2) 08-13t△(M2) 08-25t△(M2) 08-27t△(M2) 09-09t△(M2) 09-18t△(M2)
 · Russell2000 최근검출(O성공/△진행/X실패 · M1 고정존/M2 동적존): 04-10tX(M2) 06-16tX(M2) 07-31t△(M2) 08-05t△(M2) 08-10t△(M2) 09-09t△(M2)
 
 ◆ 전방 확률 · forward 부트스트랩 (현재존 조건부)
-· US500 전방 h54: 표본 부족(n22.0<10) 확률 단정 억제 · 참고 상승 76%* · 현재존(WARM) fwd 수익 +0.33%·낙폭 -2.43%(n50)
-· US100 전방 h54: 표본 부족(n21.0<10) 확률 단정 억제 · 참고 상승 74%* · 현재존(HOT) fwd 수익 +1.52%·낙폭 -2.40%(n24)
+· US500 전방 h54: 표본 부족(n20.0<10) 확률 단정 억제 · 참고 상승 76%* · 현재존(WARM) fwd 수익 +0.33%·낙폭 -2.43%(n50)
+· US100 전방 h54: 표본 부족(n21.0<10) 확률 단정 억제 · 참고 상승 74%* · 현재존(WARM) fwd 수익 +0.76%·낙폭 -2.99%(n50)
 · MidCap400 전방 h54: 표본 부족(n44.0<10) 확률 단정 억제 · 참고 상승 71%* · 현재존(NEUTRAL) fwd 수익 +0.93%·낙폭 -3.06%(n96)
-· Russell2000 전방 h54: 표본 부족(n7.0<10) 확률 단정 억제 · 참고 상승 68%* · 현재존(COOL) fwd 수익 +1.78%·낙폭 -4.57%(n18)
+· Russell2000 전방 h54: 표본 부족(n29.0<10) 확률 단정 억제 · 참고 상승 68%* · 현재존(NEUTRAL) fwd 수익 +1.38%·낙폭 -3.38%(n79)
 
 ◆ 촉매 · 시나리오
-· FOMC(2026-10-28 D-26) 인상확률 19% ▲+2%p(매파)·동결확률 79%(Kalshi · 조사 2026-10-03 08:16 KST) · 지난 FOMC(2026-09-16 D+16) 25bp 인상 → 3.75~4.00%
-· A(반등): Russell2000·MidCap400 존 성숙 + 반전 저점 edge + 전방 h54 상승우위(3/3지수 >50%·검증가능 3/4지수(n≥10)) → 시장폭 회복 시 반등
+· FOMC(2026-10-28 D-26) 인상확률 19% ▲+2pp(매파)·동결확률 79%(Kalshi · 조사 2026-10-03 08:16 KST) · 지난 FOMC(2026-09-16 D+16) 25bp 인상 → 3.75~4.00%
+· A(반등): MidCap400·Russell2000 존 성숙 + 반전 저점 edge + 전방 h54 상승우위(4/4지수 >50%·검증가능 4/4지수(n≥10)) → 시장폭 회복 시 반등
 · B(냉각): 과열권 확대 + 반전 미armed → 고점 재확인·상방 여력 약화
 
 ◆ 매크로: VIX 15.2·-6.98% · WTI 90.7·+0.53% · US10Y 4.796% · F&G 54.43(Neutral)
@@ -73,7 +73,7 @@ US #market_temp 4지수 종합 #NixStock · 2026-10-02 장마감 (2026-10-03 10:
 · ret=구간 끝 평균 수익% · dd=보유 중 최저점까지 평균 낙폭% · ★순서 아님=같은 구간의 두 측정
 · ★위험/보상: |dd|가 ret보다 크면 낙폭 대비 기대수익 작음 = 손절 걸리기 쉬움·매력 낮음
 · 반전 edge(지평별): h5/12/22/54/120/245=신호 뒤 거래일수(1주·2~3주·1달·2.5달·6달·1년) · 과냉후 +pp=평상시보다 더 오름(빨강)·과열후 −pp=더 빠짐(파랑)·h길수록·클수록 반전 강함
-· n=표본수(⚠20 미만 소표본) · edge=기저 대비 초과%p · hit=적중률 · armed=신호 켜짐 · verified✅=백테스트 우위 확인(2008~)
+· n=표본수(⚠20 미만 소표본) · edge=기저 대비 초과pp · hit=적중률 · armed=신호 켜짐 · verified✅=백테스트 우위 확인(2008~)
 · 요점: 과열=비쌈(조정 여지)·과냉=싸다(반등 기대), 단 dd(낙폭)·위험보상비·표본수·verified(확증) 같이 봐야
 
 ◆ 사용 수식 (약식 · 상세=리포트 끝 용어/수식/레퍼런스)

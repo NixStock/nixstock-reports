@@ -1,8 +1,10 @@
 {"schema":1,
-"generated_at":"2026-10-04T08:58:03+09:00",
+"generated_at":"2026-10-04T09:37:28+09:00",
 "repo":"NixStock/nixstock-reports",
-"count":2781,
+"count":2783,
 "dirs":{
+"cardnews/2026-10-02_kr_cardnews_close":["kr_cardnews_2026-10-02.html"],
+"cardnews/2026-10-02_us_cardnews_close":["us_cardnews_2026-10-02.html"],
 "index/2026-09-08_us_index_overview_close/infographic":["index_overview_us_infographic_2026-09-08.html"],
 "index/2026-09-08_us_index_overview_close/overview":["index_backdata_us_2026-09-08.html","index_overview_us_2026-09-08.html","index_rrg_web_us_2026-09-08.html","index_web_us_2026-09-08.html"],
 "index/2026-09-09_us_index_overview_close/infographic":["index_overview_us_infographic_2026-09-09.html"],

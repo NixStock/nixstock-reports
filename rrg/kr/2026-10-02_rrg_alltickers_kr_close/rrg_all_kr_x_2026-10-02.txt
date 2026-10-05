@@ -1,17 +1,17 @@
 KR #rrg 종합(전체 링크) · 2026-10-02 · By Claude Opus 4.8
 
 📊 KR RS·RRG 전수 스캔 (10/2)
-코스피200 대비 6TF 3,383종(스캔 3,899·미산출 516 제외) — 개선 84% 우세
-🔄 리딩 92·개선 2,852·약화 80·지연 359 · 신규 개선→리딩 27종
+코스피200 대비 6TF 3,384종(스캔 3,900·미산출 516 제외) — 개선 84% 우세
+🔄 리딩 92·개선 2,853·약화 80·지연 359 · 신규 개선→리딩 27종
 🔗 전종목 6TF·RS/Mom·검증에지·TV차트 ↓
 https://nixstock.github.io/nixstock-reports/rrg/kr/2026-10-02_rrg_alltickers_kr_close/rrg_alltickers_kr_2026-10-02.html
-※ RS=상태 컨텍스트·투자권유(매수·매도·비중) 아님
 
 ━━━ 📎 전체 리포트 링크 (4종) ━━━
 📎 [전종목 6TF] https://nixstock.github.io/nixstock-reports/rrg/kr/2026-10-02_rrg_alltickers_kr_close/rrg_alltickers_kr_2026-10-02.html
 📎 [백데이터] https://nixstock.github.io/nixstock-reports/rrg/kr/2026-10-02_rrg_alltickers_kr_close/rrg_backdata_kr_2026-10-02.html
 📎 [회전 인포] https://nixstock.github.io/nixstock-reports/rrg/kr/2026-10-02_rrg_alltickers_kr_close/rrg_rotations_kr_2026-10-02.html
 📎 [랜딩] https://nixstock.github.io/nixstock-reports/rrg/kr/2026-10-02_rrg_alltickers_kr_close/index.html
+※ 확률적 참고 · 예측 아님 · 투자권유(매수·매도·비중) 아님 · 모델 확률 검증용 · 자체 알고리즘(학습방법·산식·가중 비공개) · RS=상태 컨텍스트
 
 🔒 자체 알고리즘 · 학습방법·산식·가중 비공개 (이름·값·임계·등급·검증 결과 공개)
 

@@ -1,0 +1,887 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>NixStock 리포트 뷰어</title>
+<meta name="description" content="리포트 종류·국가마다 날짜 없는 고정 주소 하나 — 열면 최신 날짜의 대표 문서가 보이고, 날짜·문서를 골라 볼 수 있다. 같은 사이트의 목록 파일(reports_manifest.json)에서 구성한다.">
+<!--
+  reports_viewer.html — 정본: StockProjectV2.0/docs/nix_report_directives/reports_viewer.html
+  (사용자 2026-10-06 "대시보드에 최종일 디폴트로 보이고 날짜 선택 기능" · 공개 Pages 고정 주소 · 전 리포트)
+  배포: deploy_reports_ghpages.sh → nix_pages_manifest.py --site-pages on 이 커밋된 HEAD 판을 고정 주소 9곳의 index.html 로 배치
+        {market,tactical,cardnews,rrg}/{kr,us}/index.html + index/us/index.html (목록 SSOT = nix_pages_manifest.SITE_PAGES).
+        이 파일을 고쳐도 커밋 → 다음 배포 때 자동 반영 (수동 cp 없음).
+  동작: 주소(…/{종류}/{국가}/)에서 종류·국가 판단 → 같은 사이트 루트의 reports_manifest.json 1회 GET →
+        분류기(nix-classify · reports_index.html 과 바이트까지 같은 블록 — 테스트가 강제) → 날짜 폴더(묶음)별 문서 목록 →
+        쿼리 없음 = 최신 날짜의 대표 문서 · 날짜/문서/빠른 탭 선택 = ?d=YYYY-MM-DD&f=파일명 (공유 가능 · 뒤로 가기 됨).
+        목록 파일을 못 읽거나 형식이 틀리면 원인을 화면에 표시한다 (조용한 빈 화면 없음).
+        iframe 에는 목록 파일에 있는 경로만 넣는다 (쿼리로 임의 주소를 열 수 없음).
+  시험: scripts/test_pages_latest_viewer.py (node 코어 시험 + playwright 렌더 · 서버 없음)
+        ?k=<종류>&c=<국가> = 사이트 루트에 둔 사본으로 시험할 때 (고정 주소가 아닌 곳)
+  색: reports_index.html 의 다크 토큰 그대로 (리포트와 같은 다크 · 라이트 없음).
+-->
+<style>
+:root{
+  --bg:#14161B; --card:#1C1F26; --card2:#21252E; --card3:#191C22;
+  --line:#2E333B; --line2:#3A404B;
+  --ink:#E7E9ED; --ink2:#B4BCC8; --ink3:#A9B3C1;
+  --gold:#D4AF6A; --gold-bg:#241C10; --gold-bd:rgba(212,175,106,.42);
+  --link:#6B9BE0; --thbg:#252C38; --thbg2:#2B3342; --think:#E4E8EF;
+  --warn:#D6803F; --warn-bg:#2A2418;
+  --err:#E8645F; --err-bg:#241C20; --err-bd:rgba(232,100,95,.42);
+  --focus:#D4AF6A;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+html{-webkit-text-size-adjust:100%;height:100%}
+body{margin:0;height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden;background:var(--bg);color:var(--ink);
+  font:400 14px/1.5 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR","Segoe UI",system-ui,sans-serif}
+a{color:var(--link);text-decoration:none}
+a:hover{text-decoration:underline}
+button,input,select{font:inherit}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* 상단 바 (고정 높이 영역 · 아래 iframe 이 나머지 전부) */
+.bar{flex:0 0 auto;background:var(--bg);border-bottom:1px solid var(--line);padding:8px 16px 6px;min-width:0}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;min-width:0}
+.row+.row{margin-top:6px}
+.brand{font-weight:800;font-size:16px;white-space:nowrap;color:var(--gold);margin-right:2px}
+.brand:hover{text-decoration:none;color:var(--ink)}
+.fld{display:inline-flex;min-width:0;max-width:100%}
+select{background:var(--card);color:var(--ink);border:1px solid var(--line2);border-radius:8px;padding:5px 8px;font-size:13.5px;
+  min-width:0;max-width:100%;height:32px}
+select:disabled{color:var(--ink2);opacity:.75}
+.seg{display:inline-flex;border:1px solid var(--line2);border-radius:8px;overflow:hidden;flex:0 0 auto}
+.seg button{border:0;background:transparent;color:var(--ink2);padding:0 12px;height:30px;font-size:13px;cursor:pointer;white-space:nowrap}
+.seg button+button{border-left:1px solid var(--line2)}
+.seg button[aria-pressed="true"]{background:var(--thbg2);color:var(--ink);font-weight:700}
+.seg button:disabled{color:var(--line2);cursor:not-allowed;text-decoration:line-through}
+.dnav{display:inline-flex;align-items:center;gap:4px;min-width:0;max-width:100%}
+.nb{background:var(--card2);color:var(--ink);border:1px solid var(--line2);border-radius:8px;width:32px;height:32px;padding:0;cursor:pointer;flex:0 0 auto}
+.nb:disabled{color:var(--line2);cursor:not-allowed}
+.nb:not(:disabled):hover{border-color:var(--gold)}
+.fld.doc{flex:1 1 320px;max-width:560px}
+.fld.doc select{width:100%}
+.btn{display:inline-flex;align-items:center;height:32px;background:var(--card2);color:var(--ink);border:1px solid var(--line2);border-radius:8px;
+  padding:0 12px;font-size:13px;cursor:pointer;white-space:nowrap;flex:0 0 auto}
+.btn:hover{border-color:var(--gold);text-decoration:none}
+.btn[aria-disabled="true"]{color:var(--ink2);pointer-events:none;opacity:.7}
+.btn .sm{display:none}
+.meta{font-size:12.5px;color:var(--ink2);min-width:0}
+.meta b{color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
+
+/* 빠른 탭 (대표·주요 문서) — 줄 안에서만 가로 스크롤 (페이지 가로 스크롤 아님) */
+.tabs{display:flex;gap:6px;overflow-x:auto;white-space:nowrap;margin-top:6px;padding-bottom:2px;-webkit-overflow-scrolling:touch;scrollbar-width:thin;min-width:0}
+.tabs:empty{display:none}
+.tab{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;border:1px solid var(--line2);border-radius:20px;
+  background:var(--card);color:var(--ink);font-size:13px;cursor:pointer;white-space:nowrap}
+.tab:hover{border-color:var(--gold)}
+.tab[aria-current="page"]{border-color:var(--gold-bd);background:var(--gold-bg);color:var(--gold);font-weight:700}
+
+/* 안내 — 항목마다 1줄 · 시작 마크(⚠️ 주의 / ℹ️ 안내) */
+.notes{margin-top:6px;display:flex;flex-direction:column;gap:4px}
+.notes:empty{display:none}
+.n{display:flex;align-items:flex-start;gap:8px;font-size:12.5px;line-height:1.5;padding:4px 8px;border-radius:6px;border:1px solid var(--line2);background:var(--card)}
+.n.warn{border-color:var(--warn);background:var(--warn-bg)}
+.n .mk{flex:0 0 auto}
+.n .tx{flex:1 1 auto;min-width:0;overflow-wrap:anywhere}
+.n .x{flex:0 0 auto;background:none;border:0;color:var(--ink2);cursor:pointer;padding:0 4px;font-size:14px;line-height:1.3}
+.n .x:hover{color:var(--ink)}
+
+/* 본문 = iframe 전체 높이 */
+main.stage{flex:1 1 auto;min-height:0;position:relative;background:var(--bg)}
+#frame{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;background:var(--bg)}
+.msg{position:absolute;inset:0;overflow:auto;padding:20px 16px}
+.loading{color:var(--ink2)}
+.err{max-width:880px;border:1px solid var(--err-bd);border-left:4px solid var(--err);background:var(--err-bg);border-radius:10px;padding:14px 16px}
+.err.empty{border-color:var(--line2);border-left-color:var(--gold);background:var(--card)}
+.err h2{margin:0 0 8px;font-size:17px;color:var(--err)}
+.err.empty h2{color:var(--gold)}
+.err p{margin:4px 0;overflow-wrap:anywhere}
+.err .why{font-weight:600}
+.err ul{margin:6px 0 2px;padding-left:20px}
+.err li{margin:2px 0}
+.err .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.pth{font:12.5px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ink3);overflow-wrap:anywhere}
+
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+@media (max-width:700px){
+  .bar{padding:6px 12px 4px}
+  select{font-size:16px;height:34px}              /* iOS: 16px 미만이면 포커스 때 확대 */
+  .seg button{height:32px}
+  .nb{width:34px;height:34px}
+  .btn{height:34px}
+  .dnav{flex:1 1 100%}
+  .dnav .fld{flex:1 1 auto}
+  .dnav select{width:100%}
+  .fld.doc{flex:1 1 100%;max-width:100%}
+  .meta{display:none}
+  .btn .lg{display:none}
+  .btn .sm{display:inline}
+  .msg{padding:16px 12px}
+}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto !important}}
+</style>
+</head>
+<body>
+<header class="bar" id="bar">
+  <div class="row">
+    <a class="brand" id="brand" href="../../reports_index.html" title="전체 리포트 목록 (reports_index.html)">NixStock</a>
+    <label class="fld"><span class="sr">리포트 종류</span><select id="kind" aria-label="리포트 종류"></select></label>
+    <div class="seg" id="cty" role="group" aria-label="국가"></div>
+    <div class="dnav">
+      <button class="nb" id="older" type="button" aria-label="이전 날짜 (더 오래된 날짜)" title="이전 날짜 (더 오래된 날짜)" disabled>◀</button>
+      <label class="fld"><span class="sr">날짜</span><select id="date" aria-label="날짜" disabled><option>날짜</option></select></label>
+      <button class="nb" id="newer" type="button" aria-label="다음 날짜 (더 최근 날짜)" title="다음 날짜 (더 최근 날짜)" disabled>▶</button>
+    </div>
+  </div>
+  <div class="row">
+    <label class="fld doc"><span class="sr">문서</span><select id="doc" aria-label="같은 날짜 안의 문서" disabled><option>문서</option></select></label>
+    <a class="btn" id="newtab" target="_blank" rel="noopener" aria-disabled="true" title="지금 보는 문서를 새 탭에서 열기">새 탭 ↗</a>
+    <button class="btn" id="copy" type="button" disabled title="지금 보는 날짜·문서로 고정된 주소를 복사합니다"><span class="lg">링크 복사</span><span class="sm">복사</span></button>
+    <a class="btn" id="latest" href="./" title="날짜 없는 고정 주소 — 항상 최신 날짜의 대표 문서"><span class="lg">최신으로</span><span class="sm">최신</span></a>
+    <span class="meta" id="meta"></span>
+  </div>
+  <nav class="tabs" id="tabs" aria-label="대표·주요 문서 바로 열기"></nav>
+  <div class="notes" id="notes" aria-live="polite"></div>
+</header>
+<main class="stage" id="stage">
+  <div class="msg loading" id="msg" role="status">목록 불러오는 중…</div>
+  <iframe id="frame" title="리포트" hidden></iframe>
+</main>
+
+<script id="nix-classify">
+/* ── 분류기 (순수 함수 · DOM 없음) ── 노드 검증 스크립트가 이 블록만 떼어 같은 코드로 분류표를 만든다. */
+(function (root) {
+  'use strict';
+  var D = '\\d{4}-\\d{2}-\\d{2}';
+  var KC = '(?:kr|us)';
+  function R(s) { return new RegExp('^' + s + '$'); }
+
+  // 타입별 날짜 폴더 (경로의 날짜 = 이 폴더 날짜 · 파일명 날짜 아님)
+  var MT = 'market/(?<d>' + D + ')_(?<c>kr|us)_market_temp_close/';
+  var TC = 'tactical/(?<d>' + D + ')_(?<c>kr|us)_tactical_close/';
+  var IX = 'index/(?<d>' + D + ')_(?<c>kr|us)_index_overview_close/';
+  var RG = 'rrg/(?<c>kr|us)/(?<d>' + D + ')_rrg_alltickers_' + KC + '_close/';
+  var TS = 'toss/(?<c>kr|us)/(?<d>' + D + ')_' + KC + '_toss_(?<k>[a-z]+)_(?<hm>\\d{4})/';
+  var NW = 'news/(?<d>' + D + ')_daily_news_report/';
+  var TK = 'ticker/(?<d>' + D + ')_(?<c>kr|us)_(?<t>[^_/]+)_(?<s>[^/]+)/';
+
+  // 지수 폴더 → 이름·순서 (리포트 <title> 기준)
+  var IDX = {
+    kr:        { o: 0, l: '통합 (KS200+KQ150)' },
+    kospi200:  { o: 1, l: '코스피200' },
+    kosdaq150: { o: 2, l: '코스닥150' },
+    us1500:    { o: 0, l: 'S&P Composite 1500 (통합)' },
+    us500:     { o: 1, l: 'S&P 500' },
+    us100:     { o: 2, l: '나스닥 100' },
+    us30:      { o: 3, l: '다우 존스 30' },
+    us400:     { o: 4, l: 'S&P MidCap 400' },
+    us2000:    { o: 5, l: '러셀 2000' }
+  };
+  function idxL(i) { return IDX[i] ? IDX[i].l : String(i).toUpperCase(); }
+  function idxO(i) { return IDX[i] ? IDX[i].o : 9; }
+  var TF = { d: '일봉', w: '주봉', m: '월봉', dwm: '일·주·월 묶음' };
+  // 토스 슬롯 종류 (nix_toss_slots.json 의 label 과 같은 말)
+  var TOSS_KIND = { premarket: '장전', pre: '장전', intraday: '장중', close: '장마감', nxt: 'NXT애프터' };
+  function hhmm(s) { return s ? s.slice(0, 2) + ':' + s.slice(2) : ''; }
+  function slot(g) { return (TOSS_KIND[g.k] || g.k) + ' ' + hhmm(g.hm); }
+  function tossOrd(g, sub) { return Number(g.hm) * 100 + sub; }
+  function base(p) { return p.slice(p.lastIndexOf('/') + 1); }
+  function slugName(s) {
+    return String(s).replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([A-Za-z])(\d)/g, '$1 $2').replace(/(\d)([A-Z][a-z])/g, '$1 $2');
+  }
+
+  var SECTIONS = [
+    { id: 'market_kr',   label: '마켓온도 KR' },
+    { id: 'market_us',   label: '마켓온도 US' },
+    { id: 'tactical_kr', label: '택티컬 KR' },
+    { id: 'tactical_us', label: '택티컬 US' },
+    { id: 'index_us',    label: '인덱스 US' },
+    { id: 'index_kr',    label: '인덱스 KR', optional: true },
+    { id: 'rrg_kr',      label: 'RRG KR' },
+    { id: 'rrg_us',      label: 'RRG US' },
+    { id: 'toss_kr',     label: '토스 KR' },
+    { id: 'toss_us',     label: '토스 US' },
+    { id: 'news',        label: '뉴스' },
+    { id: 'ticker',      label: '티커' },
+    { id: 'etc',         label: '기타' }
+  ];
+
+  // ★분류 규칙 표 (위에서부터 첫 일치 1개) — 경로는 저장소 루트 기준
+  //  [규칙, 섹션({c}=국가), 경로 정규식, 기본 표시, 정렬, 라벨]
+  //  기본 표시: 1 = 대표 리포트(기본 화면) · 0 = "모든 파일 보기"에서만
+  //            'toss' = 그날 마감(close) 슬롯 대표 페이지 · 마감이 없으면 그날 마지막 슬롯
+  //            'rrg'  = 같은 폴더에 rrg_alltickers 가 없을 때만 대표
+  //  섹션 null = 목록에서 제외(사이트 자체 페이지)
+  var RULES = [
+    ['site_root',   null,          R('(?:index|reports_index)\\.html'), 0, 0, null],
+
+    ['mt_ig',       'market_{c}',  R(MT + 'infographic/market_temp_' + KC + '_comparison_infographic_' + D + '\\.html'), 1, 0,
+      function () { return '비교 인포그래픽'; }],
+    ['mt_igp',      'market_{c}',  R(MT + 'infographic/market_temp_' + KC + '_comparison_infographic_' + D + '_p(?<p>\\d+)\\.html'), 0,
+      function (g) { return 50 + Number(g.p); }, function (g) { return '비교 인포그래픽 ' + g.p + '쪽'; }],
+    ['mt_us_rep',   'market_{c}',  R(MT + 'overview/(?<i>us\\d+)/market_temp_\\k<i>_' + D + '\\.html'), 1,
+      function (g) { return 10 + idxO(g.i); }, function (g) { return idxL(g.i) + ' 리포트'; }],
+    ['mt_kr_rep',   'market_{c}',  R(MT + 'overview/(?<i>[a-z0-9]+)/market_temp_web_kr_report_\\k<i>_' + D + '\\.html'), 1,
+      function (g) { return 10 + idxO(g.i); }, function (g) { return idxL(g.i) + ' 리포트'; }],
+    ['mt_tbl',      'market_{c}',  R(MT + 'overview/(?<i>[a-z0-9]+)/market_temp_web_(?:kr_)?(?:[a-z0-9]+_)?(?<tf>dwm|d|w|m)_' + D + '\\.html'), 0,
+      function (g) { return 60 + idxO(g.i); }, function (g) { return idxL(g.i) + ' 데이터 표 · ' + TF[g.tf]; }],
+    ['mt_cmp',      'market_{c}',  R(MT + 'compare/market_temp_daily_compare_' + KC + '_(?<a>' + D + ')_to_(?<b>' + D + ')\\.html'), 0, 80,
+      function (g) { return '일간 비교 ' + g.a + ' → ' + g.b; }],
+    ['mt_flow',     'market_{c}',  R(MT + 'compare/market_temp_flow_5d_' + KC + '_' + D + '\\.html'), 0, 81,
+      function () { return '5일 흐름'; }],
+    ['mt_other',    'market_{c}',  R(MT + '.+\\.html'), 0, 99, function (g, p) { return base(p); }],
+
+    ['tc_ov',       'tactical_{c}', R(TC + 'overview/' + KC + '_tactical_overview_' + D + '\\.html'), 1, 0,
+      function () { return '택티컬 overview'; }],
+    ['tc_ig',       'tactical_{c}', R(TC + 'infographic/' + KC + '_tactical_infographic_' + D + '\\.html'), 1, 1,
+      function () { return '택티컬 인포그래픽'; }],
+    ['tc_igp',      'tactical_{c}', R(TC + 'infographic/' + KC + '_tactical_infographic_' + D + '_p(?<p>\\d+)\\.html'), 0,
+      function (g) { return 50 + Number(g.p); }, function (g) { return '택티컬 인포그래픽 ' + g.p + '쪽'; }],
+    ['tc_trend',    'tactical_{c}', R(TC + 'overview/daily_trend_buysell_' + KC + '_' + D + '\\.html'), 0, 60,
+      function () { return '데일리 추세 매수·매도'; }],
+    ['tc_bd',       'tactical_{c}', R(TC + 'overview/tactical_backdata_' + KC + '_' + D + '\\.html'), 0, 61,
+      function () { return '택티컬 백데이터'; }],
+    ['tc_rrg',      'tactical_{c}', R(TC + 'overview/tactical_rrg_web_' + KC + '_' + D + '\\.html'), 0, 62,
+      function () { return 'RRG 레이더'; }],
+    ['tc_web',      'tactical_{c}', R(TC + 'overview/tactical_web_' + KC + '_' + D + '\\.html'), 0, 63,
+      function () { return '택티컬 레이더 (WEB 데이터)'; }],
+    ['tc_cmp',      'tactical_{c}', R(TC + 'compare/tactical_daily_compare_' + KC + '_(?<a>' + D + ')_to_(?<b>' + D + ')\\.html'), 0, 80,
+      function (g) { return '일간 비교 ' + g.a + ' → ' + g.b; }],
+    ['tc_flow',     'tactical_{c}', R(TC + 'compare/tactical_flow_5d_' + KC + '_' + D + '\\.html'), 0, 81,
+      function () { return '5일 흐름'; }],
+    ['tc_other',    'tactical_{c}', R(TC + '.+\\.html'), 0, 99, function (g, p) { return base(p); }],
+
+    ['ix_ov',       'index_{c}',   R(IX + 'overview/index_overview_' + KC + '_' + D + '\\.html'), 1, 0,
+      function () { return '인덱스 overview (크로스에셋)'; }],
+    ['ix_ig',       'index_{c}',   R(IX + 'infographic/index_overview_' + KC + '_infographic_' + D + '\\.html'), 1, 1,
+      function () { return '인덱스 인포그래픽'; }],
+    ['ix_igp',      'index_{c}',   R(IX + 'infographic/index_overview_' + KC + '_infographic_' + D + '_p(?<p>\\d+)\\.html'), 0,
+      function (g) { return 50 + Number(g.p); }, function (g) { return '인덱스 인포그래픽 ' + g.p + '쪽'; }],
+    ['ix_bd',       'index_{c}',   R(IX + 'overview/index_backdata_' + KC + '_' + D + '\\.html'), 0, 60,
+      function () { return '인덱스 백데이터'; }],
+    ['ix_rrg',      'index_{c}',   R(IX + 'overview/index_rrg_web_' + KC + '_' + D + '\\.html'), 0, 61,
+      function () { return 'RRG 레이더'; }],
+    ['ix_web',      'index_{c}',   R(IX + 'overview/index_web_' + KC + '_' + D + '\\.html'), 0, 62,
+      function () { return '인덱스 레이더 (WEB 데이터)'; }],
+    ['ix_cmp',      'index_{c}',   R(IX + 'compare/index_daily_compare_' + KC + '_(?<a>' + D + ')_to_(?<b>' + D + ')\\.html'), 0, 80,
+      function (g) { return '일간 비교 ' + g.a + ' → ' + g.b; }],
+    ['ix_flow',     'index_{c}',   R(IX + 'compare/index_flow_5d_' + KC + '_' + D + '\\.html'), 0, 81,
+      function () { return '5일 흐름'; }],
+    ['ix_other',    'index_{c}',   R(IX + '.+\\.html'), 0, 99, function (g, p) { return base(p); }],
+
+    ['rg_all',      'rrg_{c}',     R(RG + 'rrg_alltickers_' + KC + '_' + D + '\\.html'), 1, 0,
+      function () { return 'RS·RRG 전수 상태'; }],
+    ['rg_hub',      'rrg_{c}',     R(RG + 'index\\.html'), 'rrg', 1,
+      function () { return 'RS·RRG 목차 (허브)'; }],
+    ['rg_bd',       'rrg_{c}',     R(RG + 'rrg_backdata_' + KC + '_' + D + '\\.html'), 0, 60,
+      function () { return 'RS·RRG 백데이터'; }],
+    ['rg_rot',      'rrg_{c}',     R(RG + 'rrg_rotations_' + KC + '_' + D + '\\.html'), 0, 61,
+      function () { return '개선 → 리딩 회전'; }],
+    ['rg_other',    'rrg_{c}',     R(RG + '.+\\.html'), 0, 99, function (g, p) { return base(p); }],
+
+    ['ts_main',     'toss_{c}',    R(TS + KC + '_toss_[^/]*_' + D + '\\.html'), 'toss',
+      function (g) { return tossOrd(g, 0); }, function (g) { return '토스 ' + slot(g); }],
+    ['ts_view',     'toss_{c}',    R(TS + KC + '_toss_[^/]*_' + D + '_view\\.html'), 0,
+      function (g) { return tossOrd(g, 1); }, function (g) { return '토스 ' + slot(g) + ' · 종합 (탭)'; }],
+    ['ts_news',     'toss_{c}',    R(TS + 'global_news_brief_' + D + '\\.html'), 0,
+      function (g) { return tossOrd(g, 2); }, function (g) { return slot(g) + ' · 글로벌 뉴스 브리핑'; }],
+    ['ts_bd',       'toss_{c}',    R(TS + 'toss_backdata_' + D + '\\.html'), 0,
+      function (g) { return tossOrd(g, 3); }, function (g) { return slot(g) + ' · 백데이터'; }],
+    ['ts_chart',    'toss_{c}',    R(TS + KC + '_index_charts_' + D + '\\.html'), 0,
+      function (g) { return tossOrd(g, 4); }, function (g) { return slot(g) + ' · 지수 차트'; }],
+    ['ts_part',     'toss_{c}',    R(TS + 'toss_(?:us_)?[^_/]+_\\d{4}_(?:(?<n>\\d+)_)?(?<nm>[^/]+?)_(?:to_web|p(?<pd>\\d+)d)_' + D + '\\.html'), 0,
+      function (g) { return tossOrd(g, 10 + Number(g.n || 0)); },
+      function (g) { return slot(g) + ' · ' + (g.n ? g.n + '. ' : '') + g.nm.replace(/_/g, ' ') + (g.pd ? ' · ' + g.pd + '일' : ''); }],
+    ['ts_other',    'toss_{c}',    R(TS + '.+\\.html'), 0,
+      function (g) { return tossOrd(g, 99); }, function (g, p) { return slot(g) + ' · ' + base(p); }],
+
+    ['nw_rep',      'news',        R(NW + 'daily_news_report_' + D + '\\.html'), 1, 0,
+      function () { return '데일리 뉴스 리포트'; }],
+    ['nw_other',    'news',        R(NW + '.+\\.html'), 0, 99, function (g, p) { return base(p); }],
+
+    ['tk_rep',      'ticker',      R(TK + 'ticker_report_[^/]+_' + D + '\\.html'), 1, 0,
+      function (g) { return g.t + ' 시그널 분석'; }],
+    ['tk_ig',       'ticker',      R(TK + 'infographic_[^/]+_' + D + '\\.html'), 0, 1,
+      function (g) { return g.t + ' 퀀트 엣지 대시보드'; }],
+    ['tk_card',     'ticker',      R(TK + 'x_card_[^/]+_' + D + '\\.html'), 0, 2,
+      function (g) { return g.t + ' 엣지 카드'; }],
+    ['tk_other',    'ticker',      R(TK + '.+\\.html'), 0, 99, function (g, p) { return base(p); }],
+
+    ['short_r',     'etc',         R('r/(?<f>[^/]+)\\.html'), 1, 0,
+      function (g) { return '단축 링크 · ' + g.f; }]
+  ];
+
+  var SECIDS = {};
+  SECTIONS.forEach(function (s) { SECIDS[s.id] = s; });
+
+  function firstDate(p) { var m = /\d{4}-\d{2}-\d{2}/.exec(p); return m ? m[0] : ''; }
+  function guessC(p) { var m = /(?:^|[\/_\-])(kr|us)(?=[\/_\-.]|$)/.exec(p); return m ? m[1].toUpperCase() : '공통'; }
+  function safePath(p) {
+    if (typeof p !== 'string' || !p || p.length > 1024) return false;
+    if (p.charAt(0) === '/' || p.indexOf('\\') >= 0) return false;
+    var segs = p.split('/');
+    for (var i = 0; i < segs.length; i++) { if (segs[i] === '' || segs[i] === '.' || segs[i] === '..') return false; }
+    return /\.html$/i.test(p);
+  }
+  // 날짜 폴더(묶음) 키 — rrg/toss 는 국가 단계가 하나 더 있다
+  function groupKey(p) {
+    var s = p.split('/');
+    return (s[0] === 'rrg' || s[0] === 'toss') ? s.slice(0, 3).join('/') : s.slice(0, 2).join('/');
+  }
+
+  function classify(paths) {
+    var entries = [], ignored = [], rejected = [];
+    for (var i = 0; i < paths.length; i++) {
+      var p = paths[i];
+      if (!safePath(p)) { rejected.push(p); continue; }
+      var hit = null, g = null;
+      for (var j = 0; j < RULES.length; j++) {
+        var m = RULES[j][2].exec(p);
+        if (m) { hit = RULES[j]; g = m.groups || {}; break; }
+      }
+      if (hit && hit[1] === null) { ignored.push(p); continue; }
+      var e = { path: p };
+      if (hit) {
+        e.rule = hit[0];
+        e.sec = hit[1].replace('{c}', g.c || '');
+        e.date = g.d || firstDate(p);
+        e.c = g.c ? g.c.toUpperCase() : guessC(p);
+        e.show = hit[3];
+        e.ord = typeof hit[4] === 'function' ? hit[4](g) : hit[4];
+        e.label = hit[5](g, p);
+        e.k = g.k || ''; e.hm = g.hm || '';
+        if (g.t) e.sub = slugName(g.s);
+        e.unlisted = /_other$/.test(hit[0]);
+      } else {
+        e.rule = 'unmatched'; e.sec = 'etc'; e.date = firstDate(p); e.c = guessC(p);
+        e.show = 1; e.ord = 0; e.label = base(p); e.unmatched = true;
+      }
+      if (!SECIDS[e.sec]) { e.unknownSec = e.sec; e.sec = 'etc'; e.show = 1; }
+      e.grp = groupKey(p);
+      entries.push(e);
+    }
+    // 2단계: 토스 대표(그날 마감 슬롯 · 없으면 마지막 슬롯) · RRG 대체 대표
+    var toss = {}, rrgHasAll = {};
+    entries.forEach(function (e) {
+      if (e.show === 'toss') { var k = e.sec + '|' + e.date; (toss[k] = toss[k] || []).push(e); }
+      if (e.rule === 'rg_all') rrgHasAll[e.grp] = true;
+    });
+    Object.keys(toss).forEach(function (k) {
+      var c = toss[k].slice().sort(function (a, b) {
+        var ac = a.k === 'close' ? 1 : 0, bc = b.k === 'close' ? 1 : 0;
+        if (ac !== bc) return bc - ac;
+        return b.hm < a.hm ? -1 : b.hm > a.hm ? 1 : (a.path < b.path ? -1 : 1);
+      });
+      c[0].pick = true;
+    });
+    entries.forEach(function (e) {
+      if (e.show === 'toss') e.final = !!e.pick;
+      else if (e.show === 'rrg') e.final = !rrgHasAll[e.grp];
+      else e.final = e.show === 1;
+      delete e.pick;
+    });
+    return { entries: entries, ignored: ignored, rejected: rejected };
+  }
+
+  root.NIX = { classify: classify, RULES: RULES, SECTIONS: SECTIONS, safePath: safePath };
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+
+<script id="nix-viewer-core">
+/* ── 뷰어 코어 (순수 함수 · DOM 없음) ── 분류기(NIX) 위에서 고정 주소 · 날짜 묶음 · 문서 선택을 계산한다.
+   테스트(scripts/test_pages_latest_viewer.py)가 nix-classify + 이 블록을 node 로 떼어 같은 코드로 시험한다. */
+(function (root) {
+  'use strict';
+  // 고정 주소 9곳 — Python SSOT nix_pages_manifest.VIEWER_SLOTS 와 같아야 한다 (테스트 강제). 인덱스는 US 만.
+  var SLOTS = [['market', 'kr'], ['market', 'us'], ['tactical', 'kr'], ['tactical', 'us'], ['index', 'us'],
+               ['cardnews', 'kr'], ['cardnews', 'us'], ['rrg', 'kr'], ['rrg', 'us']];
+  var KINDS = ['market', 'tactical', 'index', 'cardnews', 'rrg'];
+  var KIND = { market: '마켓온도', tactical: '택티컬', index: '인덱스', cardnews: '카드뉴스', rrg: 'RS·RRG' };
+  var CTY = { kr: 'KR', us: 'US' };
+  // 대표 문서 = 묶음(날짜 폴더) 기준 상대 경로 템플릿 ({D} = 그 묶음 날짜)
+  var DEFAULT = {
+    market_kr:   'overview/kr/market_temp_web_kr_report_kr_{D}.html',
+    market_us:   'overview/us500/market_temp_us500_{D}.html',
+    tactical_kr: 'overview/kr_tactical_overview_{D}.html',
+    tactical_us: 'overview/us_tactical_overview_{D}.html',
+    index_us:    'overview/index_overview_us_{D}.html',
+    cardnews_kr: 'kr_cardnews_{D}.html',
+    cardnews_us: 'us_cardnews_{D}.html',
+    rrg_kr:      'rrg_alltickers_kr_{D}.html',
+    rrg_us:      'rrg_alltickers_us_{D}.html'
+  };
+  // 빠른 탭 = 분류기 대표(final) 문서 + 이 규칙 (백데이터·회전)
+  var TAB_EXTRA = ['tc_bd', 'ix_bd', 'rg_bd', 'rg_rot'];
+  var MANIFEST_NAME = 'reports_manifest.json';   // == nix_pages_manifest.MANIFEST_NAME (테스트 강제)
+  var MANIFEST_SCHEMA = 1;                       // == nix_pages_manifest.SCHEMA (테스트 강제)
+
+  var DRE = /\d{4}-\d{2}-\d{2}/g;
+  // 카드뉴스 = 공유 분류기(reports_index.html 과 같은 블록)에 아직 규칙이 없어 'unmatched' 로 온다 → 여기서만 보충.
+  //   분류기에 규칙이 생기면 unmatched 가 아니게 되어 이 보충은 저절로 쓰이지 않는다.
+  var CN = /^cardnews\/(\d{4}-\d{2}-\d{2})_(kr|us)_cardnews_close\/(.+\.html)$/;
+  // 사이트 자체 페이지 (루트 목록 · 고정 주소 뷰어) — 목록 파일에서 빠지지만 방어로 한 번 더 뺀다
+  var SITE = /^(?:(?:market|tactical|index|cardnews|rrg)\/(?:kr|us)\/)?(?:index|reports_index)\.html$/;
+  var SLOT_PATH = /^(.*\/)(market|tactical|index|cardnews|rrg)\/(kr|us)(?:\/(?:index\.html)?)?$/;
+
+  function key(k, c) { return k + '_' + c; }
+  function hasSlot(k, c) {
+    for (var i = 0; i < SLOTS.length; i++) if (SLOTS[i][0] === k && SLOTS[i][1] === c) return true;
+    return false;
+  }
+  function countries(k) { return SLOTS.filter(function (s) { return s[0] === k; }).map(function (s) { return s[1]; }); }
+  function base(p) { return p.slice(p.lastIndexOf('/') + 1); }
+  function tmplOf(s) { return String(s).replace(DRE, '{D}'); }
+  function validDate(d) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) return false;
+    var t = Date.parse(d + 'T00:00:00Z');
+    return !isNaN(t) && new Date(t).toISOString().slice(0, 10) === d;
+  }
+  function warn(t) { return { lv: 'warn', text: t }; }
+  function info(t) { return { lv: 'info', text: t }; }
+
+  // 주소 → {k, c, base(사이트 루트 절대 경로), via} 또는 {error, base}
+  function slotFrom(pathname, search) {
+    var p = String(pathname || '/');
+    var m = SLOT_PATH.exec(p);
+    if (m) {
+      if (hasSlot(m[2], m[3])) return { k: m[2], c: m[3], base: m[1], via: 'path' };
+      return { error: (m[2] === 'index' ? '인덱스 리포트는 US 만 있습니다' : '이 종류·국가의 고정 주소는 없습니다') +
+        ' (' + m[2] + '/' + m[3] + '/).', base: m[1] };
+    }
+    var dir = p.slice(0, p.lastIndexOf('/') + 1) || '/';
+    var qs = new URLSearchParams(search || '');
+    var k = qs.get('k'), c = qs.get('c');
+    if (k || c) {
+      if (hasSlot(k, c)) return { k: k, c: c, base: dir, via: 'query' };
+      return { error: '쿼리의 종류·국가(k=' + k + ', c=' + c + ')가 고정 주소 목록에 없습니다.', base: dir };
+    }
+    return { error: '주소에서 리포트 종류·국가를 알 수 없습니다 (' + p + ') — 고정 주소는 …/{종류}/{국가}/ 형식입니다.', base: dir };
+  }
+  function prefixOf(k, c) { return k === 'rrg' ? 'rrg/' + c + '/' : k + '/'; }
+  function sitePage(p) { return SITE.test(p); }
+
+  // 목록 파일(schema 1) → 경로 복원. 문구·검사는 reports_index.html 의 parseManifest 와 같다.
+  function parseManifest(j) {
+    var bad = function (why) { throw new Error('목록 파일 형식 오류 — ' + why + ' 목록이 불완전할 수 있어 표시하지 않습니다.'); };
+    if (!j || typeof j !== 'object' || Array.isArray(j)) bad('최상위가 객체가 아닙니다.');
+    if (j.schema !== MANIFEST_SCHEMA)
+      bad('schema 불일치 (받은 값 ' + JSON.stringify(j.schema) + ' · 이 페이지가 읽는 값 ' + MANIFEST_SCHEMA + ').');
+    var d = j.dirs;
+    if (!d || typeof d !== 'object' || Array.isArray(d)) bad('dirs 가 객체가 아닙니다.');
+    var paths = [];
+    Object.keys(d).forEach(function (k) {
+      var v = d[k];
+      if (!Array.isArray(v)) bad('dirs["' + k + '"] 가 배열이 아닙니다.');
+      for (var i = 0; i < v.length; i++) {
+        if (typeof v[i] !== 'string' || !v[i]) bad('dirs["' + k + '"] 에 빈 값·문자열 아닌 항목이 있습니다.');
+        paths.push(k ? k + '/' + v[i] : v[i]);
+      }
+    });
+    if (typeof j.count !== 'number' || j.count !== paths.length)
+      bad('count(' + JSON.stringify(j.count) + ')와 실제 파일명 수(' + paths.length + ')가 다릅니다.');
+    var gen = typeof j.generated_at === 'string' ? j.generated_at : '';
+    if (!gen || isNaN(Date.parse(gen))) bad('generated_at 이 시각 형식이 아닙니다 (' + JSON.stringify(j.generated_at) + ').');
+    return { total: j.count, paths: paths, gen: gen };
+  }
+
+  function cardnewsEntry(e) {
+    var m = CN.exec(e.path);
+    if (!m) return e;
+    var rep = m[3] === m[2] + '_cardnews_' + m[1] + '.html';
+    return { path: e.path, rule: rep ? 'cn_rep' : 'cn_other', sec: 'cardnews_' + m[2], date: m[1], c: m[2].toUpperCase(),
+      show: rep ? 1 : 0, ord: rep ? 0 : 99, label: rep ? '카드뉴스' : base(e.path), final: rep,
+      grp: 'cardnews/' + m[1] + '_' + m[2] + '_cardnews_close' };
+  }
+
+  // 경로 목록 → 이 종류·국가의 묶음 배열 (날짜 내림차순). 묶음 = {date, grp, want, docs[]}
+  //   문서 = {path, rel(묶음 기준), base, tmpl(날짜→{D}), label, ord, final, rule, tab, isDefault, uniqBase}
+  //   문서 순서 = 대표 템플릿 → 분류기 대표(final) → 정렬 순서(ord) → 경로
+  function bundles(paths, k, c) {
+    var pre = prefixOf(k, c), sec = key(k, c), sel = [];
+    for (var i = 0; i < paths.length; i++) {
+      var p = paths[i];
+      if (typeof p === 'string' && p.indexOf(pre) === 0 && !sitePage(p)) sel.push(p);
+    }
+    var res = root.NIX.classify(sel);
+    var by = {}, out = [];
+    res.entries.forEach(function (e) {
+      if (e.rule === 'unmatched') e = cardnewsEntry(e);
+      if (e.sec !== sec || !e.date || !e.grp) return;
+      var b = by[e.grp];
+      if (!b) { b = by[e.grp] = { date: e.date, grp: e.grp, want: '', docs: [] }; out.push(b); }
+      var rel = e.path.slice(e.grp.length + 1);
+      b.docs.push({ path: e.path, rel: rel, base: base(e.path), tmpl: tmplOf(rel), label: e.label, ord: e.ord,
+        final: !!e.final, rule: e.rule, tab: !!e.final || TAB_EXTRA.indexOf(e.rule) >= 0, isDefault: false, uniqBase: false });
+    });
+    out.forEach(function (b) {
+      b.want = DEFAULT[sec] ? DEFAULT[sec].split('{D}').join(b.date) : '';
+      b.docs.forEach(function (d) { d.isDefault = d.rel === b.want; if (d.isDefault) d.tab = true; });
+      b.docs.sort(function (x, y) {
+        if (x.isDefault !== y.isDefault) return x.isDefault ? -1 : 1;
+        if (x.final !== y.final) return x.final ? -1 : 1;
+        if (x.ord !== y.ord) return x.ord - y.ord;
+        return x.path < y.path ? -1 : x.path > y.path ? 1 : 0;
+      });
+      var nl = {}, nb = {};
+      b.docs.forEach(function (d) { nl[d.label] = (nl[d.label] || 0) + 1; nb[d.base] = (nb[d.base] || 0) + 1; });
+      b.docs.forEach(function (d) {
+        if (nl[d.label] > 1) d.label += ' · ' + d.base;   // 같은 묶음 안 라벨 중복 → 파일명으로 구분
+        d.uniqBase = nb[d.base] === 1;
+      });
+    });
+    out.sort(function (x, y) { return x.date < y.date ? 1 : x.date > y.date ? -1 : (x.grp < y.grp ? -1 : x.grp > y.grp ? 1 : 0); });
+    return out;
+  }
+
+  // 묶음의 대표 문서 = 대표 템플릿 → (없으면) 분류기 대표 첫 문서 → (없으면) 첫 문서. 대체했으면 안내 note 를 같이 준다.
+  function pickDefault(b) {
+    for (var i = 0; i < b.docs.length; i++) if (b.docs[i].isDefault) return { doc: b.docs[i] };
+    var f = null;
+    for (var j = 0; j < b.docs.length; j++) if (b.docs[j].final) { f = b.docs[j]; break; }
+    var d = f || b.docs[0];
+    return { doc: d, note: info(b.date + ' 묶음에는 대표 문서(' + (b.want || '지정 없음') + ')가 없어 \'' + d.label + '\' 문서를 보여 줍니다.') };
+  }
+  // f(쿼리 문서) → 묶음 안 문서: 상대 경로 일치 → 파일명 일치(묶음 안 유일) → 같은 역할(날짜만 다른 이름 · 유일)
+  function findDoc(b, f) {
+    var i, c;
+    for (i = 0; i < b.docs.length; i++) if (b.docs[i].rel === f) return { doc: b.docs[i], how: 'rel' };
+    var slash = f.indexOf('/') >= 0;
+    if (!slash) {
+      c = b.docs.filter(function (d) { return d.base === f; });
+      if (c.length === 1) return { doc: c[0], how: 'base' };
+    }
+    var ft = tmplOf(f);
+    c = b.docs.filter(function (d) { return slash ? d.tmpl === ft : tmplOf(d.base) === ft; });
+    if (c.length === 1) return { doc: c[0], how: 'tmpl' };
+    return null;
+  }
+  // 쿼리 {d, f} → {bi, doc, notes[]} · 목록 파일에 있는 문서만 돌려준다 (iframe 에 임의 주소 금지)
+  function resolve(B, q) {
+    q = q || {};
+    var notes = [];
+    if (!B.length) return { empty: true, notes: notes };
+    var bi = 0, d = q.d || '', i;
+    if (d) {
+      if (!validDate(d)) {
+        notes.push(warn('날짜 형식 오류(d=' + d + ') — 최신 ' + B[0].date + ' 을 보여 줍니다 (형식: YYYY-MM-DD).'));
+      } else {
+        var hit = -1;
+        for (i = 0; i < B.length; i++) if (B[i].date === d) { hit = i; break; }
+        if (hit >= 0) bi = hit;
+        else {
+          var prev = -1;
+          for (i = 0; i < B.length; i++) if (B[i].date < d) { prev = i; break; }   // 내림차순 → 처음 작은 것 = 직전 날짜
+          bi = prev >= 0 ? prev : B.length - 1;
+          notes.push(warn('요청한 날짜 ' + d + ' 의 리포트가 없어 ' + (prev >= 0 ? '직전 날짜 ' : '가장 오래된 날짜 ') +
+            B[bi].date + ' 을 보여 줍니다 (휴장일이거나 아직 올라가지 않은 날).'));
+        }
+      }
+    }
+    var b = B[bi], f = q.f || '';
+    if (f) {
+      var r = findDoc(b, f);
+      if (r) {
+        if (r.how === 'tmpl') notes.push(info('요청한 문서(' + f + ')는 ' + b.date + ' 묶음에 없어 같은 역할의 \'' + r.doc.label + '\' 문서를 보여 줍니다.'));
+        return { bi: bi, doc: r.doc, notes: notes };
+      }
+      var pd0 = pickDefault(b);
+      notes.push(warn('요청한 문서(' + f + ')가 ' + b.date + ' 묶음에 없습니다 — \'' + pd0.doc.label + '\' 문서를 보여 줍니다.'));
+      return { bi: bi, doc: pd0.doc, notes: notes };
+    }
+    var pd = pickDefault(b);
+    if (pd.note) notes.push(pd.note);
+    return { bi: bi, doc: pd.doc, notes: notes };
+  }
+  // 날짜를 바꿀 때 같은 역할(날짜만 다른 이름)의 문서를 유지 · 없으면 대표 문서 + 안내
+  function carry(doc, bTo) {
+    for (var i = 0; i < bTo.docs.length; i++) if (bTo.docs[i].tmpl === doc.tmpl) return { doc: bTo.docs[i] };
+    var pd = pickDefault(bTo);
+    return { doc: pd.doc, note: info(bTo.date + ' 에는 같은 문서(\'' + doc.label + '\')가 없어 \'' + pd.doc.label + '\' 문서를 보여 줍니다.') };
+  }
+  function fParam(b, doc) { return doc.uniqBase ? doc.base : doc.rel; }
+  function findByPath(B, path) {
+    for (var i = 0; i < B.length; i++)
+      for (var j = 0; j < B[i].docs.length; j++) if (B[i].docs[j].path === path) return { bi: i, doc: B[i].docs[j] };
+    return null;
+  }
+  // 상태 쿼리 문자열 (query 모드면 k·c 유지)
+  function query(slot, b, doc) {
+    var qs = new URLSearchParams();
+    if (slot && slot.via === 'query') { qs.set('k', slot.k); qs.set('c', slot.c); }
+    qs.set('d', b.date);
+    qs.set('f', fParam(b, doc));
+    return qs.toString();
+  }
+  // 고정 주소 (날짜·문서 없음)
+  function fixedHref(slot, k, c) {
+    return slot.via === 'query' ? slot.base + '?k=' + k + '&c=' + c : slot.base + k + '/' + c + '/';
+  }
+
+  root.NIXV = {
+    SLOTS: SLOTS, KINDS: KINDS, KIND: KIND, CTY: CTY, DEFAULT: DEFAULT, TAB_EXTRA: TAB_EXTRA,
+    MANIFEST_NAME: MANIFEST_NAME, MANIFEST_SCHEMA: MANIFEST_SCHEMA,
+    hasSlot: hasSlot, countries: countries, validDate: validDate, slotFrom: slotFrom, prefixOf: prefixOf, sitePage: sitePage,
+    parseManifest: parseManifest, bundles: bundles, pickDefault: pickDefault, findDoc: findDoc, resolve: resolve, carry: carry,
+    fParam: fParam, findByPath: findByPath, query: query, fixedHref: fixedHref
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+
+<script>
+(function () {
+  'use strict';
+  var V = window.NIXV;
+  var WD = ['일', '월', '화', '수', '목', '금', '토'];
+  var $ = function (id) { return document.getElementById(id); };
+  function h(tag, attrs) {
+    var el = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      var v = attrs[k];
+      if (v == null || v === false) return;
+      if (k === 'class') el.className = v;
+      else if (k === 'text') el.textContent = v;
+      else if (k.slice(0, 2) === 'on') el.addEventListener(k.slice(2), v);
+      else el.setAttribute(k, v === true ? '' : v);
+    });
+    for (var i = 2; i < arguments.length; i++) {
+      var kid = arguments[i];
+      if (kid == null || kid === false) continue;
+      if (Array.isArray(kid)) kid.forEach(function (x) { if (x != null && x !== false) el.append(x.nodeType ? x : document.createTextNode(String(x))); });
+      else el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+    }
+    return el;
+  }
+  function wd(d) { var a = d.split('-'); return WD[new Date(Date.UTC(+a[0], +a[1] - 1, +a[2])).getUTCDay()]; }
+  function dlabel(d) { return d + ' (' + wd(d) + ')'; }
+  function kst(ms) {
+    var parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date(ms));
+    var g = function (t) { for (var i = 0; i < parts.length; i++) if (parts[i].type === t) return parts[i].value; return ''; };
+    return g('year') + '-' + g('month') + '-' + g('day') + ' ' + g('hour') + ':' + g('minute') + ' KST';
+  }
+  function href(p) { return p.split('/').map(encodeURIComponent).join('/'); }
+  // 브라우저·CDN 캐시 회피: 분 단위 쿼리 + no-cache (목록 파일은 배포 커밋마다 바뀐다)
+  function bust(u) { return u + (u.indexOf('?') < 0 ? '?' : '&') + 'v=' + Math.floor(Date.now() / 60000); }
+
+  var SLOT = V.slotFrom(location.pathname, location.search);
+  var B = [], CUR = null, GEN = '', FIRST = true, MURL = '';
+  var frame = $('frame');
+
+  function docUrl(doc) { return location.origin + SLOT.base + href(doc.path); }
+  function stateHref(b, doc) { return location.pathname + '?' + V.query(SLOT, b, doc); }
+  function readQuery() {
+    var qs = new URLSearchParams(location.search);
+    return { d: qs.get('d') || '', f: qs.get('f') || '' };
+  }
+
+  // ── 안내 (항목마다 1줄 · 시작 마크) ──
+  function setNotes(list) { $('notes').textContent = ''; (list || []).forEach(addNote); }
+  function addNote(n) {
+    var row = h('div', { class: 'n ' + n.lv, role: n.lv === 'warn' ? 'alert' : null },
+      h('span', { class: 'mk', 'aria-hidden': 'true', text: n.lv === 'warn' ? '⚠️' : 'ℹ️' }),
+      h('span', { class: 'tx', text: n.text }));
+    row.append(h('button', { class: 'x', type: 'button', 'aria-label': '안내 닫기', text: '×', onclick: function () { row.remove(); } }));
+    $('notes').append(row);
+  }
+
+  // ── 상단 바 ──
+  function slotLinks() {
+    return h('ul', null, V.SLOTS.map(function (s) {
+      return h('li', null, h('a', { href: V.fixedHref(SLOT, s[0], s[1]), text: V.KIND[s[0]] + ' ' + V.CTY[s[1]] }),
+        ' — ', h('span', { class: 'pth', text: s[0] + '/' + s[1] + '/' }));
+    }));
+  }
+  function go(k, c) { location.href = V.fixedHref(SLOT, k, c); }
+  function renderSlotControls() {
+    var ks = $('kind'); ks.textContent = '';
+    V.KINDS.forEach(function (k) { ks.append(h('option', { value: k, selected: SLOT.k === k, text: V.KIND[k] })); });
+    if (!SLOT.k) ks.prepend(h('option', { value: '', selected: true, text: '종류 선택' }));
+    ks.onchange = function () {
+      var k = ks.value; if (!k) return;
+      var cs = V.countries(k);
+      go(k, cs.indexOf(SLOT.c) >= 0 ? SLOT.c : cs[0]);
+    };
+    var seg = $('cty'); seg.textContent = '';
+    ['kr', 'us'].forEach(function (c) {
+      var ok = !SLOT.k || V.hasSlot(SLOT.k, c);
+      seg.append(h('button', { type: 'button', 'aria-pressed': String(SLOT.c === c), disabled: !ok || !SLOT.k,
+        title: ok ? V.CTY[c] + ' 리포트' : V.KIND[SLOT.k] + ' 리포트는 ' + V.countries(SLOT.k).map(function (x) { return V.CTY[x]; }).join('·') + ' 만 있습니다',
+        onclick: function () { if (SLOT.c !== c) go(SLOT.k, c); }, text: V.CTY[c] }));
+    });
+    $('brand').href = SLOT.base + 'reports_index.html';
+    if (SLOT.k) $('latest').href = V.fixedHref(SLOT, SLOT.k, SLOT.c);
+  }
+  function renderDates() {
+    var s = $('date'); s.textContent = '';
+    B.forEach(function (b, i) { s.append(h('option', { value: String(i), text: dlabel(b.date) + (i === 0 ? ' · 최신' : '') })); });
+    s.disabled = false;
+    s.onchange = function () { pickDate(Number(s.value)); };
+    $('older').onclick = function () { if (CUR && CUR.bi + 1 < B.length) pickDate(CUR.bi + 1); };
+    $('newer').onclick = function () { if (CUR && CUR.bi > 0) pickDate(CUR.bi - 1); };
+    var m = $('meta'); m.textContent = '';
+    m.append('목록 ', h('b', { text: kst(Date.parse(GEN)) }), ' · ', h('b', { text: String(B.length) }), '일 · 최신 ', h('b', { text: dlabel(B[0].date) }));
+  }
+  function renderDocs(b, doc) {
+    var s = $('doc'); s.textContent = '';
+    var main = h('optgroup', { label: '대표·주요' }), rest = h('optgroup', { label: '그 밖의 문서 (' + b.docs.filter(function (d) { return !d.tab; }).length + ')' });
+    b.docs.forEach(function (d, i) {
+      (d.tab ? main : rest).append(h('option', { value: String(i), selected: d === doc, title: d.rel, text: d.label }));
+    });
+    if (main.children.length) s.append(main);
+    if (rest.children.length) s.append(rest);
+    s.disabled = false;
+    s.onchange = function () { show(CUR.bi, b.docs[Number(s.value)], { push: true }); };
+  }
+  function renderTabs(b, doc) {
+    var t = $('tabs'); t.textContent = '';
+    b.docs.forEach(function (d) {
+      if (!d.tab) return;
+      t.append(h('button', { class: 'tab', type: 'button', 'aria-current': d === doc ? 'page' : null, title: d.rel,
+        onclick: function () { if (d !== CUR.doc) show(CUR.bi, d, { push: true }); }, text: d.label }));
+    });
+    var act = t.querySelector('[aria-current="page"]');
+    if (act && act.scrollIntoView) { try { act.scrollIntoView({ block: 'nearest', inline: 'nearest' }); } catch (e) { /* 오래된 브라우저 */ } }
+  }
+  function syncBar(bi, doc) {
+    var b = B[bi];
+    CUR = { bi: bi, doc: doc };
+    $('date').value = String(bi);
+    $('older').disabled = bi + 1 >= B.length;
+    $('newer').disabled = bi <= 0;
+    renderDocs(b, doc);
+    renderTabs(b, doc);
+    var nt = $('newtab'); nt.href = docUrl(doc); nt.removeAttribute('aria-disabled');
+    $('copy').disabled = false;
+    document.title = 'NixStock ' + V.KIND[SLOT.k] + ' ' + V.CTY[SLOT.c] + ' · ' + b.date + ' · ' + doc.label;
+    frame.title = doc.label + ' (' + b.date + ')';
+  }
+
+  // ── 표시 · 이동 ──
+  function show(bi, doc, opts) {
+    opts = opts || {};
+    var b = B[bi];
+    syncBar(bi, doc);
+    var st = { d: b.date, f: V.fParam(b, doc) };
+    if (opts.push) history.pushState(st, '', stateHref(b, doc));
+    setNotes(opts.notes || []);
+    navigate(doc);
+  }
+  function navigate(doc) {
+    var u = docUrl(doc);
+    $('msg').hidden = true;
+    frame.hidden = false;
+    if (FIRST) { FIRST = false; frame.src = u; return; }   // 첫 로드만 src 대입 (이후 대입은 이력 항목을 쌓는다)
+    try { frame.contentWindow.location.replace(u); } catch (e) { frame.src = u; }
+  }
+  function pickDate(bi) {
+    if (!CUR || bi < 0 || bi >= B.length || bi === CUR.bi) return;
+    var r = V.carry(CUR.doc, B[bi]);
+    show(bi, r.doc, { push: true, notes: r.note ? [r.note] : [] });
+  }
+  // iframe 안에서 다른 문서로 이동(리포트 안 링크·허브 카드) → 선택 상자·주소를 맞춘다 (iframe 재로드 없음)
+  frame.addEventListener('load', function () {
+    if (!B.length || !CUR) return;
+    var w = frame.contentWindow, p;
+    try { p = w.location.pathname; } catch (e) {
+      addNote({ lv: 'info', text: '다른 사이트 문서가 열렸습니다 — 날짜·문서 목록과 맞출 수 없습니다. 빈 화면이면 리포트 안 링크를 새 탭으로 여세요.' });
+      return;
+    }
+    if (!p || w.location.href === 'about:blank') return;
+    try { p = decodeURIComponent(p); } catch (e) { /* 그대로 비교 */ }
+    if (p.slice(-1) === '/') p += 'index.html';
+    var rel = p.indexOf(SLOT.base) === 0 ? p.slice(SLOT.base.length) : null;
+    if (rel === CUR.doc.path) return;
+    var hit = rel != null ? V.findByPath(B, rel.normalize ? rel.normalize('NFC') : rel) : null;
+    if (hit) {
+      syncBar(hit.bi, hit.doc);
+      history.replaceState({ d: B[hit.bi].date, f: V.fParam(B[hit.bi], hit.doc) }, '', stateHref(B[hit.bi], hit.doc));
+      return;
+    }
+    $('newtab').href = w.location.href;
+    addNote({ lv: 'info', text: '선택 목록 밖 문서가 열렸습니다: ' + (rel != null ? rel : p) + ' — 날짜·문서 선택은 마지막으로 고른 문서 기준입니다.' });
+  });
+  window.addEventListener('popstate', function () {
+    if (!B.length) return;
+    var r = V.resolve(B, readQuery());
+    show(r.bi, r.doc, { notes: r.notes });
+  });
+  $('copy').addEventListener('click', function () {
+    if (!CUR) return;
+    var u = location.origin + stateHref(B[CUR.bi], CUR.doc);
+    var fail = function () { addNote({ lv: 'warn', text: '클립보드에 복사하지 못했습니다 — 이 주소를 직접 복사하세요: ' + u }); };
+    try {
+      if (!navigator.clipboard || !navigator.clipboard.writeText) { fail(); return; }
+      navigator.clipboard.writeText(u).then(function () { addNote({ lv: 'info', text: '링크를 복사했습니다 (이 날짜·문서 고정): ' + u }); }, fail);
+    } catch (e) { fail(); }
+  });
+
+  // ── 오류 · 빈 상태 (조용한 빈 화면 금지 — iframe 자리를 대신한다) ──
+  function panel(kind, title, lines) {
+    frame.hidden = true;
+    var m = $('msg'); m.textContent = ''; m.hidden = false; m.className = 'msg';
+    m.setAttribute('role', kind === 'empty' ? 'status' : 'alert');
+    m.append(h('div', { class: 'err' + (kind === 'empty' ? ' empty' : '') }, h('h2', { text: title }), lines));
+  }
+  function showError(err, url) {
+    $('date').disabled = true; $('doc').disabled = true; $('copy').disabled = true;
+    panel('err', '리포트를 열 수 없습니다', [
+      h('p', { class: 'why', text: '⚠️ ' + String(err && err.message || err) }),
+      url ? h('p', { text: '▸ 요청 주소: ' + url }) : null,
+      h('div', { class: 'acts' },
+        url ? h('button', { class: 'btn', type: 'button', onclick: function () { load(); }, text: '다시 시도' }) : null,
+        h('a', { class: 'btn', href: SLOT.base + 'reports_index.html', text: '전체 목록 보기' })),
+      h('p', { text: '▸ 고정 주소 (종류·국가마다 하나 · 항상 최신 날짜):' }), slotLinks()
+    ]);
+  }
+  function showEmpty() {
+    $('date').disabled = true; $('doc').disabled = true;
+    panel('empty', V.KIND[SLOT.k] + ' ' + V.CTY[SLOT.c] + ' — 아직 올라간 리포트가 없습니다', [
+      h('p', { text: 'ℹ️ 첫 리포트가 올라오면 이 주소에 자동으로 나타납니다 (이 페이지를 다시 올리지 않아도 됨).' }),
+      h('div', { class: 'acts' }, h('a', { class: 'btn', href: SLOT.base + 'reports_index.html', text: '전체 목록 보기' })),
+      h('p', { text: '▸ 다른 고정 주소:' }), slotLinks()
+    ]);
+  }
+
+  function load() {
+    var m = $('msg'); m.textContent = '목록 불러오는 중…'; m.className = 'msg loading'; m.hidden = false; m.setAttribute('role', 'status');
+    frame.hidden = true;
+    MURL = bust(SLOT.base + V.MANIFEST_NAME);
+    fetch(MURL, { cache: 'no-cache', credentials: 'omit' }).catch(function (err) {
+      throw new Error('네트워크 오류로 목록을 가져오지 못했습니다 (' + (err && err.message || err) + '). 인터넷 연결 또는 사이트 접속을 확인하세요.');
+    }).then(function (res) {
+      if (!res.ok) {
+        return res.text().then(function (txt) {
+          var msg = txt.replace(/<(script|style)[\s\S]*?<\/\1>/gi, ' ').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 160);
+          var why = '응답 HTTP ' + res.status + (msg ? ' — ' + msg : '');
+          if (res.status === 404)
+            why = '목록 파일 ' + V.MANIFEST_NAME + ' 이 사이트에 없습니다 (HTTP 404). 배포 스크립트(deploy_reports_ghpages.sh)가 아직 목록 파일을 올리지 않았거나 ' +
+              '파일 이름·위치가 바뀌었습니다.';
+          throw new Error(why);
+        });
+      }
+      return res.json().catch(function (err) {
+        throw new Error('응답 JSON 을 해석하지 못했습니다 — ' + (err && err.message || err) + ' (목록 파일이 깨졌거나 JSON 이 아닌 응답이 왔습니다)');
+      });
+    }).then(function (j) {
+      var mf = V.parseManifest(j);
+      GEN = mf.gen;
+      B = V.bundles(mf.paths, SLOT.k, SLOT.c);
+      if (!B.length) { showEmpty(); return; }
+      renderDates();
+      var r = V.resolve(B, readQuery());
+      show(r.bi, r.doc, { notes: r.notes });   // 첫 표시는 주소를 바꾸지 않는다 (맨 고정 주소 = 항상 최신)
+    }).catch(function (err) { showError(err, MURL); });
+  }
+
+  renderSlotControls();
+  if (SLOT.error) showError(new Error(SLOT.error), '');
+  else load();
+})();
+</script>
+</body>
+</html>

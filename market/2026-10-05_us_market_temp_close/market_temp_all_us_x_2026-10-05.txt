@@ -15,7 +15,7 @@ US #market_temp 4지수 종합 #NixStock · 2026-10-05 장마감 (2026-10-06 06:
 · Russell2000: 일 NEUTRAL 41.67·주 NEUTRAL 50.78·월 NEUTRAL 53 (Δ일 -1.2)
 
 ◆ 시장폭 · 포지셔닝 (F&G·NixB&B·BofA)
-· 폭: US500 62% BULLISH · US100 60% BULLISH · MidCap400 54% BULLISH · Russell2000 46% BEARISH
+· 폭: US1500(통합) 55% BULLISH · US500 62% BULLISH · US100 60% BULLISH · US30 53% BULLISH · MidCap400 54% BULLISH · Russell2000 46% BEARISH
 · 포지셔닝: F&G 43.14(Fear·10-05) · NixB&B 6.27/10(Neutral·4구성·10-05) · BofA B&B(2026-09-30 D+5) 8.8/10·Extreme Bullish
 
 ◆ 촉매 · 시나리오

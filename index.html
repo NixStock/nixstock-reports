@@ -15,16 +15,18 @@
         → 분류 (nix-classify · reports_viewer.html 과 바이트까지 같은 블록 — 테스트가 강제)
         → 날짜 묶음 · 대표 문서 (nix-viewer-core · 뷰어와 바이트까지 같은 블록 = 고정 주소 뷰어가 여는 대표 문서와 같다)
         → 나라 · 날짜 · 종류별 카드 (nix-index-core) → 화면.
-        나라 탭(KR · US) 기본 날짜 = 그 나라에 마감 번들(마켓온도 또는 택티컬 · nix-index-core CLOSE_KINDS)이 있는 최신일
-          (마감 번들이 하나도 없는 나라 = 최신일) · 첫 화면 = 기본 날짜가 더 최근인 나라 (같으면 KR).
-        기본 날짜보다 새 날짜(장중 오늘 등 · 마감 번들 전)에 리포트가 있으면 기본 화면 위에 '진행 중' 카드
-          (그 날짜의 토스 슬롯 · 뉴스 등 + 그 날짜로 가는 링크). 마감 번들이 올라오면 그 날짜가 저절로 기본이 된다.
-          날짜 선택 · ◀▶ · ?d= 지정 = 그 날짜 그대로 · 종류 탭 = 그 종류의 최신일.
-        날짜 화면 = 그 날짜의 리포트를 종류별 카드로 (대표 · 주요 · 그 밖의 문서 펼치기).
+        기본 화면(날짜 지정 없음) = 종류별 최신 — 종류마다 그 종류의 최신일 카드 (토스·뉴스 = 오늘 · 마감 리포트 = 각자 최신일).
+          카드마다 날짜 태그: 오늘 · 진행 중(나라 시간대 오늘보다 뒤) · 직전 마감(마켓온도·택티컬 최신일 · nix-index-core CLOSE_KINDS) · 이전.
+          카드 순서 = 오늘 → 직전 마감 → 날짜만 → 이전(한 줄 카드). 머리 날짜 = 그 나라 최신일.
+        나라 탭 라벨 = 그 나라 최신일 · 첫 화면 = 최신일이 더 최근인 나라 (같으면 KR).
+        날짜 선택 · ◀▶ · ?d= 지정 = 그 날짜의 리포트만 (없는 종류 = '이 날짜에 없음' + 직전·다음 링크) · 종류 탭 = 그 종류의 최신일.
         토스 = 그날 슬롯 전부를 시각 순으로 · 대표 = 그날 마감 슬롯만 (마감이 없는 날은 대표 없음 · 중립 칩).
+        티커 탭 = 날짜별 종목 표 (검색 · 코드/이름 정렬 · 첫 200행 + 더 보기). 공개 = 목록 파일의 티커 항목 ·
+          로컬(목록 파일에 ticker_lists 가 있음) = 색인 1회 + 날짜×나라 조각(_local/ticker/{D}_{c}.json)을 티커 탭에서만 받는다.
         종류 탭 = 그 종류만 · 전체 목록 탭 = 기간 전체 세로 나열 (검색 · 모든 파일 보기).
         목록 파일을 못 읽으면 원인을 화면에 표시한다 (조용한 대체 없음) + "GitHub API 로 보기"(?src=api) 수동 링크.
-  주소: ?c=kr|us · k=<종류>|list (생략 = 전체) · d=YYYY-MM-DD (생략 = 그 탭의 기본 날짜 — 전체 = 마감 최신일 · 종류 = 그 종류 최신일) · q=<검색어> (전체 목록)
+  주소: ?c=kr|us · k=<종류>|list (생략 = 전체) · d=YYYY-MM-DD (생략 = 전체 = 종류별 최신 · 종류 = 그 종류 최신일)
+        · q=<검색어> (전체 목록 · 티커 탭)
         #sec-<구역> = 옛 목록 링크 → 전체 목록 탭의 그 구역.
   진단: ?src=api = GitHub 트리 API 로 보기 (이전 방식 · 10분 캐시 · 레이트 리밋 있음).
   테스트: ?tree=<같은 사이트 상대경로 .json> (GitHub 트리 API 와 같은 형식)
@@ -96,7 +98,6 @@ h1 .g{color:var(--gold)}
 .ctab[aria-current="page"]{border-color:var(--gold-bd);background:var(--gold-bg);color:var(--gold)}
 .ctab[aria-current="page"] .cn{color:var(--gold)}
 .ctab[aria-disabled="true"]{opacity:.55;cursor:not-allowed}
-.ctab .cdot{color:var(--link);font-size:11px;align-self:center}
 /* 종류 탭 — 이 줄 안에서만 가로 스크롤 (페이지 가로 스크롤 아님) */
 .ktabs{display:flex;gap:2px;overflow-x:auto;white-space:nowrap;margin-top:4px;-webkit-overflow-scrolling:touch;scrollbar-width:thin;min-width:0}
 .ktab{flex:0 0 auto;padding:7px 12px 6px;color:var(--ink2);font-size:14px;border-bottom:2px solid transparent}
@@ -188,24 +189,40 @@ details.more li{padding:2px 0;font-size:13px;overflow-wrap:anywhere}
 .miss{margin-top:10px;display:flex;flex-direction:column;gap:2px}
 .miss div{font-size:13px;color:var(--ink2);overflow-wrap:anywhere}
 
-/* 진행 중 카드 (기본 화면 위 · 기본 날짜보다 새 날짜 = 마감 번들 전) */
-.live{margin:14px 0 0;border:1px solid var(--line2);border-left:4px solid var(--link);border-radius:12px;background:var(--card);padding:10px 14px}
-.live.past{border-left-color:var(--line2)}
-.live .lh{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;min-width:0}
-.live .lst{display:inline-block;padding:1px 9px;border-radius:20px;font-size:12.5px;font-weight:800;color:var(--link);border:1px solid var(--link);white-space:nowrap}
-.live.past .lst{color:var(--ink2);border-color:var(--line2)}
-.live .ld{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
-.live .lsum{font-size:13px;color:var(--ink2)}
-.live .lsum b{color:var(--ink);font-variant-numeric:tabular-nums}
-.live .lgo{margin-left:auto;font-size:13px;white-space:nowrap}
-.live .lnote{font-size:12.5px;color:var(--ink2);margin-top:4px;overflow-wrap:anywhere}
-.live .lnote b{color:var(--ink);font-weight:700;white-space:nowrap}
-.lrow{display:grid;grid-template-columns:96px minmax(0,1fr);gap:4px 10px;padding:7px 0 0;margin-top:7px;border-top:1px solid var(--line)}
-.lrow .lk{font-weight:700;font-size:13.5px;padding-top:3px;overflow-wrap:anywhere}
-.lrow .lv{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;min-width:0}
-.lrow .chip{white-space:normal;overflow-wrap:anywhere;max-width:100%}
-.lrow .chip b{font-variant-numeric:tabular-nums}
-.lrow .chip.rp{border-color:var(--gold-bd);color:var(--gold)}
+/* 카드 날짜 · 태그 (종류별 최신 · 날짜 머리) — 오늘 = 파랑 · 진행 중 = 파랑 테두리 · 직전 마감 = 금색 · 이전 = 회색 */
+.cdate{font-size:13px;color:var(--ink2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tag{display:inline-block;padding:0 8px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap;color:var(--ink2);border:1px solid var(--line2)}
+.tag.today{color:var(--bg);background:var(--link);border-color:var(--link)}
+.tag.ahead{color:var(--link);border-color:var(--link)}
+.tag.close{color:var(--gold);background:var(--gold-bg);border-color:var(--gold-bd)}
+.tag.old{color:var(--ink2);border-color:var(--line2)}
+.dt1 .tag{font-size:12.5px;padding:1px 9px}
+.card.mini{grid-column:1/-1;padding:7px 12px 7px 14px}
+.card.mini .ch{margin-bottom:0}
+.card.mini .ch h3{font-size:15px}
+.ch .go{margin-left:auto;font-size:13px;white-space:nowrap}
+.tkn1{font-size:13.5px;margin-top:2px}
+.tkn1 b{font-variant-numeric:tabular-nums}
+
+/* 티커 탭 (검색 · 정렬 · 종목 표) */
+.tkctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0 8px}
+.tkctl .q{flex:1 1 260px;min-width:0}
+#tq{width:100%;min-width:0;background:var(--card);color:var(--ink);border:1px solid var(--line2);border-radius:8px;padding:7px 10px}
+#tq::placeholder{color:var(--ink3);opacity:1}
+.tkinfo{font-size:13px;color:var(--ink2);margin:0 0 8px;overflow-wrap:anywhere}
+.tkinfo b{color:var(--ink);font-variant-numeric:tabular-nums}
+table.tkt th{text-align:left}
+table.tkt td.tkc{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%}
+table.tkt td.tkc b{font-weight:800}
+table.tkt td.tkn{min-width:120px;overflow-wrap:anywhere}   /* anywhere = 긴 영문 이름 조각도 열 최소 폭에 반영 (break-word 는 반영 안 함 → 좁은 화면에서 표가 래퍼보다 넓어짐) */
+table.tkt td.tkr{min-width:0;width:1%}
+table.tkt td.tkr .rl{display:flex;flex-wrap:nowrap;align-items:baseline;gap:2px 8px}
+table.tkt td.tkr .rl a.dl{font-weight:700}
+table.tkt td.tkr .rl,table.tkt td.tkr details.more>summary{white-space:nowrap}
+table.tkt td.tkr li{white-space:normal;overflow-wrap:break-word}
+.nodash{color:var(--ink3)}
+.nk{display:table;margin:3px 0 0;padding:0 6px;border-radius:6px;font-size:11.5px;font-weight:700;color:var(--ink2);border:1px solid var(--line2)}   /* 코드 아래 줄 (코드 칸 폭 유지) */
+.tkmore{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
 
 /* 전체 목록 (구역 · 표) */
 .sec{margin:16px 0;border:1px solid var(--line);border-radius:12px;background:var(--card);scroll-margin-top:var(--hdr)}
@@ -272,9 +289,8 @@ tr.dhr,.cty.m,.nt.m{display:none}
   .dctl select,.dctl input[type="date"],#q{font-size:16px}
   .ch .vw{margin-left:0}
   .slot{grid-template-columns:46px minmax(0,1fr);gap:0 8px}
-  .live{padding:10px 12px}
-  .live .lgo{margin-left:0}
-  .lrow{grid-template-columns:1fr}
+  .ch .go{margin-left:0}
+  #tq{font-size:16px}
   /* 좁은 화면 목록: 날짜 = 머리줄 · 국가·새 탭 = 리포트 칸 안으로 → 리포트 칸이 표 전체 폭을 쓴다 */
   thead,td.dt,td.cc,td.op,td.pth{display:none}
   tr.dhr{display:table-row}
@@ -285,10 +301,24 @@ tr.dhr,.cty.m,.nt.m{display:none}
   .pth.m{display:block}
   td{padding:7px 10px}
   td.nm{min-width:0}
+  table.tkt thead{display:table-header-group}       /* 티커 표 = 머리 유지 (위 thead 숨김은 전체 목록 표 전용) */
+  table.tkt td,table.tkt th{padding:6px 8px}
+  table.tkt td.tkn{min-width:0}
   tr.nofin td[colspan],tr.more td[colspan]{padding-left:10px}
   .sb{padding:0 10px 12px}
   .sh{padding:12px 10px}
   .sh .t{font-size:17px}
+}
+/* 티커 표 · 좁은~중간 화면 (≤820px): 대표 문서 라벨이 긴 파일명이어도 칸이 화면 밖으로 밀리지 않게 줄바꿈 허용.
+   넓은 화면은 한 줄 고정 (위 기본 규칙). 짧은 라벨('시그널 분석 ↗')은 최소 폭으로 한 줄 유지.
+   코드 칸도 하이픈에서만 줄바꿈 (uEW-QUANTUM-PHOTONICS 같은 긴 코드 한 줄이 칸 전체를 221px 로 넓히던 것 방지 · 숫자 코드는 안 쪼갠다). */
+@media (max-width:820px){
+  table.tkt td.tkc{white-space:normal}
+  table.tkt td.tkc .nk{white-space:nowrap}
+  table.tkt td.tkr{min-width:116px}
+  table.tkt td.tkr .rl{flex-wrap:wrap}
+  table.tkt td.tkr .rl,table.tkt td.tkr details.more>summary{white-space:normal}
+  table.tkt td.tkr a.dl{min-width:0;overflow-wrap:anywhere}
 }
 @media (prefers-reduced-motion: reduce){.sh .chev{transition:none}}
 </style>
@@ -319,8 +349,9 @@ tr.dhr,.cty.m,.nt.m{display:none}
 <footer class="wrap">
   <div class="dis">투자권유 아님 — 올라간 리포트를 찾기 위한 정보 제공용 페이지입니다.</div>
   <div>목록 출처: 같은 사이트의 목록 파일 reports_manifest.json (NixStock/nixstock-reports · 리포트를 올릴 때마다 자동 갱신). 페이지를 열 때마다 새로 구성합니다.</div>
-  <div>사이트 주소(/)와 reports_index.html 은 같은 페이지입니다. 나라 탭은 그 나라에 마감 리포트(마켓온도 · 택티컬)가 있는 최신 날짜를 먼저 보여 줍니다. 그보다 새 날짜(장중 등)의 리포트는 위쪽 '진행 중' 카드에 함께 보입니다. 날짜를 골라 그날 리포트를 봅니다.</div>
+  <div>사이트 주소(/)와 reports_index.html 은 같은 페이지입니다. 첫 화면은 종류별 최신입니다 — 종류마다 그 종류의 가장 최근 리포트를 날짜 태그(오늘 · 직전 마감 · 이전)와 함께 보여 줍니다. 날짜를 고르면 그날 리포트만 봅니다.</div>
   <div>대표 = 종류·날짜마다 먼저 볼 문서 (토스 = 그날 장마감 슬롯). 주요 = 기본 화면에 보이는 문서. 분할 쪽·데이터 표·백데이터 등은 "그 밖의 문서" 펼치기 또는 전체 목록의 "모든 파일 보기"로 봅니다.</div>
+  <div>티커 탭 = 날짜별 종목 표입니다 (코드·영문 이름 검색 · 첫 200행 + 더 보기). 종목 수가 많은 날짜 목록은 그 날짜를 고를 때 받습니다.</div>
 </footer>
 
 <script id="nix-classify">
@@ -338,7 +369,9 @@ tr.dhr,.cty.m,.nt.m{display:none}
   var RG = 'rrg/(?<c>kr|us)/(?<d>' + D + ')_rrg_alltickers_' + KC + '_close/';
   var TS = 'toss/(?<c>kr|us)/(?<d>' + D + ')_' + KC + '_toss_(?<k>[a-z]+)_(?<hm>\\d{4})/';
   var NW = 'news/(?<d>' + D + ')_daily_news_report/';
-  var TK = 'ticker/(?<d>' + D + ')_(?<c>kr|us)_(?<t>[^_/]+)_(?<s>[^/]+)/';
+  // 티커 묶음 = {D}_{c}_{코드}_{이름} · 이름 없음 {D}_{c}_{코드} · 옛 {D}_{c}_ticker_{코드}_{이름} · 나라 없음 {D}_ticker_{코드}_{이름}
+  var TK = 'ticker/(?<d>' + D + ')_(?:(?<c>kr|us)_)?(?:ticker_)?(?<t>[^_/]+)(?:_(?<s>[^/]+))?/';
+  var TKD = '(?:' + D + '|\\d{8})';   // 옛 파일명 날짜 YYYYMMDD 도 받는다
   var CN = 'cardnews/(?<d>' + D + ')_(?<c>kr|us)_cardnews_close/';
 
   // 지수 폴더 → 이름·순서 (리포트 <title> 기준)
@@ -363,7 +396,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
   function tossOrd(g, sub) { return Number(g.hm) * 100 + sub; }
   function base(p) { return p.slice(p.lastIndexOf('/') + 1); }
   function slugName(s) {
-    return String(s).replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([A-Za-z])(\d)/g, '$1 $2').replace(/(\d)([A-Z][a-z])/g, '$1 $2');
+    return String(s).replace(/_/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([A-Za-z])(\d)/g, '$1 $2').replace(/(\d)([A-Z][a-z])/g, '$1 $2');
   }
 
   var SECTIONS = [
@@ -480,12 +513,18 @@ tr.dhr,.cty.m,.nt.m{display:none}
       function () { return '데일리 뉴스 리포트'; }],
     ['nw_other',    'news',        R(NW + '.+\\.html'), 0, 99, function (g, p) { return base(p); }],
 
-    ['tk_rep',      'ticker',      R(TK + 'ticker_report_[^/]+_' + D + '\\.html'), 1, 0,
-      function (g) { return g.t + ' 시그널 분석'; }],
+    ['tk_scan',     'ticker',      R('ticker/(?<d>' + D + ')_(?<c>kr|us)_buy_signal_scan/.+\\.html'), 1, 0,
+      function () { return '매수 신호 스캔'; }],
+    ['tk_rep',      'ticker',      R(TK + 'ticker_report_[^/]+_' + TKD + '(?: v(?<v>[0-9.]+))?\\.html'), 1, 0,
+      function (g) { return g.t + ' 시그널 분석' + (g.v ? ' v' + g.v : ''); }],
     ['tk_ig',       'ticker',      R(TK + 'infographic_[^/]+_' + D + '\\.html'), 0, 1,
       function (g) { return g.t + ' 퀀트 엣지 대시보드'; }],
     ['tk_card',     'ticker',      R(TK + 'x_card_[^/]+_' + D + '\\.html'), 0, 2,
       function (g) { return g.t + ' 엣지 카드'; }],
+    ['tk_rrg',      'ticker',      R(TK + 'rrg_[^/]+_' + D + '\\.html'), 0, 3,
+      function (g) { return g.t + ' RRG'; }],
+    ['tk_prem',     'ticker',      R(TK + 'premium/body\\.html'), 0, 4,
+      function (g) { return g.t + ' 프리미엄 본문'; }],
     ['tk_other',    'ticker',      R(TK + '.+\\.html'), 0, 99, function (g, p) { return base(p); }],
 
     ['short_r',     'etc',         R('r/(?<f>[^/]+)\\.html'), 1, 0,
@@ -526,12 +565,12 @@ tr.dhr,.cty.m,.nt.m{display:none}
         e.rule = hit[0];
         e.sec = hit[1].replace('{c}', g.c || '');
         e.date = g.d || firstDate(p);
-        e.c = g.c ? g.c.toUpperCase() : guessC(p);
+        e.c = g.c ? g.c.toUpperCase() : hit[1] === 'ticker' ? '공통' : guessC(p);   // 티커 나라 없음 = 공통 (파일명 추측 안 함)
         e.show = hit[3];
         e.ord = typeof hit[4] === 'function' ? hit[4](g) : hit[4];
         e.label = hit[5](g, p);
         e.k = g.k || ''; e.hm = g.hm || ''; e.slot = g.k ? slot(g) : '';
-        if (g.t) e.sub = slugName(g.s);
+        if (hit[1] === 'ticker') { e.tk = hit[0] === 'tk_scan' ? '' : g.t; e.sub = g.s ? slugName(g.s) : ''; }
         e.unlisted = /_other$/.test(hit[0]);
       } else {
         e.rule = 'unmatched'; e.sec = 'etc'; e.date = firstDate(p); e.c = guessC(p);
@@ -818,12 +857,15 @@ tr.dhr,.cty.m,.nt.m{display:none}
   var CTY = { kr: 'KR', us: 'US' };
   var WD = ['일', '월', '화', '수', '목', '금', '토'];
   var SFX = /^(.+)_(kr|us)$/;             // 나라별 구역 id (market_kr …) — 접미 없는 구역(news · ticker)은 문서 국가(e.c)로 나눈다
-  // 마감 번들 종류 (상수 1곳) — 나라 탭 기본 날짜 = 이 종류 중 하나라도 있는 최신일 (사용자 2026-10-06 "마감 리포트가 있는 최신일").
+  // 마감 번들 종류 (상수 1곳) — 나라별 '직전 마감' 날짜(sc.close) = 이 종류 중 하나라도 있는 최신일 → 카드 날짜 태그에만 쓴다.
   //   키 = 분류기 SECTIONS 에서 파생한 종류 키(kinds) · 분류기에 없는 키면 build() 가 오류를 낸다 (조용히 빠지지 않게).
   var CLOSE_KINDS = ['market', 'tactical'];
-  // 나라의 '오늘' 판정 시간대 — 번들 날짜 기준과 같게 (KR = KST · US = 미 동부 ET 거래일)
+  // '오늘' 판정 시간대 — 번들 날짜 기준과 같게 (KR = KST · US = 미 동부 ET 거래일 · 공통(뉴스) = KST)
   var TZ = { kr: 'Asia/Seoul', us: 'America/New_York' };
-  var LIVE_MAX = 4;                       // 진행 중 카드 한 줄의 문서 칩 수 (넘으면 '외 N개' = 그 종류 탭 링크)
+  var TK_PAGE = 200;                      // 티커 표를 한 번에 그리는 행 수 ('더 보기' = 다음 200행)
+  var TAGS = { ahead: '진행 중', today: '오늘', close: '직전 마감', old: '이전' };
+  var TIER = { ahead: 0, today: 0, close: 1, '': 2, old: 3 };   // 종류별 최신 카드 순서 (같은 단 = 분류기 SECTIONS 순)
+  var JSON_REL = /^[A-Za-z0-9_\-][A-Za-z0-9_\-\/.]*\.json$/;   // 같은 사이트 상대 경로 .json (화면 relJson 과 같은 형식)
 
   function warn(t, link) { var n = { lv: 'warn', text: t }; if (link) n.link = link; return n; }
   function info(t, link) { var n = { lv: 'info', text: t }; if (link) n.link = link; return n; }
@@ -841,6 +883,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
     if (a.ord !== b.ord) return a.ord - b.ord;
     return a.path < b.path ? -1 : a.path > b.path ? 1 : 0;
   }
+  function base(p) { return p.slice(p.lastIndexOf('/') + 1); }
 
   // 종류 목록 = 분류기 SECTIONS 의 순서·이름에서 파생 (기타 제외 · 'market_kr' → 'market' · '마켓온도 KR' → '마켓온도')
   function kinds(SECTIONS) {
@@ -854,26 +897,29 @@ tr.dhr,.cty.m,.nt.m{display:none}
     });
     return out;
   }
-  function scope(name) { return { name: name, dates: [], latest: '', close: '', def: '', pending: [], kd: {}, day: {} }; }
+  function scope(name) { return { name: name, dates: [], latest: '', close: '', kd: {}, day: {} }; }
   function cardOf(sc, d, k, type) {
     var day = sc.day[d] || (sc.day[d] = {});
     var cd = day[k];
     if (!cd) {
-      cd = day[k] = { k: k, type: type, common: sc.name === 'com', date: d, n: 0, nf: 0, groups: [], slots: [] };
+      cd = day[k] = { k: k, type: type, common: sc.name === 'com', date: d, n: 0, nf: 0, ns: 0, groups: [], slots: [] };
       (sc.kd[k] = sc.kd[k] || []).push(d);
     }
     return cd;
   }
 
-  // 경로 + 분류 결과 → 표 M
-  //   M.cty.{kr,us} · M.com(공통) = { dates(내림차순), latest, kd: {종류: [날짜…]}, day: {날짜: {종류: 카드}} }
-  //   카드 = { k, type: 'bundle'(고정 주소 뷰어 종류) | 'toss'(슬롯) | 'list'(그 밖), n(문서 수), nf(주요 수), groups[], slots[] }
+  // 경로 + 분류 결과 (+ 티커 색인) → 표 M
+  //   M.cty.{kr,us} · M.com(공통) = { dates(내림차순), latest, close(직전 마감일), kd: {종류: [날짜…]}, day: {날짜: {종류: 카드}} }
+  //   카드 = { k, type: 'bundle'(고정 주소 뷰어 종류) | 'toss'(슬롯) | 'list'(그 밖) | 'tidx'(티커 색인 · 문서 없이 종목 수만),
+  //            n(문서 수), nf(주요 수), ns(티커 종목 수), groups[], slots[] }
   //   M.rep[path] = 대표 문서 (뷰어 종류 = 뷰어 코어 pickDefault · 토스 = 분류기 rep) · M.etc = 기타 문서 수 (나라·날짜별)
-  //   날짜 목록은 나라 표시 종류만으로 만든다 (공통 = 뉴스는 빠진다)
-  function build(paths, res, V) {
+  //   tix(티커 색인 · 로컬) = parseTickerIndex 결과 — 있으면 티커는 색인이 원천 (메인 목록의 티커 항목은 세기만 = M.tkDup)
+  //   M.tl['날짜|나라'] = 티커 조각 주소 (나라 = kr · us · etc)
+  //   날짜 목록은 나라 표시 종류만으로 만든다 (공통 = 뉴스 · 나라 미상 티커는 빠진다)
+  function build(paths, res, V, tix) {
     var N = root.NIX;
     var M = { kinds: kinds(N.SECTIONS), ki: {}, rep: {}, cty: { kr: scope('kr'), us: scope('us') }, com: scope('com'),
-              etc: { kr: {}, us: {}, com: {} }, n: res.entries.length, nEtc: 0 };
+              etc: { kr: {}, us: {}, com: {} }, n: res.entries.length, nEtc: 0, tix: tix || null, tl: {}, tkDup: 0 };
     M.kinds.forEach(function (x) { M.ki[x.k] = x; });
     // ① 고정 주소 뷰어 종류 = 뷰어 코어의 날짜 묶음 + 대표 문서 (고정 주소 뷰어가 여는 문서와 같다)
     V.SLOTS.forEach(function (s) {
@@ -900,6 +946,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
         return;
       }
       if (m && V.hasSlot(k, c)) return;                    // ①에서 묶음으로 셌다
+      if (tix && k === 'ticker') { M.tkDup++; return; }     // 로컬 = 티커 원천은 색인 (메인 목록에는 없어야 한다 · 서버 계약)
       var sc = c ? M.cty[c] : M.com;
       var cd = cardOf(sc, e.date, k, k === 'toss' ? 'toss' : 'list');
       cd.n++;
@@ -924,6 +971,12 @@ tr.dhr,.cty.m,.nt.m{display:none}
         (e.final ? g.main : g.rest).push(e);
       }
     });
+    // ②' 티커 색인 (로컬) — 날짜×나라 목록마다 카드 1장 (종목 수만 · 조각은 티커 탭에서만 받는다)
+    if (tix) tix.lists.forEach(function (x) {
+      var cd = cardOf(x.c === 'etc' ? M.com : M.cty[x.c], x.date, 'ticker', 'tidx');
+      cd.ns += x.bundles;
+      M.tl[x.date + '|' + x.c] = x.list_url;
+    });
     // ③ 정렬 · 날짜 목록
     [M.cty.kr, M.cty.us, M.com].forEach(function (sc) {
       var all = {};
@@ -941,25 +994,23 @@ tr.dhr,.cty.m,.nt.m{display:none}
             return a.grp < b.grp ? -1 : a.grp > b.grp ? 1 : 0;
           });
           cd.slots.forEach(function (s) { s.docs.sort(byOrd); });
+          if (k === 'ticker' && cd.type === 'list') cd.ns = cd.groups.length;   // 공개 = 묶음(종목) 수
         });
       });
     });
-    // ④ 기본 날짜 — 마감 번들(CLOSE_KINDS) 중 하나라도 있는 최신일 · 하나도 없는 나라 = 최신일
-    //    진행 중(pending) = 기본 날짜보다 새 날짜 (내림차순 · 마감 번들이 올라오면 저절로 기본이 된다)
+    // ④ 직전 마감일 — 마감 번들(CLOSE_KINDS) 중 하나라도 있는 최신일 (없는 나라 = '') · 카드 날짜 태그('직전 마감' · '이전')에 쓴다
     CLOSE_KINDS.forEach(function (k) { if (!M.ki[k]) throw new Error('마감 종류 키 오류 — 분류기 종류에 없음: ' + k); });
     [M.cty.kr, M.cty.us].forEach(function (sc) {
       var cl = '';
       CLOSE_KINDS.forEach(function (k) { var a = sc.kd[k]; if (a && a.length && a[0] > cl) cl = a[0]; });
       sc.close = cl;
-      sc.def = cl || sc.latest;
-      sc.pending = sc.dates.filter(function (d) { return d > sc.def; });
     });
     return M;
   }
 
-  // 첫 화면 나라 = 기본 날짜(마감 최신일)가 더 최근인 나라 (같으면 KR) · 한쪽만 있으면 그쪽 · 둘 다 없으면 ''
+  // 첫 화면 나라 = 최신일이 더 최근인 나라 (같으면 KR) · 한쪽만 있으면 그쪽 · 둘 다 없으면 ''
   function firstCountry(M) {
-    var a = M.cty.kr.def, b = M.cty.us.def;
+    var a = M.cty.kr.latest, b = M.cty.us.latest;
     if (!a && !b) return '';
     if (!a) return 'us';
     if (!b) return 'kr';
@@ -980,10 +1031,9 @@ tr.dhr,.cty.m,.nt.m{display:none}
     a.concat(b).forEach(function (d) { u[d] = 1; });
     return Object.keys(u).sort(byDesc);
   }
-  // 그 탭의 기본 날짜 — 전체 = 나라 기본(마감 최신일 · 마감 번들이 없는 나라 = 최신일) · 종류 = 그 종류의 최신일 · 전체 목록 = ''
+  // 그 탭의 기본 날짜 — 전체 = '' (종류별 최신 · 카드마다 그 종류의 최신일) · 종류 = 그 종류의 최신일 · 전체 목록 = ''
   function defaultDate(M, c, k) {
-    if (!k || k === 'all') return M.cty[c].def;
-    if (k === 'list') return '';
+    if (!k || k === 'all' || k === 'list') return '';
     return datesFor(M, c, k)[0] || '';
   }
   // 그 나라 · 날짜의 카드 (k 없음 = 전부) — 종류 순서 = 분류기 SECTIONS · 나라 카드 → 공통 카드
@@ -1012,12 +1062,45 @@ tr.dhr,.cty.m,.nt.m{display:none}
   }
   function etcAt(M, c, d) { return (M.etc[c][d] || 0) + (M.etc.com[d] || 0); }
 
+  // 그 나라 시간대의 오늘 (YYYY-MM-DD) — now = ms
+  function todayIn(c, now) {
+    var parts = new Intl.DateTimeFormat('en-CA', { timeZone: TZ[c], year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date(now));
+    var g = function (t) { for (var i = 0; i < parts.length; i++) if (parts[i].type === t) return parts[i].value; return ''; };
+    return g('year') + '-' + g('month') + '-' + g('day');
+  }
+  // 카드 날짜 태그 — 오늘 판정 = 번들 날짜의 시간대 (나라 종류 = 그 나라 · 공통(뉴스) = KST)
+  //   오늘보다 뒤 = 진행 중 · 오늘 = 오늘 · 직전 마감일 = 직전 마감 · 그보다 이전 = 이전 · 그 밖(직전 마감 ~ 오늘 사이) = 날짜만
+  function dateTag(M, c, d, now, common) {
+    if (!d) return { t: '', text: '' };
+    var t = todayIn(common ? 'kr' : c, now), cl = M.cty[c].close;
+    if (d > t) return { t: 'ahead', text: TAGS.ahead };
+    if (d === t) return { t: 'today', text: TAGS.today };
+    if (cl && d === cl) return { t: 'close', text: TAGS.close };
+    if (cl && d < cl) return { t: 'old', text: TAGS.old };
+    return { t: '', text: '' };
+  }
+  // 종류별 최신 (기본 화면) — 종류마다 그 종류의 최신일 카드 (그 나라 + 공통) · 순서 = 태그 단(TIER) → 분류기 SECTIONS
+  function latestCards(M, c, now) {
+    var out = [];
+    kindsFor(M, c).forEach(function (k, i) {
+      var d = datesFor(M, c, k)[0];
+      if (!d) return;
+      var cards = cardsAt(M, c, d, k);
+      var common = cards.length > 0 && cards.every(function (cd) { return cd.common; });
+      var tag = dateTag(M, c, d, now, common);
+      out.push({ k: k, d: d, cards: cards, common: common, tag: tag, tier: TIER[tag.t], i: i });
+    });
+    out.sort(function (a, b) { return a.tier - b.tier || a.i - b.i; });
+    return out;
+  }
+
   // 주소 쿼리 → 화면 상태 {c, k, d, q, sec, notes[]} — 오류는 조용히 바꾸지 않고 안내를 같이 준다
+  //   전체 탭 d 없음 = '' (종류별 최신) · d 지정 = 그 날짜만 · 종류 탭 = 그 종류 최신일 · q = 전체 목록 · 티커 탭 검색어
   function resolve(M, q) {
     q = q || {};
     var V = root.NIXV, N = root.NIX, notes = [];
     var c = q.c ? String(q.c).toLowerCase() : '', k = q.k ? String(q.k) : '', d = q.d ? String(q.d) : '';
-    var s = q.q ? String(q.q).trim() : '', hash = q.hash ? String(q.hash) : '', sec = '';
+    var s = q.q ? String(q.q).trim().slice(0, 100) : '', hash = q.hash ? String(q.hash) : '', sec = '';
     var first = firstCountry(M);
     var hm = /^#sec-([a-z0-9_]+)$/.exec(hash);
     if (hm) {
@@ -1032,7 +1115,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
       notes.push(warn(CTY[c] + ' 리포트가 아직 없어 ' + CTY[first] + ' 화면을 보여 줍니다.'));
       c = first;
     }
-    if (sec || s || hm) k = 'list';
+    if (sec || hm || (s && k !== 'ticker')) k = 'list';
     else if (!k) k = 'all';
     else if (k !== 'all' && k !== 'list') {
       if (!M.ki[k]) { notes.push(warn('종류 값 오류(k=' + k + ') — 전체를 보여 줍니다.')); k = 'all'; }
@@ -1040,7 +1123,8 @@ tr.dhr,.cty.m,.nt.m{display:none}
     }
     var ds = k === 'list' ? [] : datesFor(M, c, k), D = defaultDate(M, c, k);
     if (k !== 'list' && d && ds.length) {
-      if (!V.validDate(d)) notes.push(warn('날짜 형식 오류(d=' + d + ') — 기본 날짜 ' + D + ' 을 보여 줍니다 (형식: YYYY-MM-DD).'));
+      if (!V.validDate(d)) notes.push(warn('날짜 형식 오류(d=' + d + ') — ' + (k === 'all' ? '종류별 최신을' : '기본 날짜 ' + D + ' 을') +
+        ' 보여 줍니다 (형식: YYYY-MM-DD).'));
       else if (ds.indexOf(d) >= 0) D = d;
       else {
         var prev = '';
@@ -1050,17 +1134,20 @@ tr.dhr,.cty.m,.nt.m{display:none}
           (prev ? '직전 날짜 ' : '가장 오래된 날짜 ') + D + ' 을 보여 줍니다 (휴장일이거나 아직 올라가지 않은 날).'));
       }
     }
-    return { c: c, k: k, d: D, q: s, sec: sec, notes: notes };
+    return { c: c, k: k, d: D, q: (k === 'list' || k === 'ticker') ? s : '', sec: sec, notes: notes };
   }
-  // 화면 상태 → 쿼리 문자열 — c 는 항상 · k 는 '전체'면 생략 · d 는 그 탭의 기본 날짜면 생략 (탭 링크 = 늘 기본 날짜)
-  //   keep = 진단·테스트 소스(src · tree · manifest)는 그대로 유지
+  // 화면 상태 → 쿼리 문자열 — c 는 항상 · k 는 '전체'면 생략 · d 는 그 탭의 기본 날짜면 생략 (전체 = 날짜가 있으면 늘 · 탭 링크 = 기본)
+  //   q = 전체 목록 · 티커 탭 검색어 · keep = 진단·테스트 소스(src · tree · manifest)는 그대로 유지
   function query(M, st, keep) {
     var qs = new URLSearchParams();
     var k = st.k || 'all';
     qs.set('c', st.c);
     if (k !== 'all') qs.set('k', k);
     if (k === 'list') { if (st.q) qs.set('q', st.q); }
-    else if (st.d && st.d !== defaultDate(M, st.c, k)) qs.set('d', st.d);
+    else {
+      if (st.d && st.d !== defaultDate(M, st.c, k)) qs.set('d', st.d);
+      if (k === 'ticker' && st.q) qs.set('q', st.q);
+    }
     ['src', 'tree', 'manifest'].forEach(function (x) { if (keep && keep[x]) qs.set(x, keep[x]); });
     return qs.toString();
   }
@@ -1071,43 +1158,6 @@ tr.dhr,.cty.m,.nt.m{display:none}
     var h = (now - t) / 3600000;
     if (!(h > STALE_H)) return null;
     return { h: Math.floor(h), text: '목록 파일이 ' + Math.floor(h / 24) + '일 전(' + kst(t) + ')에 만들어졌습니다 — 새 리포트가 없었거나 배포가 멈췄을 수 있습니다.' };
-  }
-  // 그 나라 시간대의 오늘 (YYYY-MM-DD) — now = ms
-  function todayIn(c, now) {
-    var parts = new Intl.DateTimeFormat('en-CA', { timeZone: TZ[c], year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date(now));
-    var g = function (t) { for (var i = 0; i < parts.length; i++) if (parts[i].type === t) return parts[i].value; return ''; };
-    return g('year') + '-' + g('month') + '-' + g('day');
-  }
-  // 마감 번들 전 날짜의 상태 — today = 그 나라의 오늘 · past = 오늘 이전 (마감 번들이 끝내 없는 날) · ahead = 오늘 이후 (시간대 차이)
-  function liveState(c, d, now) { var t = todayIn(c, now); return d === t ? 'today' : d < t ? 'past' : 'ahead'; }
-  // 카드 1장 → 진행 중 카드 한 줄 재료 (토스 = 슬롯 전부 시각 순 · 그 밖 = 대표·주요 문서 LIVE_MAX 개 + 나머지 수)
-  function liveRow(cd) {
-    var row = { k: cd.k, common: cd.common, type: cd.type, n: cd.n };
-    if (cd.type === 'toss') {
-      row.slots = cd.slots.map(function (s) {
-        var lead = s.main || s.docs[0];
-        return { hm: s.hm, time: s.time, kind: s.kind, k: s.k, rep: s.rep, main: !!s.main,
-                 path: lead ? lead.path : '', label: lead ? lead.label : '' };
-      });
-      row.noClose = !cd.slots.some(function (s) { return s.rep; });
-      return row;
-    }
-    var docs = [];
-    cd.groups.forEach(function (g) { if (g.rep) docs.push(g.rep); g.main.forEach(function (d) { docs.push(d); }); });
-    if (!docs.length) cd.groups.forEach(function (g) { g.rest.forEach(function (d) { docs.push(d); }); });   // 주요가 없으면 그 밖의 문서
-    row.docs = docs.slice(0, LIVE_MAX).map(function (d) { return { path: d.path, label: d.label }; });
-    row.more = cd.n - row.docs.length;
-    return row;
-  }
-  // 진행 중 카드 — 기본 날짜보다 새 날짜 중 가장 새 날짜의 리포트 (그 날짜의 카드 전부 · 공통 뉴스 포함). 없으면 null.
-  //   휴장일(뉴스만) = 뉴스는 공통 범위라 나라 날짜가 아니다 → 진행 중 없음 (뉴스 안내 줄이 따로 알린다)
-  function live(M, c, now) {
-    var sc = M.cty[c];
-    if (!sc || !sc.pending.length) return null;
-    var d = sc.pending[0], cards = cardsAt(M, c, d), n = 0;
-    cards.forEach(function (cd) { n += cd.n; });
-    return { c: c, d: d, state: liveState(c, d, now), def: sc.def, close: sc.close, n: n,
-             rows: cards.map(liveRow), more: sc.pending.slice(1) };
   }
   // 전체 목록 탭 '대표' 배지 — 토스 행 = 행 수와 상관없이 대표(마감 슬롯)에 · 그 밖의 종류 = 보이는 행이 2개 이상일 때만 대표 행에
   function repBadge(M, rows) {
@@ -1124,11 +1174,95 @@ tr.dhr,.cty.m,.nt.m{display:none}
     return any;
   }
 
+  // ── 티커 ──
+  // 티커 색인(로컬 서버 _local/ticker/index.json) 검사 → {lists[{date, c, bundles, list_url}], bundles, count}. 어긋나면 Error.
+  function parseTickerIndex(j) {
+    var bad = function (why) { throw new Error('티커 색인 형식 오류 — ' + why); };
+    if (!j || typeof j !== 'object' || Array.isArray(j)) bad('최상위가 객체가 아닙니다.');
+    if (j.schema !== 1) bad('schema 불일치 (받은 값 ' + JSON.stringify(j.schema) + ' · 이 페이지가 읽는 값 1).');
+    if (!Array.isArray(j.lists)) bad('lists 가 배열이 아닙니다.');
+    if (j.count !== j.lists.length) bad('count(' + JSON.stringify(j.count) + ')와 목록 수(' + j.lists.length + ')가 다릅니다.');
+    var seen = {}, sum = 0;
+    var lists = j.lists.map(function (x, i) {
+      var at = 'lists[' + i + ']';
+      if (!x || typeof x !== 'object' || Array.isArray(x)) bad(at + ' 가 객체가 아닙니다.');
+      if (typeof x.date !== 'string' || !root.NIXV.validDate(x.date)) bad(at + '.date 형식 오류 (' + JSON.stringify(x.date) + ').');
+      if (x.c !== 'kr' && x.c !== 'us' && x.c !== 'etc') bad(at + '.c 값 오류 (' + JSON.stringify(x.c) + ' · 허용 kr · us · etc).');
+      if (typeof x.bundles !== 'number' || !(x.bundles >= 0) || Math.floor(x.bundles) !== x.bundles)
+        bad(at + '.bundles 가 0 이상 정수가 아닙니다 (' + JSON.stringify(x.bundles) + ').');
+      var u = x.list_url;
+      if (typeof u !== 'string' || !JSON_REL.test(u) || u.indexOf('..') >= 0)
+        bad(at + '.list_url 이 같은 사이트 상대 경로 .json 이 아닙니다 (' + JSON.stringify(u) + ').');
+      var key = x.date + '|' + x.c;
+      if (seen[key]) bad('같은 날짜·나라 목록이 두 번 있습니다 (' + key + ').');
+      seen[key] = 1;
+      sum += x.bundles;
+      return { date: x.date, c: x.c, bundles: x.bundles, list_url: u };
+    });
+    return { lists: lists, bundles: sum, count: lists.length, dates: Object.keys(lists.reduce(function (a, x) { a[x.date] = 1; return a; }, {})).length };
+  }
+  function alnum(s) { return String(s || '').replace(/[^A-Za-z0-9]/g, '').toLowerCase(); }
+  // 분류된 항목 → 티커 표 행 (구역 'ticker' 만 · 묶음(종목)마다 1행)
+  //   행 = {grp, date, c('KR'|'US'|'공통'), code, name, noName, rep(대표 문서), docs(그 밖 문서), n, hay(검색 대상 · 소문자)}
+  //   문서 = {path, label(라벨 앞 '{코드} ' 를 뺀 짧은 라벨 · 같은 라벨이 둘 이상이면 ' · 파일명'), rule, final}
+  //   대표 = 시그널 분석(tk_rep)·스캔(tk_scan) 첫 문서 → 없으면 첫 주요 문서 → 없으면 첫 문서 · 행 정렬 = 코드 순 (코드 없는 행 = 맨 앞)
+  function tickerRows(entries) {
+    var by = {}, rows = [];
+    entries.forEach(function (e) {
+      if (e.sec !== 'ticker') return;
+      var r = by[e.grp];
+      if (!r) {
+        r = by[e.grp] = { grp: e.grp, date: e.date, c: e.c, code: e.tk || '', name: e.sub || '', noName: false, rep: null, docs: [], n: 0, hay: '', src: [] };
+        rows.push(r);
+      }
+      r.src.push(e);
+    });
+    rows.forEach(function (r) {
+      var src = r.src.slice().sort(byOrd), pre = r.code ? r.code + ' ' : '', nl = {};
+      var docs = src.map(function (e) {
+        var lab = pre && e.label.indexOf(pre) === 0 ? e.label.slice(pre.length) : e.label;
+        nl[lab] = (nl[lab] || 0) + 1;
+        return { path: e.path, label: lab, rule: e.rule, final: !!e.final };
+      });
+      docs.forEach(function (d) { if (nl[d.label] > 1) d.label += ' · ' + base(d.path); });
+      var ri = -1, i;
+      for (i = 0; i < docs.length && ri < 0; i++) if (docs[i].rule === 'tk_rep' || docs[i].rule === 'tk_scan') ri = i;
+      for (i = 0; i < docs.length && ri < 0; i++) if (docs[i].final) ri = i;
+      if (ri < 0) ri = 0;
+      r.rep = docs[ri];
+      r.docs = docs.filter(function (d, j) { return j !== ri; });
+      r.n = docs.length;
+      r.noName = !r.name || alnum(r.name) === alnum(r.code);
+      r.hay = (r.code + ' ' + r.name + ' ' + r.name.replace(/\s+/g, '')).toLowerCase();
+      delete r.src;
+    });
+    return tickerSort(rows, 'code');
+  }
+  // 행 정렬 — 'code' = 코드 문자열 순 · 'name' = 이름 순 (이름 없는 행 = 뒤) · 코드 없는 행(스캔) = 늘 맨 앞
+  function tickerSort(rows, by) {
+    var key = function (r) { return by === 'name' ? (r.noName ? '￿' : r.name.toLowerCase()) : r.code; };
+    return rows.slice().sort(function (a, b) {
+      if (!a.code !== !b.code) return a.code ? 1 : -1;
+      var x = key(a), y = key(b);
+      if (x !== y) return x < y ? -1 : 1;
+      if (a.code !== b.code) return a.code < b.code ? -1 : 1;
+      return a.grp < b.grp ? -1 : a.grp > b.grp ? 1 : 0;
+    });
+  }
+  // 검색 — 공백으로 나눈 낱말이 모두 들어 있는 행 (대소문자 무시 · 이름은 공백 뺀 형태도 대상)
+  function tickerFilter(rows, q) {
+    var t = String(q || '').toLowerCase().split(/\s+/).filter(Boolean);
+    if (!t.length) return rows;
+    return rows.filter(function (r) { for (var i = 0; i < t.length; i++) if (r.hay.indexOf(t[i]) < 0) return false; return true; });
+  }
+
   root.NIXI = {
-    STALE_H: STALE_H, CTY: CTY, CLOSE_KINDS: CLOSE_KINDS, TZ: TZ, LIVE_MAX: LIVE_MAX,
+    STALE_H: STALE_H, CTY: CTY, CLOSE_KINDS: CLOSE_KINDS, TZ: TZ, TK_PAGE: TK_PAGE, TAGS: TAGS,
     kinds: kinds, build: build, firstCountry: firstCountry, kindsFor: kindsFor, datesFor: datesFor, defaultDate: defaultDate,
     cardsAt: cardsAt, missing: missing, etcAt: etcAt, resolve: resolve, query: query, stale: stale, repBadge: repBadge, tossNoRep: tossNoRep,
-    todayIn: todayIn, liveState: liveState, live: live, wd: wd, dlabel: dlabel, kst: kst
+    todayIn: todayIn, dateTag: dateTag, latestCards: latestCards,
+    parseTickerIndex: parseTickerIndex, tickerRows: tickerRows, tickerSort: tickerSort, tickerFilter: tickerFilter,
+    wd: wd, dlabel: dlabel, kst: kst
   };
 })(typeof window !== 'undefined' ? window : globalThis);
 </script>
@@ -1170,7 +1304,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
   function sget(kind, key) { try { var s = store(kind); return s ? JSON.parse(s.getItem(key) || 'null') : null; } catch (e) { return null; } }
   function sset(kind, key, val) { try { var s = store(kind); if (s) s.setItem(key, JSON.stringify(val)); } catch (e) { /* 저장 불가(사파리 개인정보 모드 등) — 화면은 그대로 */ } }
 
-  function mdl(d) { return d ? d.slice(5) + ' (' + wd(d) + ')' : ''; }
+  function mdl(d) { return d ? d + ' (' + wd(d) + ')' : ''; }
   function hmKst(ms) { return kst(ms).slice(11, 16); }
   function num(n) { return Number(n).toLocaleString('ko-KR'); }
   function href(p) { return p.split('/').map(encodeURIComponent).join('/'); }
@@ -1179,7 +1313,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
   //    테스트 = ?tree=<상대경로 .json>(트리 API 형식) · ?manifest=<상대경로 .json>(목록 파일 형식) ──
   function relJson(what, t) {
     if (!/^[A-Za-z0-9_\-][A-Za-z0-9_\-\/.]*\.json$/.test(t) || t.indexOf('..') >= 0)
-      throw new Error('테스트 ' + what + ' 주소가 허용 형식이 아닙니다 — 같은 사이트의 상대 경로 .json 만 됩니다: ' + t);
+      throw new Error(what + ' 주소가 허용 형식이 아닙니다 — 같은 사이트의 상대 경로 .json 만 됩니다: ' + t);
     return t;
   }
   // 브라우저·CDN 캐시 회피: 분 단위 쿼리 + no-cache (목록 파일은 배포 커밋마다 바뀐다)
@@ -1187,8 +1321,8 @@ tr.dhr,.cty.m,.nt.m{display:none}
   function treeSource() {
     var qs = new URLSearchParams(location.search);
     var t = qs.get('tree'), m = qs.get('manifest'), s = qs.get('src');
-    if (t) return { kind: 'tree', url: relJson('트리', t), name: t, test: true };
-    if (m) return { kind: 'manifest', url: bust(relJson('목록 파일', m)), name: m, test: true };
+    if (t) return { kind: 'tree', url: relJson('테스트 트리', t), name: t, test: true };
+    if (m) return { kind: 'manifest', url: bust(relJson('테스트 목록 파일', m)), name: m, test: true };
     if (s === 'api') return { kind: 'tree', url: API_URL, name: 'GitHub 트리 API', api: true };
     if (s && s !== 'manifest') throw new Error('알 수 없는 목록 소스입니다: src=' + s + ' (허용: api)');
     return { kind: 'manifest', url: bust(MANIFEST_URL), name: MANIFEST_URL };
@@ -1210,10 +1344,11 @@ tr.dhr,.cty.m,.nt.m{display:none}
   // 소스 목록을 받아 합친다 (지금은 1개 = 목록 파일 또는 저장소 트리 1회 GET).
   function fetchTrees(srcs) {
     return Promise.all(srcs.map(fetchTree)).then(function (rs) {
-      var out = { at: Date.now(), lm: '', gen: '', slice: '', rem: null, lim: null, total: 0, paths: [] };
+      var out = { at: Date.now(), lm: '', gen: '', slice: '', tl: '', rem: null, lim: null, total: 0, paths: [] };
       rs.forEach(function (r) {
         out.total += r.total; out.paths = out.paths.concat(r.paths);
         if (r.slice) out.slice = r.slice;
+        if (r.tl) out.tl = r.tl;
         if (r.lm && (!out.lm || Date.parse(r.lm) > Date.parse(out.lm))) out.lm = r.lm;
         if (r.gen && (!out.gen || Date.parse(r.gen) > Date.parse(out.gen))) out.gen = r.gen;
         if (r.rem != null) { out.rem = r.rem; out.lim = r.lim; }
@@ -1293,20 +1428,49 @@ tr.dhr,.cty.m,.nt.m{display:none}
     // 날짜 조각 목록(ticker_date 가 있는 목록 = 로컬 서버가 그 날짜·나라 번들만 담아 만든 것)은 낡음 검사 대상이 아니다 —
     //   지난 날짜 조각의 생성 시각이 오래된 것은 정상이다 (새 리포트가 없었다는 뜻이 아님). 전체 신선도는 목록 전체 파일이 알린다.
     var slice = typeof j.ticker_date === 'string' ? j.ticker_date : '';
-    return { total: j.count, paths: paths, gen: gen, slice: slice, lm: res.headers.get('last-modified') || '', rem: null, lim: null };
+    // ticker_lists = 로컬 서버 목록 파일에만 있는 티커 색인 주소 (티커는 메인 목록에서 빠지고 날짜×나라 조각으로 따로 낸다)
+    var tl = typeof j.ticker_lists === 'string' ? j.ticker_lists : '';
+    return { total: j.count, paths: paths, gen: gen, slice: slice, tl: tl, lm: (res && res.headers.get('last-modified')) || '', rem: null, lim: null };
+  }
+  // 같은 사이트 JSON 1회 GET (티커 색인 · 조각) — 실패는 Error (화면은 그 자리에 사유를 그린다 · 페이지 오류 화면 아님)
+  function getJson(u) {
+    return fetch(u, { cache: 'no-cache', credentials: 'omit' }).catch(function (err) {
+      throw new Error('네트워크 오류 (' + (err && err.message || err) + ')');
+    }).then(function (res) {
+      if (!res.ok) return res.text().then(function (txt) {
+        var msg = txt.replace(/<(script|style)[\s\S]*?<\/\1>/gi, ' ').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 160);
+        throw new Error('HTTP ' + res.status + (msg ? ' — ' + msg : '') + ' (' + u + ')');
+      });
+      return res.json().then(function (j) { return { j: j, res: res }; }, function (err) {
+        throw new Error('응답 JSON 을 해석하지 못했습니다 — ' + (err && err.message || err) + ' (' + u + ')');
+      });
+    });
+  }
+  // 티커 색인 (목록 파일의 ticker_lists · 로컬만) — 못 읽으면 tix = null + 사유 (티커 탭·카드만 빠지고 나머지 화면은 정상)
+  function loadTickerIndex(tl) {
+    if (!tl) return Promise.resolve({ tix: null, err: '' });
+    var u;
+    try { u = relJson('티커 색인', tl); } catch (e) { return Promise.resolve({ tix: null, err: e.message }); }
+    return getJson(u).then(function (r) { return { tix: I.parseTickerIndex(r.j), err: '' }; })
+      .catch(function (e) { return { tix: null, err: String(e && e.message || e) }; });
   }
 
   // ── 화면 상태 ──
   var UI = sget('localStorage', UI_KEY) || {};
   UI.collapsed = UI.collapsed || {};
   UI.all = !!UI.all;
+  UI.tsort = UI.tsort === 'name' ? 'name' : 'code';
   var DATA = null, SRC = null, RES = null, M = null;
+  var TIX = null, TIXERR = '';   // 티커 색인 (로컬만) · 못 읽은 사유
   var CUR = null, LASTKEY = '';
   var SEC = {};      // 전체 목록: id → {def, dates[desc], byDate{}, nFinal, nAll}
   var ST = {};       // 전체 목록: id → {mode:'recent'|'all'|'date', date}
   var Q = [];        // 검색어(소문자 · 공백 분리 · 모두 포함)
+  var TCACHE = {}, TFLIGHT = {};   // 티커 조각: 주소 → 분류된 행 (성공만 · 이 페이지가 열려 있는 동안) · 받는 중인 요청
+  var TK = null;     // 티커 탭 화면 상태 {r, rows(정렬됨), shown, box, tok}
+  var TKTOK = 0;     // 티커 탭 그리기 번호 — 늦게 온 응답이 다른 화면을 덮지 않게
 
-  function saveUI() { sset('localStorage', UI_KEY, { collapsed: UI.collapsed, all: UI.all }); }
+  function saveUI() { sset('localStorage', UI_KEY, { collapsed: UI.collapsed, all: UI.all, tsort: UI.tsort }); }
   function match(e) { for (var i = 0; i < Q.length; i++) if (e.hay.indexOf(Q[i]) < 0) return false; return true; }
 
   // ── 이동 (주소 = 화면 상태 · 뒤로 가기 됨) ──
@@ -1331,8 +1495,9 @@ tr.dhr,.cty.m,.nt.m{display:none}
     LASTKEY = key; CUR = r;
     renderTabs(r);
     renderNotes(r);
-    if (r.k === 'list') renderList(r); else renderDay(r);
-    document.title = 'NixStock 리포트 · ' + I.CTY[r.c] + (r.k === 'list' ? ' · 전체 목록' :
+    if (r.k !== 'ticker') { TK = null; TKTOK++; }   // 티커 탭을 떠나면 받는 중인 조각 응답은 그리지 않는다
+    if (r.k === 'list') renderList(r); else if (r.k === 'ticker') renderTicker(r); else renderDay(r);
+    document.title = 'NixStock 리포트 · ' + I.CTY[r.c] + (r.k === 'list' ? ' · 전체 목록' : r.k === 'all' && !r.d ? ' · 종류별 최신' :
       ' · ' + (r.k === 'all' ? '' : M.ki[r.k].label + ' · ') + dlabel(r.d));
     syncHdr();
     scrollHash();
@@ -1347,14 +1512,12 @@ tr.dhr,.cty.m,.nt.m{display:none}
   function renderTabs(r) {
     var ct = $('ctabs'); ct.textContent = '';
     ['kr', 'us'].forEach(function (c) {
-      var sc = M.cty[c], L = sc.def, P0 = sc.pending[0] || '';   // 라벨 날짜 = 기본 날짜 (마감 최신일) · 점 = 진행 중 날짜 있음
-      var lab = [h('span', { class: 'cn', text: I.CTY[c] }), h('span', { class: 'cd', text: L ? mdl(L) : '리포트 없음' }),
-                 P0 ? h('span', { class: 'cdot', 'aria-hidden': 'true', text: '●' }) : null];
+      var L = M.cty[c].latest;   // 라벨 날짜 = 그 나라 최신일
+      var lab = [h('span', { class: 'cn', text: I.CTY[c] }), h('span', { class: 'cd', text: L ? mdl(L) : '리포트 없음' })];
       if (!L) { ct.append(h('span', { class: 'ctab', 'aria-disabled': 'true', title: '리포트 없음' }, lab)); return; }
       var k2 = (r.k === 'all' || r.k === 'list' || I.kindsFor(M, c).indexOf(r.k) >= 0) ? r.k : 'all';
       ct.append(linkTo({ c: c, k: k2, q: k2 === 'list' ? r.q : '' },
-        { class: 'ctab', 'aria-current': c === r.c ? 'page' : null,
-          title: I.CTY[c] + (P0 ? ' 기본 ' + dlabel(L) + ' (마감 최신) · 진행 중 ' + dlabel(P0) : ' 최신 ' + dlabel(L)) }, lab));
+        { class: 'ctab', 'aria-current': c === r.c ? 'page' : null, title: I.CTY[c] + ' 최신 ' + dlabel(L) }, lab));
     });
     var kt = $('ktabs'); kt.textContent = '';
     var tabs = [{ k: 'all', label: '전체' }].concat(I.kindsFor(M, r.c).map(function (k) { return { k: k, label: M.ki[k].label }; }),
@@ -1379,6 +1542,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
     var age = Math.max(0, Math.round((Date.now() - DATA.at) / 60000));
     parts.push(['가져온 시각 ', h('b', { text: hmKst(DATA.at) }), DATA.cached ? ' (캐시 · ' + age + '분 전)' : '']);
     parts.push(['리포트 ', h('b', { text: num(RES.entries.length) }), '개']);
+    if (TIX) parts.push(['티커 색인 ', h('b', { text: num(TIX.bundles) }), '묶음 · ', h('b', { text: num(TIX.count) }), '목록']);
     if (DATA.rem != null && !DATA.cached) parts.push(['GitHub API 남은 요청 ', h('b', { text: DATA.rem + '/' + (DATA.lim || 60) }), ' (시간당 · IP 당)']);
     parts.forEach(function (p, i) { if (i) st.append(h('span', { class: 'sep', 'aria-hidden': 'true', text: '·' })); st.append(h('span', null, p)); });
     if (RES.rejected.length) st.append(h('div', { text: '경로 형식이 맞지 않아 뺀 항목 ' + RES.rejected.length + '개' }));
@@ -1389,15 +1553,13 @@ tr.dhr,.cty.m,.nt.m{display:none}
     var list = [];
     if (DATA.kind === 'manifest' && !DATA.slice) { var s = I.stale(DATA.gen, Date.now()); if (s) list.push({ lv: 'warn', text: s.text }); }
     r.notes.forEach(function (n) { list.push(n); });
-    if (r.k === 'all' && r.d === M.cty[r.c].def) {
-      var P0 = M.cty[r.c].pending[0] || '';
-      M.kinds.forEach(function (x) {   // 공통 종류(뉴스)가 나라 기본 날짜보다 더 최신 (진행 중 카드에 이미 보이는 날짜면 생략)
-        var cd = M.com.kd[x.k];
-        if (cd && cd.length && cd[0] > r.d && cd[0] > P0)
-          list.push({ lv: 'info', text: x.label + ' 리포트는 ' + dlabel(cd[0]) + '까지 있습니다 — ', link: { st: { c: r.c, k: x.k }, text: x.label + ' 탭' } });
-      });
+    if (TIXERR) list.push({ lv: 'warn', text: '티커 색인을 읽지 못했습니다 — ' + TIXERR + ' (티커 탭·카드 없이 보여 줍니다)' });
+    if (r.k === 'list' && M.tix) {   // 로컬 = 티커는 메인 목록에 없다 → 검색해도 안 나오는 이유를 한 줄로
+      var mx = 0; M.tix.lists.forEach(function (x) { if (x.bundles > mx) mx = x.bundles; });
+      list.push({ lv: 'info', text: '티커(날짜×나라별 최대 ' + num(mx) + '종목 · 색인 ' + num(M.tix.bundles) + '묶음)는 이 목록에 없습니다 — ',
+                  link: { st: { c: r.c, k: 'ticker' }, text: '티커 탭' } });
     }
-    if (r.k !== 'list') {
+    if (r.k !== 'list' && r.d) {
       var ne = I.etcAt(M, r.c, r.d);
       if (ne) list.push({ lv: 'info', text: '이 날짜에 분류 안 된 문서 ' + ne + '개 — ', link: { st: { c: r.c, k: 'list', hash: '#sec-etc' }, text: '전체 목록의 기타' } });
     }
@@ -1410,16 +1572,29 @@ tr.dhr,.cty.m,.nt.m{display:none}
     });
   }
 
-  // ── 날짜 화면 (전체 · 종류 탭) ──
+  // ── 날짜 화면 (종류별 최신 · 날짜 지정 · 종류 탭) ──
   function navBtn(st, ok, txt, label) {
     if (!ok) return h('span', { class: 'nb', 'aria-disabled': 'true', title: label, text: txt });
     return linkTo(st, { class: 'nb', 'aria-label': label, title: label }, txt);
   }
-  function optLabel(r, d, latest, def) {
+  // 카드·머리 날짜 태그 칩 (오늘 · 진행 중 · 직전 마감 · 이전) — 태그 없는 날짜(직전 마감 ~ 오늘 사이) = null
+  var TAG_TIP = { close: '이 나라 마감 리포트(마켓온도 · 택티컬)가 있는 최신일', old: '직전 마감일보다 이전 날짜 (이 종류의 더 새 리포트는 아직 없음)' };
+  function tagChip(c, tg, common, id) {
+    if (!tg || !tg.t) return null;
+    var tz = common || c === 'kr' ? '한국 날짜 기준' : '미 동부 날짜 기준';
+    var tip = TAG_TIP[tg.t] || (tg.t === 'ahead' ? tz + ' — 그 시간대의 오늘보다 뒤 날짜' : tz);
+    return h('span', { class: 'tag ' + tg.t, id: id || null, title: tip, text: tg.text });
+  }
+  function tkCount(cards) { var n = 0; cards.forEach(function (cd) { n += cd.ns; }); return n; }
+  function optLabel(r, d, latest) {
     var cs = I.cardsAt(M, r.c, d, r.k === 'all' ? null : r.k);
     var n = 0; cs.forEach(function (cd) { n += cd.n; });
-    var tag = d === def ? (def === latest ? ' · 최신' : ' · 기본 (마감 최신)') : (r.k === 'all' && d > def ? ' · 마감 전' : '');
-    return dlabel(d) + tag + ' · ' + (r.k === 'all' ? cs.length + '종' : '문서 ' + num(n));
+    var tag = '';
+    if (r.k === 'all') {
+      var tg = I.dateTag(M, r.c, d, Date.now(), false);
+      if (tg.t === 'today' || tg.t === 'ahead' || tg.t === 'close') tag = ' · ' + tg.text;
+    } else if (d === latest) tag = ' · 최신';
+    return dlabel(d) + tag + ' · ' + (r.k === 'all' ? cs.length + '종' : r.k === 'ticker' ? num(tkCount(cs)) + '종목' : '문서 ' + num(n));
   }
   function newTab(path, label, full) {
     return h('a', { class: 'nt', href: href(path), target: '_blank', rel: 'noopener', title: PAGES_BASE + path,
@@ -1443,11 +1618,13 @@ tr.dhr,.cty.m,.nt.m{display:none}
   function noCloseChip() {
     return h('span', { class: 'nbdg', title: '이 날짜 폴더에 장마감 슬롯이 아직 없어 대표 표시가 없습니다 (장마감 전이거나 마감 폴더가 없는 날).', text: '마감 슬롯 없음' });
   }
-  function cardHead(r, cd, D, latestK) {
-    var lab = M.ki[cd.k].label + (cd.common ? ' (공통)' : '');
+  function kindLabel(k, common) { return M.ki[k].label + (common ? (k === 'ticker' ? ' (나라 미상)' : ' (공통)') : ''); }
+  // 카드 머리 — tg(종류별 최신에서만) = 카드 날짜 + 태그 칩
+  function cardHead(r, cd, D, latestK, tg) {
+    var lab = kindLabel(cd.k, cd.common);
     var title = r.k === 'all' ? linkTo({ c: r.c, k: cd.k, d: D }, { title: lab + ' 탭에서 이 날짜 보기' }, lab) : lab;
-    var cnt = cd.type === 'toss'
-      ? '슬롯 ' + cd.slots.length + ' · 전체 ' + num(cd.n)
+    var cnt = cd.type === 'toss' ? '슬롯 ' + cd.slots.length + ' · 전체 ' + num(cd.n)
+      : cd.k === 'ticker' ? num(cd.ns) + '종목' + (cd.type === 'tidx' ? ' (색인)' : ' · 문서 ' + num(cd.n))
       : '주요 ' + num(cd.nf) + ' · 전체 ' + num(cd.n);
     var vw = null;
     if (cd.type === 'bundle') {
@@ -1455,12 +1632,18 @@ tr.dhr,.cty.m,.nt.m{display:none}
       vw = h('a', { class: 'vw', href: u, title: '고정 주소 뷰어 (' + cd.k + '/' + r.c + '/) — 날짜·문서 선택' }, '뷰어 ↗');
     }
     var nr = cd.type === 'toss' && !cd.slots.some(function (s) { return s.rep; });   // 마감 슬롯 없음 = 대표 없음 (중립 칩)
-    return h('div', { class: 'ch' }, h('h3', null, title), h('span', { class: 'cnt', text: cnt }), nr ? noCloseChip() : null, vw);
+    return h('div', { class: 'ch' }, h('h3', null, title),
+      tg ? h('span', { class: 'cdate', text: mdl(D) }) : null, tg ? tagChip(r.c, tg, cd.common) : null,
+      h('span', { class: 'cnt', text: cnt }), nr ? noCloseChip() : null, vw);
   }
-  function renderCard(r, cd, D, open) {
+  function renderCard(r, cd, D, open, tg) {
     var latestK = I.datesFor(M, r.c, cd.k)[0];
-    var el = h('section', { class: 'card' + (cd.type === 'toss' ? ' wide' : ''), 'data-k': cd.k, 'aria-label': M.ki[cd.k].label },
-      cardHead(r, cd, D, latestK));
+    var el = h('section', { class: 'card' + (cd.type === 'toss' ? ' wide' : ''), 'data-k': cd.k, 'data-d': D, 'aria-label': kindLabel(cd.k, cd.common) },
+      cardHead(r, cd, D, latestK, tg));
+    if (cd.k === 'ticker') {   // 티커 = 종목 수 + 티커 탭 링크 (문서 목록 없음 · 로컬은 이 카드 때문에 조각을 받지 않는다)
+      el.append(h('div', { class: 'tkn1' }, linkTo({ c: r.c, k: 'ticker', d: D }, { class: 'tkgo', title: dlabel(D) + ' 종목 표' }, '티커 탭에서 보기 →')));
+      return el;
+    }
     if (cd.type === 'toss') {
       var box = h('div', { class: 'slots' });
       cd.slots.forEach(function (s) {
@@ -1491,82 +1674,64 @@ tr.dhr,.cty.m,.nt.m{display:none}
     });
     return el;
   }
-  // ── 진행 중 카드 (기본 화면 위 · 기본 날짜보다 새 날짜 = 마감 번들 전) ──
-  var LIVE_TXT = { today: '오늘 진행 중', ahead: '진행 중', past: '마감 리포트 없음' };
-  function closeNames() { return I.CLOSE_KINDS.map(function (k) { return M.ki[k].label; }).join('·'); }
-  function renderLive(r, L) {
-    var st = LIVE_TXT[L.state];
-    var box = h('section', { class: 'live ' + L.state, id: 'live', 'aria-label': st + ' ' + dlabel(L.d) },
-      h('div', { class: 'lh' },
-        h('span', { class: 'lst', text: st }),
-        h('span', { class: 'ld', text: dlabel(L.d) }),
-        h('span', { class: 'lsum' }, '리포트 ', h('b', { text: String(L.rows.length) }), '종 · 문서 ', h('b', { text: num(L.n) }), '개'),
-        linkTo({ c: r.c, k: 'all', d: L.d }, { class: 'lgo', title: dlabel(L.d) + ' 날짜 화면' }, '이 날짜 보기 →')),
-      h('div', { class: 'lnote' }, (L.state === 'past'
-        ? '이 날짜에는 마감 리포트(' + closeNames() + ')가 없습니다. '
-        : '마감 리포트(' + closeNames() + ')는 아직 없습니다. 올라오면 이 날짜가 기본 화면이 됩니다. ') +
-        '아래 = 마감 리포트가 있는 최신일 ', h('b', { text: mdl(L.def) })));
-    L.rows.forEach(function (x) {
-      var lab = M.ki[x.k].label + (x.common ? ' (공통)' : '');
-      var v = h('div', { class: 'lv' });
-      if (x.slots) {   // 토스 = 그날 슬롯 전부 (시각 순) · 대표 = 마감 슬롯만 · 마감 전이면 중립 칩
-        x.slots.forEach(function (s) {
-          var t = [h('b', { text: s.time }), ' ' + s.kind];
-          v.append(s.path
-            ? h('a', { class: 'chip' + (s.rep ? ' rp' : ''), href: href(s.path), 'data-hm': s.hm, title: s.label + ' — ' + PAGES_BASE + s.path }, t)
-            : h('span', { class: 'chip zero', 'data-hm': s.hm }, t));
-        });
-        if (x.noClose) v.append(noCloseChip());
-      } else {
-        x.docs.forEach(function (d) { v.append(h('a', { class: 'chip', href: href(d.path), title: PAGES_BASE + d.path, text: d.label })); });
-        if (x.more > 0) v.append(linkTo({ c: r.c, k: x.k, d: L.d }, { class: 'chip zero', title: lab + ' 탭에서 이 날짜 보기' }, '외 ' + num(x.more) + '개'));
-      }
-      box.append(h('div', { class: 'lrow', 'data-k': x.k },
-        linkTo({ c: r.c, k: x.k, d: L.d }, { class: 'lk', title: lab + ' 탭에서 이 날짜 보기' }, lab), v));
-    });
-    if (L.more.length) {
-      var more = [];
-      L.more.forEach(function (d, i) { if (i) more.push(' · '); more.push(linkTo({ c: r.c, k: 'all', d: d }, null, mdl(d))); });
-      box.append(h('div', { class: 'lnote' }, '그 밖의 마감 전 날짜: ', more));
+  // '이전' 태그 종류 = 한 줄 카드 (종류 · 날짜 · 태그 · 그 종류 탭 링크)
+  function miniCard(r, x) {
+    var lab = kindLabel(x.k, x.common);
+    return h('section', { class: 'card mini', 'data-k': x.k, 'data-d': x.d, 'aria-label': lab + ' ' + dlabel(x.d) },
+      h('div', { class: 'ch' }, h('h3', null, lab), h('span', { class: 'cdate', text: dlabel(x.d) }), tagChip(r.c, x.tag, x.common),
+        linkTo({ c: r.c, k: x.k }, { class: 'go', title: M.ki[x.k].label + ' 탭 (최신 ' + dlabel(x.d) + ')' }, M.ki[x.k].label + ' 탭에서 보기 →')));
+  }
+  function recentChips(r, ds) {
+    return h('div', { class: 'recent', 'aria-label': '최근 날짜' }, ds.slice(0, N_RECENT).map(function (d) {
+      return linkTo({ c: r.c, k: r.k, d: d, q: r.q }, { class: 'chip', 'aria-current': d === r.d ? 'page' : null }, mdl(d));
+    }));
+  }
+  // 날짜 머리 (큰 날짜 · 최신/태그 칩 · ◀ 날짜 선택 ▶ · 요약 줄) — 종류별 최신 · 날짜 화면 · 종류 탭 · 티커 탭 공통
+  //   종류별 최신: 큰 날짜 = 그 나라 최신일 · ◀ = 그 이전 날짜 · ▶ 없음
+  //   전체 날짜 화면: 태그 칩 + '종류별 최신 →' · 맨 앞 날짜의 ▶ = 종류별 최신 · 날짜 선택 첫 옵션 = 종류별 최신
+  //   sum = 요약 줄 자식 (평평한 배열)
+  function dayHead(r, ds, sum) {
+    var isAll = r.k === 'all', latestMode = isAll && !r.d, latest = ds[0], q = r.q;
+    var big = latestMode ? M.cty[r.c].latest : r.d, i = latestMode ? -1 : ds.indexOf(r.d);
+    var chip;
+    if (latestMode) chip = h('span', { class: 'lchip', text: I.CTY[r.c] + ' 최신' });
+    else if (isAll) chip = [tagChip(r.c, I.dateTag(M, r.c, r.d, Date.now(), false), false, 'dtag'),
+                            linkTo({ c: r.c, k: 'all' }, { class: 'tolatest', title: '종류마다 가장 최근 리포트' }, '종류별 최신 →')];
+    else chip = r.d === latest ? h('span', { class: 'lchip', text: I.CTY[r.c] + ' 최신' })
+                               : linkTo({ c: r.c, k: r.k, q: q }, { class: 'tolatest' }, '최신 ' + mdl(latest) + ' →');
+    var opts = ds.map(function (d) { return h('option', { value: d, selected: d === r.d, text: optLabel(r, d, latest) }); });
+    if (isAll) opts.unshift(h('option', { value: '', selected: latestMode, text: '종류별 최신 (기본)' }));
+    var sel = h('select', { id: 'dsel', 'aria-label': '날짜', onchange: function (ev) { go({ c: r.c, k: r.k, d: ev.target.value, q: r.q }); } }, opts);
+    var prev = latestMode ? (ds[1] || '') : (ds[i + 1] || ''), next = null;
+    if (!latestMode) {
+      if (i > 0) next = { c: r.c, k: r.k, d: ds[i - 1], q: q };
+      else if (isAll) next = { c: r.c, k: 'all' };                  // 맨 앞 날짜 ▶ = 종류별 최신
     }
-    return box;
+    return h('section', { class: 'day', 'aria-label': '날짜 선택' },
+      h('div', { class: 'dh' },
+        h('div', { class: 'dt1' }, h('span', { class: 'big', id: 'dbig', text: dlabel(big) }), chip),
+        h('div', { class: 'dnav' },
+          navBtn({ c: r.c, k: r.k, d: prev, q: q }, !!prev, '◀', '이전 날짜 (더 오래된 날짜)'),
+          h('label', null, h('span', { class: 'sr', text: '날짜' }), sel),
+          navBtn(next || {}, !!next, '▶', next && !next.d ? '다음 — 종류별 최신' : '다음 날짜 (더 최근 날짜)'))),
+      h('div', { class: 'sum' }, sum));
   }
   function renderDay(r) {
     $('listctl').hidden = true; $('jump').hidden = true;
     var main = $('main'); main.textContent = '';
     var ds = I.datesFor(M, r.c, r.k);
-    if (!ds.length || !r.d) { main.append(h('div', { class: 'empty', text: I.CTY[r.c] + ' 에 올라간 리포트가 아직 없습니다.' })); return; }
-    var latest = ds[0], i = ds.indexOf(r.d), def = I.defaultDate(M, r.c, r.k), isAll = r.k === 'all';
-    var pend = isAll && def !== latest;   // 전체 탭에 마감 전 날짜가 있다 (기본 = 마감 최신일 · 최신일보다 이전)
+    if (!ds.length || (!r.d && r.k !== 'all')) { main.append(h('div', { class: 'empty', text: I.CTY[r.c] + ' 에 올라간 리포트가 아직 없습니다.' })); return; }
+    if (!r.d) { renderLatest(r, ds, main); return; }
     var cards = I.cardsAt(M, r.c, r.d, r.k === 'all' ? null : r.k);
-    var nDoc = 0; cards.forEach(function (cd) { nDoc += cd.n; });
-    var sel = h('select', { id: 'dsel', 'aria-label': '날짜', onchange: function (ev) { go({ c: r.c, k: r.k, d: ev.target.value }); } },
-      ds.map(function (d) { return h('option', { value: d, selected: d === r.d, text: optLabel(r, d, latest, def) }); }));
-    var head = h('section', { class: 'day', 'aria-label': '날짜 선택' },
-      h('div', { class: 'dh' },
-        h('div', { class: 'dt1' },
-          h('span', { class: 'big', id: 'dbig', text: dlabel(r.d) }),
-          r.d === def ? h('span', { class: 'lchip', text: I.CTY[r.c] + (pend ? ' 기본 · 마감 최신' : ' 최신') })
-                      : linkTo({ c: r.c, k: r.k }, { class: 'tolatest' }, (pend ? '기본(마감 최신) ' : '최신 ') + mdl(def) + ' →'),
-          isAll && r.d > def ? h('span', { class: 'nbdg', id: 'dlive', title: '마감 리포트(' + closeNames() + ')가 아직 없는 날짜',
-            text: LIVE_TXT[I.liveState(r.c, r.d, Date.now())] }) : null),
-        h('div', { class: 'dnav' },
-          navBtn({ c: r.c, k: r.k, d: ds[i + 1] }, i + 1 < ds.length, '◀', '이전 날짜 (더 오래된 날짜)'),
-          h('label', null, h('span', { class: 'sr', text: '날짜' }), sel),
-          navBtn({ c: r.c, k: r.k, d: ds[i - 1] }, i > 0, '▶', '다음 날짜 (더 최근 날짜)'))),
-      h('div', { class: 'sum' }, r.k === 'all'
-        ? ['리포트 ', h('b', { text: String(cards.length) }), '종 · 문서 ', h('b', { text: num(nDoc) }), '개']
-        : [M.ki[r.k].label + ' · 문서 ', h('b', { text: num(nDoc) }), '개 · 이 종류 날짜 ', h('b', { text: String(ds.length) }), '일']));
-    if (r.k !== 'all') {
-      head.append(h('div', { class: 'recent', 'aria-label': '최근 날짜' }, ds.slice(0, N_RECENT).map(function (d) {
-        return linkTo({ c: r.c, k: r.k, d: d }, { class: 'chip', 'aria-current': d === r.d ? 'page' : null }, mdl(d));
-      })));
-    }
-    var L = isAll && r.d === def ? I.live(M, r.c, Date.now()) : null;   // 기본 화면에서만 (날짜를 고르면 그 날짜 그대로)
-    if (L) main.append(renderLive(r, L));
+    var nDoc = 0, nTk = tkCount(cards); cards.forEach(function (cd) { nDoc += cd.n; });
+    var head = dayHead(r, ds, r.k === 'all'
+      ? ['리포트 ', h('b', { text: String(cards.length) }), '종 · 문서 ', h('b', { text: num(nDoc) }), '개'].concat(
+          nTk ? [' · 티커 ', h('b', { text: num(nTk) }), '종목'] : [])
+      : [M.ki[r.k].label + ' · 문서 ', h('b', { text: num(nDoc) }), '개 · 이 종류 날짜 ', h('b', { text: String(ds.length) }), '일']);
+    if (r.k !== 'all') head.append(recentChips(r, ds));
     main.append(head);
     var grid = h('div', { class: 'cards' });
-    cards.forEach(function (cd) { grid.append(renderCard(r, cd, r.d, r.k !== 'all')); });
+    cards.forEach(function (cd) { grid.append(renderCard(r, cd, r.d, r.k !== 'all', null)); });
     main.append(grid);
     if (r.k === 'all') {
       var miss = I.missing(M, r.c, r.d);
@@ -1576,6 +1741,190 @@ tr.dhr,.cty.m,.nt.m{display:none}
           x.next ? [' · 다음 ', linkTo({ c: r.c, k: x.k, d: x.next }, null, mdl(x.next))] : null);
       })));
     }
+  }
+  // 종류별 최신 (기본 화면) — 종류마다 그 종류의 최신일 카드 + 날짜 태그 · 순서 = 오늘 → 직전 마감 → 날짜만 → 이전(한 줄)
+  function renderLatest(r, ds, main) {
+    var L = I.latestCards(M, r.c, Date.now()), nDoc = 0, nTk = 0;
+    L.forEach(function (x) { x.cards.forEach(function (cd) { nDoc += cd.n; if (cd.k === 'ticker') nTk += cd.ns; }); });
+    main.append(dayHead(r, ds, ['종류별 최신 · 리포트 ', h('b', { text: String(L.length) }), '종 · 문서 ', h('b', { text: num(nDoc) }), '개']
+      .concat(nTk ? [' · 티커 ', h('b', { text: num(nTk) }), '종목'] : [])));
+    var grid = h('div', { class: 'cards' });
+    L.forEach(function (x) {
+      if (x.tag.t === 'old') grid.append(miniCard(r, x));
+      else x.cards.forEach(function (cd) { grid.append(renderCard(r, cd, x.d, false, x.tag)); });
+    });
+    main.append(grid);
+  }
+
+  // ── 티커 탭 (날짜별 종목 표 — 공개 = 목록 파일의 티커 항목 · 로컬 = 색인의 날짜×나라 조각) ──
+  // 조각 1개 GET → 분류 → 행 (성공만 캐시 · 같은 주소 동시 요청 = 1회)
+  function loadFrag(src) {
+    if (TCACHE[src.url]) return Promise.resolve(TCACHE[src.url]);
+    if (TFLIGHT[src.url]) return TFLIGHT[src.url];
+    var p = getJson(src.url).then(function (x) {
+      var j = x.j, mf = parseManifest(j, x.res), cl = window.NIX.classify(mf.paths);
+      var v = { url: src.url, c: src.c, rows: I.tickerRows(cl.entries), files: mf.total, rejected: cl.rejected.length,
+                bundles: typeof j.bundles === 'number' ? j.bundles : null,
+                tdate: typeof j.ticker_date === 'string' ? j.ticker_date : '', tc: typeof j.ticker_country === 'string' ? j.ticker_country : '' };
+      TCACHE[src.url] = v;
+      return v;
+    });
+    TFLIGHT[src.url] = p;
+    var clear = function () { delete TFLIGHT[src.url]; };
+    p.then(clear, clear);
+    return p;
+  }
+  function tkHead(r, ds) {
+    TK.sum = h('span', { id: 'tksum' });
+    var head = dayHead(r, ds, [TK.sum]);
+    head.append(recentChips(r, ds));
+    setTkSum();
+    return head;
+  }
+  function renderTicker(r) {
+    $('listctl').hidden = true; $('jump').hidden = true;
+    var main = $('main'); main.textContent = '';
+    var ds = I.datesFor(M, r.c, 'ticker');
+    if (!ds.length || !r.d) { main.append(h('div', { class: 'empty', text: I.CTY[r.c] + ' 에 티커 리포트가 아직 없습니다.' })); return; }
+    var nC = 0, nU = 0;
+    I.cardsAt(M, r.c, r.d, 'ticker').forEach(function (cd) { if (cd.common) nU += cd.ns; else nC += cd.ns; });
+    var tok = ++TKTOK;
+    TK = { r: r, ds: ds, all: null, rows: null, files: 0, shown: 0, tok: tok, nC: nC, nU: nU, sum: null, head: null, box: null };
+    TK.head = tkHead(r, ds);
+    main.append(TK.head);
+    var tq = h('input', { id: 'tq', type: 'search', autocomplete: 'off', spellcheck: 'false', enterkeyhint: 'search',
+      placeholder: '코드·이름 검색 (예: 005930 · samsung · AAPL)', oninput: onTq });
+    tq.value = r.q;
+    var seg = h('div', { class: 'seg', role: 'group', 'aria-label': '정렬', id: 'tsort' }, [['code', '코드순'], ['name', '이름순']].map(function (x) {
+      return h('button', { type: 'button', 'data-s': x[0], 'aria-pressed': String(UI.tsort === x[0]), onclick: function () { setTsort(x[0]); }, text: x[1] });
+    }));
+    main.append(h('div', { class: 'tkctl' }, h('label', { class: 'q' }, h('span', { class: 'sr', text: '티커 검색어' }), tq), seg));
+    TK.box = h('div', { id: 'tkbox' });
+    main.append(TK.box);
+    if (!M.tix) {   // 공개 = 목록 파일의 티커 항목 (그 나라 + 나라 미상)
+      var C = I.CTY[r.c];
+      var ents = RES.entries.filter(function (e) { return e.sec === 'ticker' && e.date === r.d && (e.c === C || e.c === '공통'); });
+      tkShow(I.tickerRows(ents), ents.length, []);
+      return;
+    }
+    var srcs = [];
+    [r.c, 'etc'].forEach(function (cc) { var u = M.tl[r.d + '|' + cc]; if (u) srcs.push({ url: u, c: cc }); });
+    TK.box.append(h('div', { class: 'loading', text: '티커 목록 불러오는 중 · ' + num(nC + nU) + '종목 (색인)' }));
+    Promise.all(srcs.map(loadFrag)).then(function (fs) {
+      if (tok !== TKTOK) return;                         // 그 사이 다른 화면 — 그리지 않는다 (캐시에는 남는다)
+      var rows = [], files = 0, notes = [];
+      fs.forEach(function (f) {
+        rows = rows.concat(f.rows); files += f.files;
+        if (f.tdate !== r.d || f.tc !== f.c)
+          notes.push({ lv: 'warn', text: '조각 표식이 요청과 다릅니다 — ' + f.url + ' (날짜 ' + (f.tdate || '없음') + ' · 나라 ' + (f.tc || '없음') + ')' });
+        if (f.bundles != null && f.bundles > f.rows.length)
+          notes.push({ lv: 'info', text: 'HTML 없는 묶음 ' + num(f.bundles - f.rows.length) + '개 (목록에서 제외 · ' + f.url + ')' });
+        if (f.rejected) notes.push({ lv: 'warn', text: '경로 형식이 맞지 않아 뺀 항목 ' + num(f.rejected) + '개 (' + f.url + ')' });
+      });
+      tkShow(rows, files, notes);
+    }, function (e) {
+      if (tok !== TKTOK) return;
+      TK.box.textContent = '';
+      TK.box.append(h('div', { class: 'err', role: 'alert' },
+        h('h2', { text: '티커 목록을 가져오지 못했습니다' }),
+        h('p', { class: 'why', text: String(e && e.message || e) }),
+        h('p', null, h('button', { class: 'btn', type: 'button', text: '다시 시도', onclick: function () { LASTKEY = ''; route(); } }))));
+    });
+  }
+  function tkShow(rows, files, notes) {
+    var t = TK;
+    t.all = rows; t.files = files;
+    t.box.textContent = '';
+    notes.forEach(function (n) {
+      t.box.append(h('div', { class: 'ln ' + n.lv, role: n.lv === 'warn' ? 'alert' : null },
+        h('span', { class: 'mk', 'aria-hidden': 'true', text: n.lv === 'warn' ? '⚠️' : 'ℹ️' }), h('span', { class: 'tx', text: n.text })));
+    });
+    t.list = h('div', { id: 'tklist' });
+    t.box.append(t.list);
+    tkRender();
+  }
+  // 검색·정렬 반영 → 첫 TK_PAGE 행 (펼치기 내용은 열 때 만든다)
+  function tkRender() {
+    var t = TK;
+    if (!t || !t.all) return;
+    t.rows = I.tickerSort(I.tickerFilter(t.all, t.r.q), UI.tsort);
+    t.list.textContent = '';
+    t.shown = 0;
+    setTkSum();
+    if (!t.rows.length) {
+      t.list.append(h('div', { class: 'empty', text: t.all.length ? '검색 결과가 없습니다: ' + t.r.q : '이 날짜에 HTML 이 있는 티커 리포트가 없습니다.' }));
+      return;
+    }
+    t.tbody = h('tbody');
+    t.list.append(h('div', { class: 'tblwrap' }, h('table', { class: 'tkt' }, h('caption', { class: 'sr', text: '티커 리포트 목록' }),
+      h('thead', null, h('tr', null, h('th', { scope: 'col', text: '코드' }), h('th', { scope: 'col', text: '이름' }), h('th', { scope: 'col', text: '대표 문서' }))),
+      t.tbody)));
+    t.more = h('div', { class: 'tkmore' });
+    t.list.append(t.more);
+    tkMore(I.TK_PAGE);
+  }
+  function tkMore(n) {
+    var t = TK, end = Math.min(t.rows.length, t.shown + n), frag = document.createDocumentFragment();
+    for (var i = t.shown; i < end; i++) frag.append(tkRow(t.rows[i]));
+    t.tbody.append(frag);
+    t.shown = end;
+    t.more.textContent = '';
+    var left = t.rows.length - t.shown;
+    t.more.hidden = left <= 0;
+    if (left > 0) t.more.append(
+      h('button', { class: 'btn', type: 'button', id: 'tkmore', onclick: function () { tkMore(I.TK_PAGE); },
+        text: '더 보기 (+' + num(Math.min(left, I.TK_PAGE)) + ' · 남은 ' + num(left) + '종목)' }),
+      h('button', { class: 'btn', type: 'button', id: 'tkall', onclick: function () { tkMore(left); }, text: '모두 보기 (' + num(t.rows.length) + '종목)' }));
+  }
+  function tkRow(x) {
+    var rep = x.rep;
+    var more = x.docs.length ? h('details', { class: 'more', ontoggle: function (ev) {
+      var d = ev.currentTarget;
+      if (!d.open || d.querySelector('ul')) return;
+      d.append(h('ul', null, x.docs.map(function (dd) {
+        return h('li', null, h('a', { href: href(dd.path), title: PAGES_BASE + dd.path, text: dd.label }), ' ', newTab(dd.path, dd.label, false));
+      })));
+    } }, h('summary', { text: '그 밖 ' + num(x.docs.length) + '개' })) : null;
+    return h('tr', { 'data-g': x.grp },
+      h('td', { class: 'tkc' }, x.code ? h('b', { text: x.code }) : h('span', { class: 'nodash', text: '—' }),
+        x.c === '공통' ? h('span', { class: 'nk', title: '폴더 이름에 나라가 없는 옛 묶음', text: '나라 미상' }) : null),
+      h('td', { class: 'tkn', title: x.grp.slice(x.grp.indexOf('/') + 1) }, x.noName ? h('span', { class: 'nodash', text: '—' }) : x.name),
+      h('td', { class: 'tkr' }, h('div', { class: 'rl' },
+        h('a', { class: 'dl', href: href(rep.path), title: PAGES_BASE + rep.path, text: rep.label }), newTab(rep.path, rep.label, false)), more));
+  }
+  // 요약 줄 — 받기 전 = 색인 종목 수 · 받은 뒤 = 표 행 수 · 문서 수 (+ 나라 미상 · 검색 결과 수)
+  function setTkSum() {
+    var t = TK;
+    if (!t || !t.sum) return;
+    var nC = t.nC, nU = t.nU, idx = !t.all;
+    if (t.all) { nC = 0; nU = 0; t.all.forEach(function (x) { if (x.c === '공통') nU++; else nC++; }); }
+    var kids = [I.CTY[t.r.c] + ' ' + dlabel(t.r.d) + ' · ', h('b', { text: num(nC) }), '종목' + (idx && M.tix ? ' (색인)' : '')];
+    if (t.all) kids.push(' · 문서 ', h('b', { text: num(t.files) }), '개');
+    if (nU) kids.push(' + 나라 미상 ', h('b', { text: num(nU) }), '종목');
+    if (t.rows && t.r.q) kids.push(' · 검색 ', h('b', { text: num(t.rows.length) }), '종목');
+    t.sum.textContent = '';
+    kids.forEach(function (k) { t.sum.append(k); });
+  }
+  var tqTimer = null;
+  function onTq(ev) {
+    var el = ev.target;
+    clearTimeout(tqTimer);
+    tqTimer = setTimeout(function () {
+      if (!TK || !CUR || CUR.k !== 'ticker') return;
+      var v = el.value.trim().slice(0, 100);
+      if (v === CUR.q) return;
+      CUR.q = v; LASTKEY = stKey(CUR);
+      history.replaceState(null, '', urlFor({ c: CUR.c, k: 'ticker', d: CUR.d, q: v }));   // 검색어도 주소에 (공유 · 새로 고침 유지)
+      var nh = tkHead(CUR, TK.ds);                                                          // 날짜 이동 링크에 검색어 반영
+      TK.head.replaceWith(nh); TK.head = nh;
+      tkRender();
+    }, 120);
+  }
+  function setTsort(s) {
+    UI.tsort = s; saveUI();
+    var seg = $('tsort');
+    if (seg) [].forEach.call(seg.querySelectorAll('button'), function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-s') === s)); });
+    tkRender();
   }
 
   // ── 전체 목록 탭 (기간 전체 세로 나열 — 그 나라 + 공통) ──
@@ -1807,13 +2156,17 @@ tr.dhr,.cty.m,.nt.m{display:none}
       ' — ' + SRC.name + ' (운영 목록 아님 · 캐시 안 함)'));
     else if (SRC.api) tb.append(h('div', null, h('strong', { text: 'GitHub API 로 보는 중' }),
       ' — 진단용 이전 방식 (비인증 시간당 60회 · 응답 7MB 한도 · 10분 캐시) · ', h('a', { href: srcHref(null), text: '목록 파일로 보기' })));
+    TIX = null; TIXERR = ''; TCACHE = {}; TFLIGHT = {};   // 다시 불러오기 = 티커 색인·조각도 새로
     var cached = (SRC.api && !force) ? sget('sessionStorage', CACHE_KEY) : null;
     if (cached && cached.v === 1 && Array.isArray(cached.paths) && Date.now() - cached.at < CACHE_TTL) {
       cached.cached = true; build(cached); return;
     }
     fetchTrees([SRC]).then(function (data) {
       data.v = 1; data.kind = SRC.kind;
-      if (build(data) && SRC.api) sset('sessionStorage', CACHE_KEY, data);   // API 응답만 · 목록을 만들 수 있었던 것만 캐시
+      return loadTickerIndex(data.tl).then(function (t) {   // 로컬 = 티커 색인 1회 (조각은 티커 탭에서만)
+        TIX = t.tix; TIXERR = t.err;
+        if (build(data) && SRC.api) sset('sessionStorage', CACHE_KEY, data);   // API 응답만 · 목록을 만들 수 있었던 것만 캐시
+      });
     }).catch(showError);
   }
 
@@ -1826,7 +2179,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
     RES.entries.forEach(function (e) {   // 검색 대상 문자열 (경로 · 라벨 · 이름 · 구역 · 국가 · 날짜)
       e.hay = (e.path + ' ' + e.label + ' ' + (e.sub || '') + ' ' + secl[e.sec] + ' ' + e.c + ' ' + e.date).toLowerCase();
     });
-    M = I.build(data.paths, RES, V);
+    M = I.build(data.paths, RES, V, TIX);
     if (!I.firstCountry(M)) {
       showError(new Error('KR · US 어느 나라에도 날짜가 있는 리포트가 없습니다 (리포트 HTML ' + num(RES.entries.length) + '개 · 기타 ' + num(M.nEtc) + '개).'));
       return false;

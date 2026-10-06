@@ -168,7 +168,9 @@ main.stage{flex:1 1 auto;min-height:0;position:relative;background:var(--bg)}
   var RG = 'rrg/(?<c>kr|us)/(?<d>' + D + ')_rrg_alltickers_' + KC + '_close/';
   var TS = 'toss/(?<c>kr|us)/(?<d>' + D + ')_' + KC + '_toss_(?<k>[a-z]+)_(?<hm>\\d{4})/';
   var NW = 'news/(?<d>' + D + ')_daily_news_report/';
-  var TK = 'ticker/(?<d>' + D + ')_(?<c>kr|us)_(?<t>[^_/]+)_(?<s>[^/]+)/';
+  // 티커 묶음 = {D}_{c}_{코드}_{이름} · 이름 없음 {D}_{c}_{코드} · 옛 {D}_{c}_ticker_{코드}_{이름} · 나라 없음 {D}_ticker_{코드}_{이름}
+  var TK = 'ticker/(?<d>' + D + ')_(?:(?<c>kr|us)_)?(?:ticker_)?(?<t>[^_/]+)(?:_(?<s>[^/]+))?/';
+  var TKD = '(?:' + D + '|\\d{8})';   // 옛 파일명 날짜 YYYYMMDD 도 받는다
   var CN = 'cardnews/(?<d>' + D + ')_(?<c>kr|us)_cardnews_close/';
 
   // 지수 폴더 → 이름·순서 (리포트 <title> 기준)
@@ -193,7 +195,7 @@ main.stage{flex:1 1 auto;min-height:0;position:relative;background:var(--bg)}
   function tossOrd(g, sub) { return Number(g.hm) * 100 + sub; }
   function base(p) { return p.slice(p.lastIndexOf('/') + 1); }
   function slugName(s) {
-    return String(s).replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([A-Za-z])(\d)/g, '$1 $2').replace(/(\d)([A-Z][a-z])/g, '$1 $2');
+    return String(s).replace(/_/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([A-Za-z])(\d)/g, '$1 $2').replace(/(\d)([A-Z][a-z])/g, '$1 $2');
   }
 
   var SECTIONS = [
@@ -310,12 +312,18 @@ main.stage{flex:1 1 auto;min-height:0;position:relative;background:var(--bg)}
       function () { return '데일리 뉴스 리포트'; }],
     ['nw_other',    'news',        R(NW + '.+\\.html'), 0, 99, function (g, p) { return base(p); }],
 
-    ['tk_rep',      'ticker',      R(TK + 'ticker_report_[^/]+_' + D + '\\.html'), 1, 0,
-      function (g) { return g.t + ' 시그널 분석'; }],
+    ['tk_scan',     'ticker',      R('ticker/(?<d>' + D + ')_(?<c>kr|us)_buy_signal_scan/.+\\.html'), 1, 0,
+      function () { return '매수 신호 스캔'; }],
+    ['tk_rep',      'ticker',      R(TK + 'ticker_report_[^/]+_' + TKD + '(?: v(?<v>[0-9.]+))?\\.html'), 1, 0,
+      function (g) { return g.t + ' 시그널 분석' + (g.v ? ' v' + g.v : ''); }],
     ['tk_ig',       'ticker',      R(TK + 'infographic_[^/]+_' + D + '\\.html'), 0, 1,
       function (g) { return g.t + ' 퀀트 엣지 대시보드'; }],
     ['tk_card',     'ticker',      R(TK + 'x_card_[^/]+_' + D + '\\.html'), 0, 2,
       function (g) { return g.t + ' 엣지 카드'; }],
+    ['tk_rrg',      'ticker',      R(TK + 'rrg_[^/]+_' + D + '\\.html'), 0, 3,
+      function (g) { return g.t + ' RRG'; }],
+    ['tk_prem',     'ticker',      R(TK + 'premium/body\\.html'), 0, 4,
+      function (g) { return g.t + ' 프리미엄 본문'; }],
     ['tk_other',    'ticker',      R(TK + '.+\\.html'), 0, 99, function (g, p) { return base(p); }],
 
     ['short_r',     'etc',         R('r/(?<f>[^/]+)\\.html'), 1, 0,
@@ -356,12 +364,12 @@ main.stage{flex:1 1 auto;min-height:0;position:relative;background:var(--bg)}
         e.rule = hit[0];
         e.sec = hit[1].replace('{c}', g.c || '');
         e.date = g.d || firstDate(p);
-        e.c = g.c ? g.c.toUpperCase() : guessC(p);
+        e.c = g.c ? g.c.toUpperCase() : hit[1] === 'ticker' ? '공통' : guessC(p);   // 티커 나라 없음 = 공통 (파일명 추측 안 함)
         e.show = hit[3];
         e.ord = typeof hit[4] === 'function' ? hit[4](g) : hit[4];
         e.label = hit[5](g, p);
         e.k = g.k || ''; e.hm = g.hm || ''; e.slot = g.k ? slot(g) : '';
-        if (g.t) e.sub = slugName(g.s);
+        if (hit[1] === 'ticker') { e.tk = hit[0] === 'tk_scan' ? '' : g.t; e.sub = g.s ? slugName(g.s) : ''; }
         e.unlisted = /_other$/.test(hit[0]);
       } else {
         e.rule = 'unmatched'; e.sec = 'etc'; e.date = firstDate(p); e.c = guessC(p);

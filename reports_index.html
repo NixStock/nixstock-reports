@@ -4,18 +4,32 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark light">
-<title>NixStock 리포트 목록</title>
-<meta name="description" content="nixstock-reports 에 올라간 리포트를 타입·날짜별로 찾는 목록. 열 때마다 같은 사이트의 목록 파일(reports_manifest.json)에서 새로 구성한다.">
+<title>NixStock 리포트</title>
+<meta name="description" content="nixstock-reports 에 올라간 리포트를 나라·날짜·종류별로 보는 메인 페이지. 열 때마다 같은 사이트의 목록 파일(reports_manifest.json)에서 새로 구성한다.">
 <!--
   reports_index.html — 정본: StockProjectV2.0/docs/nix_report_directives/reports_index.html
-  배포: ~/nixstock-reports 루트에 복사(1회). 리포트가 새로 올라와도 이 파일은 다시 올리지 않는다.
-  동작: 열 때 같은 사이트의 목록 파일 reports_manifest.json 1회 GET → 경로 복원 → 분류(RULES 표 하나) → 타입별·날짜별 목록.
-        목록 파일 = scripts/nix_pages_manifest.py 가 배포(deploy_reports_ghpages.sh) 커밋마다 자동 갱신(schema 1 · 폴더별 묶음).
-        (2026-10-04 전환: GitHub 트리 API 는 응답 7MB ≈ 2만 항목 한도 · 비인증 시간당 60회 → 같은 사이트 파일은 둘 다 없음)
-        목록 파일을 못 읽으면 원인을 화면에 표시한다(조용한 대체 없음) + "GitHub API 로 보기"(?src=api) 수동 링크.
+  배포: deploy_reports_ghpages.sh → nix_pages_manifest.py --site-pages on 이 커밋된 HEAD 판을 Pages 저장소 루트 2곳에 배치한다.
+        루트 index.html(주소 / = 메인) + 루트 reports_index.html — 같은 파일 · 같은 바이트 (배치 목록 SSOT = nix_pages_manifest.SITE_PAGES).
+        이 파일을 고쳐도 커밋 → 다음 배포 때 자동 반영 (수동 cp 없음).
+  동작: 열 때 같은 사이트의 목록 파일 reports_manifest.json 1회 GET → 경로 복원
+        → 분류 (nix-classify · reports_viewer.html 과 바이트까지 같은 블록 — 테스트가 강제)
+        → 날짜 묶음 · 대표 문서 (nix-viewer-core · 뷰어와 바이트까지 같은 블록 = 고정 주소 뷰어가 여는 대표 문서와 같다)
+        → 나라 · 날짜 · 종류별 카드 (nix-index-core) → 화면.
+        나라 탭(KR · US) 기본 날짜 = 그 나라에 마감 번들(마켓온도 또는 택티컬 · nix-index-core CLOSE_KINDS)이 있는 최신일
+          (마감 번들이 하나도 없는 나라 = 최신일) · 첫 화면 = 기본 날짜가 더 최근인 나라 (같으면 KR).
+        기본 날짜보다 새 날짜(장중 오늘 등 · 마감 번들 전)에 리포트가 있으면 기본 화면 위에 '진행 중' 카드
+          (그 날짜의 토스 슬롯 · 뉴스 등 + 그 날짜로 가는 링크). 마감 번들이 올라오면 그 날짜가 저절로 기본이 된다.
+          날짜 선택 · ◀▶ · ?d= 지정 = 그 날짜 그대로 · 종류 탭 = 그 종류의 최신일.
+        날짜 화면 = 그 날짜의 리포트를 종류별 카드로 (대표 · 주요 · 그 밖의 문서 펼치기).
+        토스 = 그날 슬롯 전부를 시각 순으로 · 대표 = 그날 마감 슬롯만 (마감이 없는 날은 대표 없음 · 중립 칩).
+        종류 탭 = 그 종류만 · 전체 목록 탭 = 기간 전체 세로 나열 (검색 · 모든 파일 보기).
+        목록 파일을 못 읽으면 원인을 화면에 표시한다 (조용한 대체 없음) + "GitHub API 로 보기"(?src=api) 수동 링크.
+  주소: ?c=kr|us · k=<종류>|list (생략 = 전체) · d=YYYY-MM-DD (생략 = 그 탭의 기본 날짜 — 전체 = 마감 최신일 · 종류 = 그 종류 최신일) · q=<검색어> (전체 목록)
+        #sec-<구역> = 옛 목록 링크 → 전체 목록 탭의 그 구역.
   진단: ?src=api = GitHub 트리 API 로 보기 (이전 방식 · 10분 캐시 · 레이트 리밋 있음).
-  테스트: ?tree=<같은 사이트 상대경로 .json>  (GitHub 트리 API 와 같은 형식)
-          ?manifest=<같은 사이트 상대경로 .json> (목록 파일 형식) · ?q=<검색어> 미리 채움.
+  테스트: ?tree=<같은 사이트 상대경로 .json> (GitHub 트리 API 와 같은 형식)
+          ?manifest=<같은 사이트 상대경로 .json> (목록 파일 형식)
+          scripts/test_pages_root_index.py (node 코어 시험 + playwright 렌더 · 서버 없음)
   색: docs/nix_report_directives/nix_style_tokens.py PAL(다크)·PALETTE["light"] 값 그대로.
 -->
 <style>
@@ -27,7 +41,7 @@
   --link:#6B9BE0; --thbg:#252C38; --thbg2:#2B3342; --think:#E4E8EF;
   --warn:#D6803F; --warn-bg:#2A2418;
   --err:#E8645F; --err-bg:#241C20; --err-bd:rgba(232,100,95,.42);
-  --focus:#D4AF6A; --hdr:118px;
+  --focus:#D4AF6A; --hdr:150px;
   color-scheme:dark;
 }
 @media (prefers-color-scheme: light){
@@ -55,6 +69,7 @@
   color-scheme:light;
 }
 *{box-sizing:border-box}
+[hidden]{display:none !important}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);
   font:400 14px/1.5 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR","Segoe UI",system-ui,sans-serif}
@@ -64,37 +79,135 @@ button,input,select{font:inherit}
 .wrap{max-width:1120px;margin:0 auto;padding:0 16px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
-/* 고정 헤더 */
+/* 고정 헤더 (제목 · 나라 탭 · 종류 탭) */
 .top{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
-.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding-top:10px;padding-bottom:10px}
+.top .wrap{padding-top:8px}
+.r1{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0}
 h1{margin:0;font-size:clamp(18px,4.8vw,22px);font-weight:800;letter-spacing:-.01em;line-height:1.25;white-space:nowrap}
 h1 .g{color:var(--gold)}
-.ctrl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;flex:1 1 420px;min-width:0}
-.ctrl .q{flex:1 1 200px;min-width:0}
-#q{width:100%;min-width:0;background:var(--card);color:var(--ink);border:1px solid var(--line2);border-radius:8px;padding:7px 10px}
-#q::placeholder{color:var(--ink3);opacity:1}
-.tog{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ink);white-space:nowrap;cursor:pointer;
-  border:1px solid var(--line2);border-radius:8px;padding:6px 10px;background:var(--card)}
-.tog input{margin:0;accent-color:var(--gold)}
 .btn{background:var(--card2);color:var(--ink);border:1px solid var(--line2);border-radius:8px;padding:6px 12px;font-size:13px;cursor:pointer;white-space:nowrap}
 .btn:hover{border-color:var(--gold)}
+.ctabs{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;min-width:0}
+.ctabs:empty,.ktabs:empty{display:none}
+.ctab{display:inline-flex;align-items:baseline;gap:8px;padding:6px 14px;border:1px solid var(--line2);border-radius:10px;background:var(--card);color:var(--ink2);white-space:nowrap}
+.ctab .cn{font-weight:800;font-size:15px;color:var(--ink)}
+.ctab .cd{font-size:13px;font-variant-numeric:tabular-nums}
+.ctab:hover{text-decoration:none;border-color:var(--gold)}
+.ctab[aria-current="page"]{border-color:var(--gold-bd);background:var(--gold-bg);color:var(--gold)}
+.ctab[aria-current="page"] .cn{color:var(--gold)}
+.ctab[aria-disabled="true"]{opacity:.55;cursor:not-allowed}
+.ctab .cdot{color:var(--link);font-size:11px;align-self:center}
+/* 종류 탭 — 이 줄 안에서만 가로 스크롤 (페이지 가로 스크롤 아님) */
+.ktabs{display:flex;gap:2px;overflow-x:auto;white-space:nowrap;margin-top:4px;-webkit-overflow-scrolling:touch;scrollbar-width:thin;min-width:0}
+.ktab{flex:0 0 auto;padding:7px 12px 6px;color:var(--ink2);font-size:14px;border-bottom:2px solid transparent}
+.ktab:hover{text-decoration:none;color:var(--ink)}
+.ktab[aria-current="page"]{color:var(--ink);font-weight:700;border-bottom-color:var(--gold)}
+.ktab.lst{margin-left:auto}
 
-/* 상태줄 · 이동 칩 */
-.status{margin:12px auto 0;font-size:12.5px;color:var(--ink2);line-height:1.6}
+/* 상태줄 · 안내 · 바로가기 칩 */
+.status{margin:10px auto 0;font-size:12.5px;color:var(--ink2);line-height:1.6}
 .status b{color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
 .status .sep{color:var(--ink3);margin:0 6px}
 .testb{margin:10px auto 0}
 .testb div{border:1px solid var(--warn);background:var(--warn-bg);color:var(--ink);border-radius:8px;padding:7px 12px;font-size:12.5px}
 .testb strong{color:var(--warn)}
+.notes{margin-top:8px;display:flex;flex-direction:column;gap:4px}
+.notes:empty{display:none}
+.ln{display:flex;align-items:flex-start;gap:8px;font-size:12.5px;line-height:1.5;padding:4px 8px;border-radius:6px;border:1px solid var(--line2);background:var(--card)}
+.ln.warn{border-color:var(--warn);background:var(--warn-bg)}
+.ln .mk{flex:0 0 auto}
+.ln .tx{flex:1 1 auto;min-width:0;overflow-wrap:anywhere}
+main > .ln{margin-top:12px}
+.listctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+.listctl .q{flex:1 1 260px;min-width:0}
+#q{width:100%;min-width:0;background:var(--card);color:var(--ink);border:1px solid var(--line2);border-radius:8px;padding:7px 10px}
+#q::placeholder{color:var(--ink3);opacity:1}
+.tog{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ink);white-space:nowrap;cursor:pointer;
+  border:1px solid var(--line2);border-radius:8px;padding:6px 10px;background:var(--card)}
+.tog input{margin:0;accent-color:var(--gold)}
 .jump{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 .chip{display:inline-flex;gap:6px;align-items:baseline;padding:4px 10px;border:1px solid var(--line2);border-radius:20px;
-  background:var(--card);color:var(--ink);font-size:13px}
+  background:var(--card);color:var(--ink);font-size:13px;white-space:nowrap}
 .chip:hover{border-color:var(--gold);text-decoration:none}
 .chip .n{color:var(--ink2);font-variant-numeric:tabular-nums;font-size:12.5px}
 .chip.zero{color:var(--ink2)}
+.chip[aria-current="page"]{border-color:var(--gold-bd);background:var(--gold-bg);color:var(--gold);font-weight:700}
 
-/* 섹션 */
+/* 날짜 화면 */
 main{padding-bottom:8px}
+.day{margin:14px 0 8px;border:1px solid var(--line);border-radius:12px;background:var(--card);padding:12px 14px}
+.dh{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 14px}
+.dt1{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;min-width:0}
+.big{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.2;letter-spacing:-.01em;white-space:nowrap}
+.lchip{display:inline-block;padding:1px 9px;border-radius:20px;font-size:12.5px;font-weight:800;color:var(--gold);background:var(--gold-bg);border:1px solid var(--gold-bd);white-space:nowrap}
+.tolatest{font-size:13px;white-space:nowrap}
+.dnav{display:inline-flex;align-items:center;gap:4px;min-width:0;max-width:100%}
+.dnav label{display:inline-flex;min-width:0;max-width:100%}
+.nb{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;width:34px;height:34px;border:1px solid var(--line2);border-radius:8px;
+  background:var(--card2);color:var(--ink);font-size:13px}
+.nb:hover{text-decoration:none;border-color:var(--gold)}
+.nb[aria-disabled="true"]{color:var(--line2);pointer-events:none}
+.dnav select{height:34px;background:var(--card2);color:var(--ink);border:1px solid var(--line2);border-radius:8px;padding:0 8px;font-size:13.5px;min-width:0;max-width:100%}
+.sum{margin-top:6px;font-size:13px;color:var(--ink2)}
+.sum b{color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
+.recent{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:8px}
+.card{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:10px 12px 10px 14px;min-width:0}
+.card.wide{grid-column:1/-1}
+.ch{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;margin-bottom:4px;min-width:0}
+.ch h3{margin:0;font-size:17px;font-weight:700;line-height:1.3}
+.ch h3 a{color:var(--ink)}
+.ch .cnt{font-size:12.5px;color:var(--ink2);font-variant-numeric:tabular-nums}
+.ch .vw{margin-left:auto;font-size:13px;white-space:nowrap}
+.gname{font-size:12.5px;color:var(--ink2);font-weight:700;margin:8px 0 2px;overflow-wrap:anywhere}
+.doc{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;padding:3px 0;min-width:0}
+.doc .dl{min-width:0;overflow-wrap:anywhere}
+.doc.rp .dl{font-weight:700}
+.nt{font-size:12.5px;white-space:nowrap}
+.bdg{display:inline-block;padding:0 8px;border-radius:20px;font-size:12px;font-weight:800;color:var(--gold);background:var(--gold-bg);border:1px solid var(--gold-bd);white-space:nowrap}
+.wbdg{display:inline-block;padding:0 8px;border-radius:20px;font-size:12px;font-weight:700;color:var(--warn);border:1px solid var(--warn);white-space:nowrap}
+.nbdg{display:inline-block;padding:0 8px;border-radius:20px;font-size:12px;font-weight:700;color:var(--ink2);border:1px solid var(--line2);white-space:nowrap}
+td.dt .nbdg{display:block;margin:4px auto 0;font-weight:600}
+tr.dhr th .nbdg{margin-left:8px;vertical-align:1px}
+details.more{margin-top:2px}
+details.more>summary{cursor:pointer;color:var(--ink2);font-size:13px;padding:3px 0}
+details.more>summary:hover{color:var(--ink)}
+details.more ul{margin:2px 0 4px;padding-left:18px}
+details.more li{padding:2px 0;font-size:13px;overflow-wrap:anywhere}
+.cnote{font-size:12.5px;color:var(--ink2);margin-top:4px;overflow-wrap:anywhere}
+/* 토스 슬롯 줄 = 시각 · 내용 (종류 · 대표 페이지 · 문서 펼치기) */
+.slot{display:grid;grid-template-columns:52px minmax(0,1fr);gap:0 10px;padding:6px 0;border-top:1px solid var(--line)}
+.slots .slot:first-child{border-top:0}
+.slot .tm{font-weight:800;font-variant-numeric:tabular-nums;padding-top:1px}
+.slot.rp .tm{color:var(--gold)}
+.slot .sb2{min-width:0}
+.slot .sl{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;min-width:0}
+.slot .sk{display:inline-block;min-width:64px;font-size:12.5px;color:var(--ink2);white-space:nowrap}
+.slot .sl a.dl{min-width:0;overflow-wrap:anywhere}
+.slot.rp .sl a.dl{font-weight:700}
+.miss{margin-top:10px;display:flex;flex-direction:column;gap:2px}
+.miss div{font-size:13px;color:var(--ink2);overflow-wrap:anywhere}
+
+/* 진행 중 카드 (기본 화면 위 · 기본 날짜보다 새 날짜 = 마감 번들 전) */
+.live{margin:14px 0 0;border:1px solid var(--line2);border-left:4px solid var(--link);border-radius:12px;background:var(--card);padding:10px 14px}
+.live.past{border-left-color:var(--line2)}
+.live .lh{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;min-width:0}
+.live .lst{display:inline-block;padding:1px 9px;border-radius:20px;font-size:12.5px;font-weight:800;color:var(--link);border:1px solid var(--link);white-space:nowrap}
+.live.past .lst{color:var(--ink2);border-color:var(--line2)}
+.live .ld{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.live .lsum{font-size:13px;color:var(--ink2)}
+.live .lsum b{color:var(--ink);font-variant-numeric:tabular-nums}
+.live .lgo{margin-left:auto;font-size:13px;white-space:nowrap}
+.live .lnote{font-size:12.5px;color:var(--ink2);margin-top:4px;overflow-wrap:anywhere}
+.live .lnote b{color:var(--ink);font-weight:700;white-space:nowrap}
+.lrow{display:grid;grid-template-columns:96px minmax(0,1fr);gap:4px 10px;padding:7px 0 0;margin-top:7px;border-top:1px solid var(--line)}
+.lrow .lk{font-weight:700;font-size:13.5px;padding-top:3px;overflow-wrap:anywhere}
+.lrow .lv{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;min-width:0}
+.lrow .chip{white-space:normal;overflow-wrap:anywhere;max-width:100%}
+.lrow .chip b{font-variant-numeric:tabular-nums}
+.lrow .chip.rp{border-color:var(--gold-bd);color:var(--gold)}
+
+/* 전체 목록 (구역 · 표) */
 .sec{margin:16px 0;border:1px solid var(--line);border-radius:12px;background:var(--card);scroll-margin-top:var(--hdr)}
 .sec h2{margin:0;font-size:inherit}
 .sh{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;width:100%;text-align:left;background:none;border:0;color:var(--ink);
@@ -104,7 +217,6 @@ main{padding-bottom:8px}
 .sh .t{font-size:18px;font-weight:700;line-height:1.25}
 .sh .cnt{font-size:12.5px;color:var(--ink2);font-variant-numeric:tabular-nums}
 .sb{padding:0 14px 14px}
-.sb[hidden]{display:none}
 .dctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 10px}
 .seg{display:inline-flex;border:1px solid var(--line2);border-radius:8px;overflow:hidden}
 .seg button{border:0;background:transparent;color:var(--ink2);padding:6px 12px;font-size:13px;cursor:pointer;white-space:nowrap}
@@ -116,8 +228,6 @@ main{padding-bottom:8px}
 .note .alt{margin-left:8px}
 .note button{background:none;border:0;color:var(--link);padding:0;cursor:pointer;font-size:12.5px}
 .empty{font-size:13px;color:var(--ink2);padding:10px 2px}
-
-/* 표 */
 .tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:10px;background:var(--card)}
 table{width:100%;border-collapse:collapse}
 th{background:var(--thbg);color:var(--think);font-weight:700;font-size:12.5px;text-align:center;padding:7px 10px;white-space:nowrap}
@@ -128,14 +238,15 @@ td.cc{text-align:center;white-space:nowrap}
 .cty{display:inline-block;min-width:34px;padding:0 6px;border:1px solid var(--line2);border-radius:6px;font-size:12.5px;font-weight:700;color:var(--ink2)}
 td.nm{min-width:150px}
 td.nm a{font-weight:600}
+td.nm .bdg{margin-left:6px;vertical-align:1px}
 td.op{white-space:nowrap;text-align:center;font-size:13px}
 .pth{font:12.5px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ink3);overflow-wrap:anywhere;word-break:break-all}
 td.pth{min-width:240px}
 .pth.m{display:none;margin-top:3px}
 .sub2{display:block;font-size:12.5px;color:var(--ink2);font-weight:400;margin-top:1px}
-.bdg{display:inline-block;margin-left:6px;padding:0 8px;border-radius:20px;font-size:12px;font-weight:800;color:var(--gold);background:var(--gold-bg);border:1px solid var(--gold-bd);vertical-align:1px}
 tr.fin.allmode td.nm{box-shadow:inset 3px 0 0 var(--gold)}
-tr.nofin td{color:var(--ink2);font-size:13px}
+tr.nofin td,tr.more td{color:var(--ink2);font-size:13px}
+tr.more button{background:none;border:0;color:var(--link);padding:0;cursor:pointer;font-size:13px}
 
 /* 오류 */
 .err{border:1px solid var(--err-bd);border-left:4px solid var(--err);background:var(--err-bg);border-radius:10px;padding:14px 16px;margin:18px 0}
@@ -148,11 +259,23 @@ footer{margin-top:22px;border-top:1px solid var(--line);color:var(--ink2);font-s
 footer .dis{color:var(--ink);font-weight:600}
 
 :focus-visible{outline:2px solid var(--focus);outline-offset:2px}
-.sh:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
+.sh:focus-visible,.ktab:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
 
 tr.dhr,.cty.m,.nt.m{display:none}
 @media (max-width:700px){
-  /* 좁은 화면: 날짜 = 머리줄 · 국가·새 탭 = 리포트 칸 안으로 → 리포트 칸이 표 전체 폭을 쓴다 */
+  .cards{grid-template-columns:1fr}
+  .card{padding:10px 10px 10px 12px}
+  .big{font-size:22px}
+  .dnav{flex:1 1 100%}
+  .dnav label{flex:1 1 auto}
+  .dnav select{width:100%;font-size:16px}           /* iOS: 16px 미만이면 포커스 때 확대 */
+  .dctl select,.dctl input[type="date"],#q{font-size:16px}
+  .ch .vw{margin-left:0}
+  .slot{grid-template-columns:46px minmax(0,1fr);gap:0 8px}
+  .live{padding:10px 12px}
+  .live .lgo{margin-left:0}
+  .lrow{grid-template-columns:1fr}
+  /* 좁은 화면 목록: 날짜 = 머리줄 · 국가·새 탭 = 리포트 칸 안으로 → 리포트 칸이 표 전체 폭을 쓴다 */
   thead,td.dt,td.cc,td.op,td.pth{display:none}
   tr.dhr{display:table-row}
   tr.dhr th{text-align:left;background:var(--thbg);color:var(--think);font-size:13px;padding:6px 10px;border-top:1px solid var(--line)}
@@ -162,7 +285,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
   .pth.m{display:block}
   td{padding:7px 10px}
   td.nm{min-width:0}
-  tr.nofin td[colspan]{padding-left:10px}
+  tr.nofin td[colspan],tr.more td[colspan]{padding-left:10px}
   .sb{padding:0 10px 12px}
   .sh{padding:12px 10px}
   .sh .t{font-size:17px}
@@ -173,25 +296,31 @@ tr.dhr,.cty.m,.nt.m{display:none}
 <body>
 <header class="top" id="top">
   <div class="wrap">
-    <h1><span class="g">NixStock</span> 리포트 목록</h1>
-    <div class="ctrl">
-      <label class="q"><span class="sr">검색어</span><input id="q" type="search" autocomplete="off" spellcheck="false"
-        placeholder="검색 — 파일명·리포트·타입 (예: 코스피, 장마감, 2026-10-02)"></label>
-      <label class="tog"><input type="checkbox" id="allf"> 모든 파일 보기</label>
+    <div class="r1">
+      <h1><span class="g">NixStock</span> 리포트</h1>
       <button class="btn" id="reload" type="button" title="캐시를 무시하고 목록을 다시 가져옵니다">새로 불러오기</button>
     </div>
+    <nav class="ctabs" id="ctabs" aria-label="나라"></nav>
+    <nav class="ktabs" id="ktabs" aria-label="리포트 종류"></nav>
   </div>
 </header>
 <div class="wrap">
   <div class="testb" id="testb" hidden></div>
   <div class="status" id="status" aria-live="polite">목록 불러오는 중…</div>
-  <nav class="jump" id="jump" aria-label="리포트 타입 바로가기"></nav>
+  <div class="notes" id="notes" aria-live="polite"></div>
+  <div class="listctl" id="listctl" hidden>
+    <label class="q"><span class="sr">검색어</span><input id="q" type="search" autocomplete="off" spellcheck="false"
+      placeholder="검색 — 파일명·리포트·타입 (예: 코스피, 장마감, 2026-10-02)"></label>
+    <label class="tog"><input type="checkbox" id="allf"> 모든 파일 보기</label>
+  </div>
+  <nav class="jump" id="jump" aria-label="리포트 구역 바로가기" hidden></nav>
 </div>
 <main class="wrap" id="main"><div class="loading">리포트 목록을 가져오는 중…</div></main>
 <footer class="wrap">
-  <div class="dis">투자권유 아님 — 올라간 리포트를 찾기 위한 정보 제공용 목록입니다.</div>
-  <div>목록 출처: 같은 사이트의 목록 파일 reports_manifest.json (NixStock/nixstock-reports · 리포트를 올릴 때마다 자동 갱신). 페이지를 열 때마다 새로 구성하며, 리포트가 올라와도 이 페이지는 다시 올리지 않습니다.</div>
-  <div>기본은 묶음마다 대표 리포트만 보입니다. 분할 쪽(p1~p4)·데이터 표·백데이터·장중 슬롯 등은 "모든 파일 보기"로 봅니다.</div>
+  <div class="dis">투자권유 아님 — 올라간 리포트를 찾기 위한 정보 제공용 페이지입니다.</div>
+  <div>목록 출처: 같은 사이트의 목록 파일 reports_manifest.json (NixStock/nixstock-reports · 리포트를 올릴 때마다 자동 갱신). 페이지를 열 때마다 새로 구성합니다.</div>
+  <div>사이트 주소(/)와 reports_index.html 은 같은 페이지입니다. 나라 탭은 그 나라에 마감 리포트(마켓온도 · 택티컬)가 있는 최신 날짜를 먼저 보여 줍니다. 그보다 새 날짜(장중 등)의 리포트는 위쪽 '진행 중' 카드에 함께 보입니다. 날짜를 골라 그날 리포트를 봅니다.</div>
+  <div>대표 = 종류·날짜마다 먼저 볼 문서 (토스 = 그날 장마감 슬롯). 주요 = 기본 화면에 보이는 문서. 분할 쪽·데이터 표·백데이터 등은 "그 밖의 문서" 펼치기 또는 전체 목록의 "모든 파일 보기"로 봅니다.</div>
 </footer>
 
 <script id="nix-classify">
@@ -210,6 +339,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
   var TS = 'toss/(?<c>kr|us)/(?<d>' + D + ')_' + KC + '_toss_(?<k>[a-z]+)_(?<hm>\\d{4})/';
   var NW = 'news/(?<d>' + D + ')_daily_news_report/';
   var TK = 'ticker/(?<d>' + D + ')_(?<c>kr|us)_(?<t>[^_/]+)_(?<s>[^/]+)/';
+  var CN = 'cardnews/(?<d>' + D + ')_(?<c>kr|us)_cardnews_close/';
 
   // 지수 폴더 → 이름·순서 (리포트 <title> 기준)
   var IDX = {
@@ -245,6 +375,8 @@ tr.dhr,.cty.m,.nt.m{display:none}
     { id: 'index_kr',    label: '인덱스 KR', optional: true },
     { id: 'rrg_kr',      label: 'RRG KR' },
     { id: 'rrg_us',      label: 'RRG US' },
+    { id: 'cardnews_kr', label: '카드뉴스 KR' },
+    { id: 'cardnews_us', label: '카드뉴스 US' },
     { id: 'toss_kr',     label: '토스 KR' },
     { id: 'toss_us',     label: '토스 US' },
     { id: 'news',        label: '뉴스' },
@@ -254,12 +386,12 @@ tr.dhr,.cty.m,.nt.m{display:none}
 
   // ★분류 규칙 표 (위에서부터 첫 일치 1개) — 경로는 저장소 루트 기준
   //  [규칙, 섹션({c}=국가), 경로 정규식, 기본 표시, 정렬, 라벨]
-  //  기본 표시: 1 = 대표 리포트(기본 화면) · 0 = "모든 파일 보기"에서만
-  //            'toss' = 그날 마감(close) 슬롯 대표 페이지 · 마감이 없으면 그날 마지막 슬롯
-  //            'rrg'  = 같은 폴더에 rrg_alltickers 가 없을 때만 대표
+  //  기본 표시: 1 = 주요(기본 화면) · 0 = "모든 파일 보기"에서만
+  //            'toss' = 슬롯 대표 페이지 전부 주요 · 그중 대표(rep) = 그날 마감(close) 슬롯만 · 마감이 없는 날은 대표 없음
+  //            'rrg'  = 같은 폴더에 rrg_alltickers 가 없을 때만 주요
   //  섹션 null = 목록에서 제외(사이트 자체 페이지)
   var RULES = [
-    ['site_root',   null,          R('(?:index|reports_index)\\.html'), 0, 0, null],
+    ['site_root',   null,          R('(?:(?:market|tactical|index|cardnews|rrg)/(?:kr|us)/)?(?:index|reports_index)\\.html'), 0, 0, null],
 
     ['mt_ig',       'market_{c}',  R(MT + 'infographic/market_temp_' + KC + '_comparison_infographic_' + D + '\\.html'), 1, 0,
       function () { return '비교 인포그래픽'; }],
@@ -324,6 +456,9 @@ tr.dhr,.cty.m,.nt.m{display:none}
     ['rg_rot',      'rrg_{c}',     R(RG + 'rrg_rotations_' + KC + '_' + D + '\\.html'), 0, 61,
       function () { return '개선 → 리딩 회전'; }],
     ['rg_other',    'rrg_{c}',     R(RG + '.+\\.html'), 0, 99, function (g, p) { return base(p); }],
+
+    ['cn_rep',      'cardnews_{c}', R(CN + '\\k<c>_cardnews_\\k<d>\\.html'), 1, 0, function () { return '카드뉴스'; }],
+    ['cn_other',    'cardnews_{c}', R(CN + '.+\\.html'), 0, 99, function (g, p) { return base(p); }],
 
     ['ts_main',     'toss_{c}',    R(TS + KC + '_toss_[^/]*_' + D + '\\.html'), 'toss',
       function (g) { return tossOrd(g, 0); }, function (g) { return '토스 ' + slot(g); }],
@@ -395,7 +530,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
         e.show = hit[3];
         e.ord = typeof hit[4] === 'function' ? hit[4](g) : hit[4];
         e.label = hit[5](g, p);
-        e.k = g.k || ''; e.hm = g.hm || '';
+        e.k = g.k || ''; e.hm = g.hm || ''; e.slot = g.k ? slot(g) : '';
         if (g.t) e.sub = slugName(g.s);
         e.unlisted = /_other$/.test(hit[0]);
       } else {
@@ -406,7 +541,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
       e.grp = groupKey(p);
       entries.push(e);
     }
-    // 2단계: 토스 대표(그날 마감 슬롯 · 없으면 마지막 슬롯) · RRG 대체 대표
+    // 2단계: 토스 대표(그날 마감 슬롯만 · 마감이 없으면 대표 없음) · RRG 대체 주요
     var toss = {}, rrgHasAll = {};
     entries.forEach(function (e) {
       if (e.show === 'toss') { var k = e.sec + '|' + e.date; (toss[k] = toss[k] || []).push(e); }
@@ -418,10 +553,11 @@ tr.dhr,.cty.m,.nt.m{display:none}
         if (ac !== bc) return bc - ac;
         return b.hm < a.hm ? -1 : b.hm > a.hm ? 1 : (a.path < b.path ? -1 : 1);
       });
-      c[0].pick = true;
+      if (c[0].k === 'close') c[0].pick = true;   // 마감 슬롯이 있을 때만 대표 (장중·NXT·장전은 대표가 되지 않는다)
     });
     entries.forEach(function (e) {
-      if (e.show === 'toss') e.final = !!e.pick;
+      e.rep = false;
+      if (e.show === 'toss') { e.final = true; e.rep = !!e.pick; }   // 슬롯 대표 페이지 = 전부 주요 · 대표 = 마감 슬롯만
       else if (e.show === 'rrg') e.final = !rrgHasAll[e.grp];
       else e.final = e.show === 1;
       delete e.pick;
@@ -429,7 +565,571 @@ tr.dhr,.cty.m,.nt.m{display:none}
     return { entries: entries, ignored: ignored, rejected: rejected };
   }
 
-  root.NIX = { classify: classify, RULES: RULES, SECTIONS: SECTIONS, safePath: safePath };
+  root.NIX = { classify: classify, RULES: RULES, SECTIONS: SECTIONS, safePath: safePath, TOSS_KIND: TOSS_KIND };
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+
+<script id="nix-viewer-core">
+/* ── 뷰어 코어 (순수 함수 · DOM 없음) ── 분류기(NIX) 위에서 고정 주소 · 날짜 묶음 · 문서 선택을 계산한다.
+   테스트(scripts/test_pages_latest_viewer.py)가 nix-classify + 이 블록을 node 로 떼어 같은 코드로 시험한다. */
+(function (root) {
+  'use strict';
+  // 고정 주소 9곳 — Python SSOT nix_pages_manifest.VIEWER_SLOTS 와 같아야 한다 (테스트 강제). 인덱스는 US 만.
+  var SLOTS = [['market', 'kr'], ['market', 'us'], ['tactical', 'kr'], ['tactical', 'us'], ['index', 'us'],
+               ['cardnews', 'kr'], ['cardnews', 'us'], ['rrg', 'kr'], ['rrg', 'us']];
+  var KINDS = ['market', 'tactical', 'index', 'cardnews', 'rrg'];
+  var KIND = { market: '마켓온도', tactical: '택티컬', index: '인덱스', cardnews: '카드뉴스', rrg: 'RS·RRG' };
+  var CTY = { kr: 'KR', us: 'US' };
+  // 대표 문서 = 묶음(날짜 폴더) 기준 상대 경로 템플릿 ({D} = 그 묶음 날짜)
+  var DEFAULT = {
+    market_kr:   'overview/kr/market_temp_web_kr_report_kr_{D}.html',
+    market_us:   'overview/us500/market_temp_us500_{D}.html',
+    tactical_kr: 'overview/kr_tactical_overview_{D}.html',
+    tactical_us: 'overview/us_tactical_overview_{D}.html',
+    index_us:    'overview/index_overview_us_{D}.html',
+    cardnews_kr: 'kr_cardnews_{D}.html',
+    cardnews_us: 'us_cardnews_{D}.html',
+    rrg_kr:      'rrg_alltickers_kr_{D}.html',
+    rrg_us:      'rrg_alltickers_us_{D}.html'
+  };
+  // 빠른 탭 = 분류기 대표(final) 문서 + 이 규칙 (백데이터·회전)
+  var TAB_EXTRA = ['tc_bd', 'ix_bd', 'rg_bd', 'rg_rot'];
+  var MANIFEST_NAME = 'reports_manifest.json';   // == nix_pages_manifest.MANIFEST_NAME (테스트 강제)
+  var MANIFEST_SCHEMA = 1;                       // == nix_pages_manifest.SCHEMA (테스트 강제)
+
+  var DRE = /\d{4}-\d{2}-\d{2}/g;
+  // 카드뉴스 = 공유 분류기(reports_index.html 과 같은 블록)에 아직 규칙이 없어 'unmatched' 로 온다 → 여기서만 보충.
+  //   분류기에 규칙이 생기면 unmatched 가 아니게 되어 이 보충은 저절로 쓰이지 않는다.
+  var CN = /^cardnews\/(\d{4}-\d{2}-\d{2})_(kr|us)_cardnews_close\/(.+\.html)$/;
+  // 사이트 자체 페이지 (루트 목록 · 고정 주소 뷰어) — 목록 파일에서 빠지지만 방어로 한 번 더 뺀다
+  var SITE = /^(?:(?:market|tactical|index|cardnews|rrg)\/(?:kr|us)\/)?(?:index|reports_index)\.html$/;
+  var SLOT_PATH = /^(.*\/)(market|tactical|index|cardnews|rrg)\/(kr|us)(?:\/(?:index\.html)?)?$/;
+
+  function key(k, c) { return k + '_' + c; }
+  function hasSlot(k, c) {
+    for (var i = 0; i < SLOTS.length; i++) if (SLOTS[i][0] === k && SLOTS[i][1] === c) return true;
+    return false;
+  }
+  function countries(k) { return SLOTS.filter(function (s) { return s[0] === k; }).map(function (s) { return s[1]; }); }
+  function base(p) { return p.slice(p.lastIndexOf('/') + 1); }
+  function tmplOf(s) { return String(s).replace(DRE, '{D}'); }
+  function validDate(d) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) return false;
+    var t = Date.parse(d + 'T00:00:00Z');
+    return !isNaN(t) && new Date(t).toISOString().slice(0, 10) === d;
+  }
+  function warn(t) { return { lv: 'warn', text: t }; }
+  function info(t) { return { lv: 'info', text: t }; }
+
+  // 주소 → {k, c, base(사이트 루트 절대 경로), via} 또는 {error, base}
+  function slotFrom(pathname, search) {
+    var p = String(pathname || '/');
+    var m = SLOT_PATH.exec(p);
+    if (m) {
+      if (hasSlot(m[2], m[3])) return { k: m[2], c: m[3], base: m[1], via: 'path' };
+      return { error: (m[2] === 'index' ? '인덱스 리포트는 US 만 있습니다' : '이 종류·국가의 고정 주소는 없습니다') +
+        ' (' + m[2] + '/' + m[3] + '/).', base: m[1] };
+    }
+    var dir = p.slice(0, p.lastIndexOf('/') + 1) || '/';
+    var qs = new URLSearchParams(search || '');
+    var k = qs.get('k'), c = qs.get('c');
+    if (k || c) {
+      if (hasSlot(k, c)) return { k: k, c: c, base: dir, via: 'query' };
+      return { error: '쿼리의 종류·국가(k=' + k + ', c=' + c + ')가 고정 주소 목록에 없습니다.', base: dir };
+    }
+    return { error: '주소에서 리포트 종류·국가를 알 수 없습니다 (' + p + ') — 고정 주소는 …/{종류}/{국가}/ 형식입니다.', base: dir };
+  }
+  function prefixOf(k, c) { return k === 'rrg' ? 'rrg/' + c + '/' : k + '/'; }
+  function sitePage(p) { return SITE.test(p); }
+
+  // 목록 파일(schema 1) → 경로 복원. 문구·검사는 reports_index.html 의 parseManifest 와 같다.
+  function parseManifest(j) {
+    var bad = function (why) { throw new Error('목록 파일 형식 오류 — ' + why + ' 목록이 불완전할 수 있어 표시하지 않습니다.'); };
+    if (!j || typeof j !== 'object' || Array.isArray(j)) bad('최상위가 객체가 아닙니다.');
+    if (j.schema !== MANIFEST_SCHEMA)
+      bad('schema 불일치 (받은 값 ' + JSON.stringify(j.schema) + ' · 이 페이지가 읽는 값 ' + MANIFEST_SCHEMA + ').');
+    var d = j.dirs;
+    if (!d || typeof d !== 'object' || Array.isArray(d)) bad('dirs 가 객체가 아닙니다.');
+    var paths = [];
+    Object.keys(d).forEach(function (k) {
+      var v = d[k];
+      if (!Array.isArray(v)) bad('dirs["' + k + '"] 가 배열이 아닙니다.');
+      for (var i = 0; i < v.length; i++) {
+        if (typeof v[i] !== 'string' || !v[i]) bad('dirs["' + k + '"] 에 빈 값·문자열 아닌 항목이 있습니다.');
+        paths.push(k ? k + '/' + v[i] : v[i]);
+      }
+    });
+    if (typeof j.count !== 'number' || j.count !== paths.length)
+      bad('count(' + JSON.stringify(j.count) + ')와 실제 파일명 수(' + paths.length + ')가 다릅니다.');
+    var gen = typeof j.generated_at === 'string' ? j.generated_at : '';
+    if (!gen || isNaN(Date.parse(gen))) bad('generated_at 이 시각 형식이 아닙니다 (' + JSON.stringify(j.generated_at) + ').');
+    return { total: j.count, paths: paths, gen: gen };
+  }
+
+  function cardnewsEntry(e) {
+    var m = CN.exec(e.path);
+    if (!m) return e;
+    var rep = m[3] === m[2] + '_cardnews_' + m[1] + '.html';
+    return { path: e.path, rule: rep ? 'cn_rep' : 'cn_other', sec: 'cardnews_' + m[2], date: m[1], c: m[2].toUpperCase(),
+      show: rep ? 1 : 0, ord: rep ? 0 : 99, label: rep ? '카드뉴스' : base(e.path), final: rep,
+      grp: 'cardnews/' + m[1] + '_' + m[2] + '_cardnews_close' };
+  }
+
+  // 경로 목록 → 이 종류·국가의 묶음 배열 (날짜 내림차순). 묶음 = {date, grp, want, docs[]}
+  //   문서 = {path, rel(묶음 기준), base, tmpl(날짜→{D}), label, ord, final, rule, tab, isDefault, uniqBase}
+  //   문서 순서 = 대표 템플릿 → 분류기 대표(final) → 정렬 순서(ord) → 경로
+  function bundles(paths, k, c) {
+    var pre = prefixOf(k, c), sec = key(k, c), sel = [];
+    for (var i = 0; i < paths.length; i++) {
+      var p = paths[i];
+      if (typeof p === 'string' && p.indexOf(pre) === 0 && !sitePage(p)) sel.push(p);
+    }
+    var res = root.NIX.classify(sel);
+    var by = {}, out = [];
+    res.entries.forEach(function (e) {
+      if (e.rule === 'unmatched') e = cardnewsEntry(e);
+      if (e.sec !== sec || !e.date || !e.grp) return;
+      var b = by[e.grp];
+      if (!b) { b = by[e.grp] = { date: e.date, grp: e.grp, want: '', docs: [] }; out.push(b); }
+      var rel = e.path.slice(e.grp.length + 1);
+      b.docs.push({ path: e.path, rel: rel, base: base(e.path), tmpl: tmplOf(rel), label: e.label, ord: e.ord,
+        final: !!e.final, rule: e.rule, tab: !!e.final || TAB_EXTRA.indexOf(e.rule) >= 0, isDefault: false, uniqBase: false });
+    });
+    out.forEach(function (b) {
+      b.want = DEFAULT[sec] ? DEFAULT[sec].split('{D}').join(b.date) : '';
+      b.docs.forEach(function (d) { d.isDefault = d.rel === b.want; if (d.isDefault) d.tab = true; });
+      b.docs.sort(function (x, y) {
+        if (x.isDefault !== y.isDefault) return x.isDefault ? -1 : 1;
+        if (x.final !== y.final) return x.final ? -1 : 1;
+        if (x.ord !== y.ord) return x.ord - y.ord;
+        return x.path < y.path ? -1 : x.path > y.path ? 1 : 0;
+      });
+      var nl = {}, nb = {};
+      b.docs.forEach(function (d) { nl[d.label] = (nl[d.label] || 0) + 1; nb[d.base] = (nb[d.base] || 0) + 1; });
+      b.docs.forEach(function (d) {
+        if (nl[d.label] > 1) d.label += ' · ' + d.base;   // 같은 묶음 안 라벨 중복 → 파일명으로 구분
+        d.uniqBase = nb[d.base] === 1;
+      });
+    });
+    out.sort(function (x, y) { return x.date < y.date ? 1 : x.date > y.date ? -1 : (x.grp < y.grp ? -1 : x.grp > y.grp ? 1 : 0); });
+    return out;
+  }
+
+  // 묶음의 대표 문서 = 대표 템플릿 → (없으면) 분류기 대표 첫 문서 → (없으면) 첫 문서. 대체했으면 안내 note 를 같이 준다.
+  function pickDefault(b) {
+    for (var i = 0; i < b.docs.length; i++) if (b.docs[i].isDefault) return { doc: b.docs[i] };
+    var f = null;
+    for (var j = 0; j < b.docs.length; j++) if (b.docs[j].final) { f = b.docs[j]; break; }
+    var d = f || b.docs[0];
+    return { doc: d, note: info(b.date + ' 묶음에는 대표 문서(' + (b.want || '지정 없음') + ')가 없어 \'' + d.label + '\' 문서를 보여 줍니다.') };
+  }
+  // f(쿼리 문서) → 묶음 안 문서: 상대 경로 일치 → 파일명 일치(묶음 안 유일) → 같은 역할(날짜만 다른 이름 · 유일)
+  function findDoc(b, f) {
+    var i, c;
+    for (i = 0; i < b.docs.length; i++) if (b.docs[i].rel === f) return { doc: b.docs[i], how: 'rel' };
+    var slash = f.indexOf('/') >= 0;
+    if (!slash) {
+      c = b.docs.filter(function (d) { return d.base === f; });
+      if (c.length === 1) return { doc: c[0], how: 'base' };
+    }
+    var ft = tmplOf(f);
+    c = b.docs.filter(function (d) { return slash ? d.tmpl === ft : tmplOf(d.base) === ft; });
+    if (c.length === 1) return { doc: c[0], how: 'tmpl' };
+    return null;
+  }
+  // 쿼리 {d, f} → {bi, doc, notes[]} · 목록 파일에 있는 문서만 돌려준다 (iframe 에 임의 주소 금지)
+  function resolve(B, q) {
+    q = q || {};
+    var notes = [];
+    if (!B.length) return { empty: true, notes: notes };
+    var bi = 0, d = q.d || '', i;
+    if (d) {
+      if (!validDate(d)) {
+        notes.push(warn('날짜 형식 오류(d=' + d + ') — 최신 ' + B[0].date + ' 을 보여 줍니다 (형식: YYYY-MM-DD).'));
+      } else {
+        var hit = -1;
+        for (i = 0; i < B.length; i++) if (B[i].date === d) { hit = i; break; }
+        if (hit >= 0) bi = hit;
+        else {
+          var prev = -1;
+          for (i = 0; i < B.length; i++) if (B[i].date < d) { prev = i; break; }   // 내림차순 → 처음 작은 것 = 직전 날짜
+          bi = prev >= 0 ? prev : B.length - 1;
+          notes.push(warn('요청한 날짜 ' + d + ' 의 리포트가 없어 ' + (prev >= 0 ? '직전 날짜 ' : '가장 오래된 날짜 ') +
+            B[bi].date + ' 을 보여 줍니다 (휴장일이거나 아직 올라가지 않은 날).'));
+        }
+      }
+    }
+    var b = B[bi], f = q.f || '';
+    if (f) {
+      var r = findDoc(b, f);
+      if (r) {
+        if (r.how === 'tmpl') notes.push(info('요청한 문서(' + f + ')는 ' + b.date + ' 묶음에 없어 같은 역할의 \'' + r.doc.label + '\' 문서를 보여 줍니다.'));
+        return { bi: bi, doc: r.doc, notes: notes };
+      }
+      var pd0 = pickDefault(b);
+      notes.push(warn('요청한 문서(' + f + ')가 ' + b.date + ' 묶음에 없습니다 — \'' + pd0.doc.label + '\' 문서를 보여 줍니다.'));
+      return { bi: bi, doc: pd0.doc, notes: notes };
+    }
+    var pd = pickDefault(b);
+    if (pd.note) notes.push(pd.note);
+    return { bi: bi, doc: pd.doc, notes: notes };
+  }
+  // 날짜를 바꿀 때 같은 역할(날짜만 다른 이름)의 문서를 유지 · 없으면 대표 문서 + 안내
+  function carry(doc, bTo) {
+    for (var i = 0; i < bTo.docs.length; i++) if (bTo.docs[i].tmpl === doc.tmpl) return { doc: bTo.docs[i] };
+    var pd = pickDefault(bTo);
+    return { doc: pd.doc, note: info(bTo.date + ' 에는 같은 문서(\'' + doc.label + '\')가 없어 \'' + pd.doc.label + '\' 문서를 보여 줍니다.') };
+  }
+  function fParam(b, doc) { return doc.uniqBase ? doc.base : doc.rel; }
+  function findByPath(B, path) {
+    for (var i = 0; i < B.length; i++)
+      for (var j = 0; j < B[i].docs.length; j++) if (B[i].docs[j].path === path) return { bi: i, doc: B[i].docs[j] };
+    return null;
+  }
+  // 상태 쿼리 문자열 (query 모드면 k·c 유지)
+  function query(slot, b, doc) {
+    var qs = new URLSearchParams();
+    if (slot && slot.via === 'query') { qs.set('k', slot.k); qs.set('c', slot.c); }
+    qs.set('d', b.date);
+    qs.set('f', fParam(b, doc));
+    return qs.toString();
+  }
+  // 고정 주소 (날짜·문서 없음)
+  function fixedHref(slot, k, c) {
+    return slot.via === 'query' ? slot.base + '?k=' + k + '&c=' + c : slot.base + k + '/' + c + '/';
+  }
+
+  root.NIXV = {
+    SLOTS: SLOTS, KINDS: KINDS, KIND: KIND, CTY: CTY, DEFAULT: DEFAULT, TAB_EXTRA: TAB_EXTRA,
+    MANIFEST_NAME: MANIFEST_NAME, MANIFEST_SCHEMA: MANIFEST_SCHEMA,
+    hasSlot: hasSlot, countries: countries, validDate: validDate, slotFrom: slotFrom, prefixOf: prefixOf, sitePage: sitePage,
+    parseManifest: parseManifest, bundles: bundles, pickDefault: pickDefault, findDoc: findDoc, resolve: resolve, carry: carry,
+    fParam: fParam, findByPath: findByPath, query: query, fixedHref: fixedHref
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+
+<script id="nix-index-core">
+/* ── 메인 코어 (순수 함수 · DOM 없음) ── 분류기(NIX) + 뷰어 코어(NIXV) 위에서 나라 · 날짜 · 종류별 카드 표를 계산한다.
+   테스트(scripts/test_pages_root_index.py)가 세 블록을 node 로 떼어 같은 코드로 시험한다. */
+(function (root) {
+  'use strict';
+  var STALE_H = 48;                       // 목록 파일 생성 시각이 이보다 오래되면 ⚠️ (새 리포트 없음 또는 배포 멈춤)
+  var CTY = { kr: 'KR', us: 'US' };
+  var WD = ['일', '월', '화', '수', '목', '금', '토'];
+  var SFX = /^(.+)_(kr|us)$/;             // 나라별 구역 id (market_kr …) — 접미 없는 구역(news · ticker)은 문서 국가(e.c)로 나눈다
+  // 마감 번들 종류 (상수 1곳) — 나라 탭 기본 날짜 = 이 종류 중 하나라도 있는 최신일 (사용자 2026-10-06 "마감 리포트가 있는 최신일").
+  //   키 = 분류기 SECTIONS 에서 파생한 종류 키(kinds) · 분류기에 없는 키면 build() 가 오류를 낸다 (조용히 빠지지 않게).
+  var CLOSE_KINDS = ['market', 'tactical'];
+  // 나라의 '오늘' 판정 시간대 — 번들 날짜 기준과 같게 (KR = KST · US = 미 동부 ET 거래일)
+  var TZ = { kr: 'Asia/Seoul', us: 'America/New_York' };
+  var LIVE_MAX = 4;                       // 진행 중 카드 한 줄의 문서 칩 수 (넘으면 '외 N개' = 그 종류 탭 링크)
+
+  function warn(t, link) { var n = { lv: 'warn', text: t }; if (link) n.link = link; return n; }
+  function info(t, link) { var n = { lv: 'info', text: t }; if (link) n.link = link; return n; }
+  function wd(d) { var a = d.split('-'); return WD[new Date(Date.UTC(+a[0], +a[1] - 1, +a[2])).getUTCDay()]; }
+  function dlabel(d) { return d ? d + ' (' + wd(d) + ')' : '날짜 없음'; }
+  function kst(ms) {
+    var parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date(ms));
+    var g = function (t) { for (var i = 0; i < parts.length; i++) if (parts[i].type === t) return parts[i].value; return ''; };
+    return g('year') + '-' + g('month') + '-' + g('day') + ' ' + g('hour') + ':' + g('minute') + ' KST';
+  }
+  function hhmm(s) { return s ? s.slice(0, 2) + ':' + s.slice(2) : ''; }
+  function byDesc(a, b) { return a < b ? 1 : a > b ? -1 : 0; }
+  function byOrd(a, b) {
+    if (a.ord !== b.ord) return a.ord - b.ord;
+    return a.path < b.path ? -1 : a.path > b.path ? 1 : 0;
+  }
+
+  // 종류 목록 = 분류기 SECTIONS 의 순서·이름에서 파생 (기타 제외 · 'market_kr' → 'market' · '마켓온도 KR' → '마켓온도')
+  function kinds(SECTIONS) {
+    var out = [], at = {};
+    (SECTIONS || []).forEach(function (s) {
+      if (s.id === 'etc') return;
+      var m = SFX.exec(s.id), k = m ? m[1] : s.id;
+      if (at[k]) return;
+      at[k] = { k: k, label: m ? s.label.replace(/ (?:KR|US)$/, '') : s.label };
+      out.push(at[k]);
+    });
+    return out;
+  }
+  function scope(name) { return { name: name, dates: [], latest: '', close: '', def: '', pending: [], kd: {}, day: {} }; }
+  function cardOf(sc, d, k, type) {
+    var day = sc.day[d] || (sc.day[d] = {});
+    var cd = day[k];
+    if (!cd) {
+      cd = day[k] = { k: k, type: type, common: sc.name === 'com', date: d, n: 0, nf: 0, groups: [], slots: [] };
+      (sc.kd[k] = sc.kd[k] || []).push(d);
+    }
+    return cd;
+  }
+
+  // 경로 + 분류 결과 → 표 M
+  //   M.cty.{kr,us} · M.com(공통) = { dates(내림차순), latest, kd: {종류: [날짜…]}, day: {날짜: {종류: 카드}} }
+  //   카드 = { k, type: 'bundle'(고정 주소 뷰어 종류) | 'toss'(슬롯) | 'list'(그 밖), n(문서 수), nf(주요 수), groups[], slots[] }
+  //   M.rep[path] = 대표 문서 (뷰어 종류 = 뷰어 코어 pickDefault · 토스 = 분류기 rep) · M.etc = 기타 문서 수 (나라·날짜별)
+  //   날짜 목록은 나라 표시 종류만으로 만든다 (공통 = 뉴스는 빠진다)
+  function build(paths, res, V) {
+    var N = root.NIX;
+    var M = { kinds: kinds(N.SECTIONS), ki: {}, rep: {}, cty: { kr: scope('kr'), us: scope('us') }, com: scope('com'),
+              etc: { kr: {}, us: {}, com: {} }, n: res.entries.length, nEtc: 0 };
+    M.kinds.forEach(function (x) { M.ki[x.k] = x; });
+    // ① 고정 주소 뷰어 종류 = 뷰어 코어의 날짜 묶음 + 대표 문서 (고정 주소 뷰어가 여는 문서와 같다)
+    V.SLOTS.forEach(function (s) {
+      var k = s[0], c = s[1];
+      V.bundles(paths, k, c).forEach(function (b) {
+        var pd = V.pickDefault(b), cd = cardOf(M.cty[c], b.date, k, 'bundle');
+        M.rep[pd.doc.path] = true;
+        cd.n += b.docs.length;
+        cd.nf += b.docs.filter(function (d) { return d.final; }).length;
+        cd.groups.push({ grp: b.grp, name: '', rep: pd.doc, note: pd.note || null,
+          main: b.docs.filter(function (d) { return d.final && d !== pd.doc; }),
+          rest: b.docs.filter(function (d) { return !d.final && d !== pd.doc; }) });
+      });
+    });
+    // ② 그 밖의 종류 — 토스 = 슬롯(날짜 폴더)별 · 뉴스·티커 등 = 묶음별 주요/그 밖
+    var slotIx = {}, grpIx = {};
+    res.entries.forEach(function (e) {
+      var m = SFX.exec(e.sec), k = m ? m[1] : e.sec;
+      var c = m ? m[2] : (e.c === 'KR' || e.c === 'US') ? e.c.toLowerCase() : '';
+      if (e.sec === 'etc' || !e.date) {
+        var ek = c || 'com', ed = e.date || '';
+        M.etc[ek][ed] = (M.etc[ek][ed] || 0) + 1;
+        M.nEtc++;
+        return;
+      }
+      if (m && V.hasSlot(k, c)) return;                    // ①에서 묶음으로 셌다
+      var sc = c ? M.cty[c] : M.com;
+      var cd = cardOf(sc, e.date, k, k === 'toss' ? 'toss' : 'list');
+      cd.n++;
+      if (e.final) cd.nf++;
+      if (e.rep) M.rep[e.path] = true;
+      var key = sc.name + '|' + e.grp;
+      if (cd.type === 'toss') {
+        var s = slotIx[key];
+        if (!s) {
+          s = slotIx[key] = { grp: e.grp, k: e.k, hm: e.hm, time: hhmm(e.hm), kind: N.TOSS_KIND[e.k] || e.k, slot: e.slot,
+                              main: null, rep: false, docs: [] };
+          cd.slots.push(s);
+        }
+        if (e.rule === 'ts_main' && (!s.main || (e.rep && !s.main.rep))) {   // 슬롯 대표 페이지 (같은 슬롯에 둘이면 rep 쪽)
+          if (s.main) s.docs.push(s.main);
+          s.main = e;
+        } else s.docs.push(e);
+        if (e.rep) s.rep = true;
+      } else {
+        var g = grpIx[key];
+        if (!g) { g = grpIx[key] = { grp: e.grp, name: e.sub || '', rep: null, note: null, main: [], rest: [] }; cd.groups.push(g); }
+        (e.final ? g.main : g.rest).push(e);
+      }
+    });
+    // ③ 정렬 · 날짜 목록
+    [M.cty.kr, M.cty.us, M.com].forEach(function (sc) {
+      var all = {};
+      Object.keys(sc.kd).forEach(function (k) { sc.kd[k].sort(byDesc); sc.kd[k].forEach(function (d) { all[d] = 1; }); });
+      sc.dates = Object.keys(all).sort(byDesc);
+      sc.latest = sc.dates[0] || '';
+      Object.keys(sc.day).forEach(function (d) {
+        Object.keys(sc.day[d]).forEach(function (k) {
+          var cd = sc.day[d][k];
+          cd.groups.sort(function (a, b) { return a.grp < b.grp ? -1 : a.grp > b.grp ? 1 : 0; });
+          cd.groups.forEach(function (g) { g.main.sort(byOrd); g.rest.sort(byOrd); });
+          cd.slots.sort(function (a, b) {
+            if (a.hm !== b.hm) return a.hm < b.hm ? -1 : 1;
+            if (a.k !== b.k) return a.k < b.k ? -1 : 1;
+            return a.grp < b.grp ? -1 : a.grp > b.grp ? 1 : 0;
+          });
+          cd.slots.forEach(function (s) { s.docs.sort(byOrd); });
+        });
+      });
+    });
+    // ④ 기본 날짜 — 마감 번들(CLOSE_KINDS) 중 하나라도 있는 최신일 · 하나도 없는 나라 = 최신일
+    //    진행 중(pending) = 기본 날짜보다 새 날짜 (내림차순 · 마감 번들이 올라오면 저절로 기본이 된다)
+    CLOSE_KINDS.forEach(function (k) { if (!M.ki[k]) throw new Error('마감 종류 키 오류 — 분류기 종류에 없음: ' + k); });
+    [M.cty.kr, M.cty.us].forEach(function (sc) {
+      var cl = '';
+      CLOSE_KINDS.forEach(function (k) { var a = sc.kd[k]; if (a && a.length && a[0] > cl) cl = a[0]; });
+      sc.close = cl;
+      sc.def = cl || sc.latest;
+      sc.pending = sc.dates.filter(function (d) { return d > sc.def; });
+    });
+    return M;
+  }
+
+  // 첫 화면 나라 = 기본 날짜(마감 최신일)가 더 최근인 나라 (같으면 KR) · 한쪽만 있으면 그쪽 · 둘 다 없으면 ''
+  function firstCountry(M) {
+    var a = M.cty.kr.def, b = M.cty.us.def;
+    if (!a && !b) return '';
+    if (!a) return 'us';
+    if (!b) return 'kr';
+    return b > a ? 'us' : 'kr';
+  }
+  // 그 나라(또는 공통)에 날짜가 1개 이상인 종류 (분류기 SECTIONS 순서)
+  function kindsFor(M, c) {
+    return M.kinds.filter(function (x) { return (M.cty[c].kd[x.k] || []).length || (M.com.kd[x.k] || []).length; })
+      .map(function (x) { return x.k; });
+  }
+  // 날짜 목록 (내림차순) — 'all'·'list' = 그 나라 날짜 · 종류 = 그 나라 + 공통
+  function datesFor(M, c, k) {
+    if (!k || k === 'all' || k === 'list') return M.cty[c].dates;
+    var a = M.cty[c].kd[k] || [], b = M.com.kd[k] || [];
+    if (!b.length) return a;
+    if (!a.length) return b;
+    var u = {};
+    a.concat(b).forEach(function (d) { u[d] = 1; });
+    return Object.keys(u).sort(byDesc);
+  }
+  // 그 탭의 기본 날짜 — 전체 = 나라 기본(마감 최신일 · 마감 번들이 없는 나라 = 최신일) · 종류 = 그 종류의 최신일 · 전체 목록 = ''
+  function defaultDate(M, c, k) {
+    if (!k || k === 'all') return M.cty[c].def;
+    if (k === 'list') return '';
+    return datesFor(M, c, k)[0] || '';
+  }
+  // 그 나라 · 날짜의 카드 (k 없음 = 전부) — 종류 순서 = 분류기 SECTIONS · 나라 카드 → 공통 카드
+  function cardsAt(M, c, d, k) {
+    var out = [];
+    M.kinds.forEach(function (x) {
+      if (k && x.k !== k) return;
+      var a = (M.cty[c].day[d] || {})[x.k], b = (M.com.day[d] || {})[x.k];
+      if (a) out.push(a);
+      if (b) out.push(b);
+    });
+    return out;
+  }
+  // 이 날짜에 없는 종류 (그 나라에 있는 종류 중) + 직전·다음 날짜 — '없어 보이는' 일이 없게 한 줄씩 보인다
+  function missing(M, c, d) {
+    var have = {};
+    cardsAt(M, c, d).forEach(function (cd) { have[cd.k] = 1; });
+    return kindsFor(M, c).filter(function (k) { return !have[k]; }).map(function (k) {
+      var ds = datesFor(M, c, k), prev = '', next = '';
+      for (var i = 0; i < ds.length; i++) {
+        if (ds[i] > d) next = ds[i];
+        else if (ds[i] < d) { prev = ds[i]; break; }
+      }
+      return { k: k, label: M.ki[k].label, prev: prev, next: next };
+    });
+  }
+  function etcAt(M, c, d) { return (M.etc[c][d] || 0) + (M.etc.com[d] || 0); }
+
+  // 주소 쿼리 → 화면 상태 {c, k, d, q, sec, notes[]} — 오류는 조용히 바꾸지 않고 안내를 같이 준다
+  function resolve(M, q) {
+    q = q || {};
+    var V = root.NIXV, N = root.NIX, notes = [];
+    var c = q.c ? String(q.c).toLowerCase() : '', k = q.k ? String(q.k) : '', d = q.d ? String(q.d) : '';
+    var s = q.q ? String(q.q).trim() : '', hash = q.hash ? String(q.hash) : '', sec = '';
+    var first = firstCountry(M);
+    var hm = /^#sec-([a-z0-9_]+)$/.exec(hash);
+    if (hm) {
+      if (N.SECTIONS.some(function (x) { return x.id === hm[1]; })) sec = hm[1];
+      else notes.push(info('주소의 구역(' + hash + ')이 목록에 없습니다 — 전체 목록을 보여 줍니다.'));
+    }
+    if (c && !CTY[c]) { notes.push(warn('나라 값 오류(c=' + q.c + ') — ' + CTY[first] + ' 화면을 보여 줍니다 (kr · us).')); c = ''; }
+    var sm = sec ? /_(kr|us)$/.exec(sec) : null;
+    if (sm) c = sm[1];
+    if (!c) c = first;
+    else if (!M.cty[c].dates.length && c !== first) {
+      notes.push(warn(CTY[c] + ' 리포트가 아직 없어 ' + CTY[first] + ' 화면을 보여 줍니다.'));
+      c = first;
+    }
+    if (sec || s || hm) k = 'list';
+    else if (!k) k = 'all';
+    else if (k !== 'all' && k !== 'list') {
+      if (!M.ki[k]) { notes.push(warn('종류 값 오류(k=' + k + ') — 전체를 보여 줍니다.')); k = 'all'; }
+      else if (kindsFor(M, c).indexOf(k) < 0) { notes.push(info(CTY[c] + ' 에는 ' + M.ki[k].label + ' 리포트가 없어 전체를 보여 줍니다.')); k = 'all'; }
+    }
+    var ds = k === 'list' ? [] : datesFor(M, c, k), D = defaultDate(M, c, k);
+    if (k !== 'list' && d && ds.length) {
+      if (!V.validDate(d)) notes.push(warn('날짜 형식 오류(d=' + d + ') — 기본 날짜 ' + D + ' 을 보여 줍니다 (형식: YYYY-MM-DD).'));
+      else if (ds.indexOf(d) >= 0) D = d;
+      else {
+        var prev = '';
+        for (var i = 0; i < ds.length; i++) if (ds[i] < d) { prev = ds[i]; break; }   // 내림차순 → 처음 작은 것 = 직전 날짜
+        D = prev || ds[ds.length - 1];
+        notes.push(warn('요청한 날짜 ' + d + ' 의 ' + (k === 'all' ? CTY[c] : M.ki[k].label) + ' 리포트가 없어 ' +
+          (prev ? '직전 날짜 ' : '가장 오래된 날짜 ') + D + ' 을 보여 줍니다 (휴장일이거나 아직 올라가지 않은 날).'));
+      }
+    }
+    return { c: c, k: k, d: D, q: s, sec: sec, notes: notes };
+  }
+  // 화면 상태 → 쿼리 문자열 — c 는 항상 · k 는 '전체'면 생략 · d 는 그 탭의 기본 날짜면 생략 (탭 링크 = 늘 기본 날짜)
+  //   keep = 진단·테스트 소스(src · tree · manifest)는 그대로 유지
+  function query(M, st, keep) {
+    var qs = new URLSearchParams();
+    var k = st.k || 'all';
+    qs.set('c', st.c);
+    if (k !== 'all') qs.set('k', k);
+    if (k === 'list') { if (st.q) qs.set('q', st.q); }
+    else if (st.d && st.d !== defaultDate(M, st.c, k)) qs.set('d', st.d);
+    ['src', 'tree', 'manifest'].forEach(function (x) { if (keep && keep[x]) qs.set(x, keep[x]); });
+    return qs.toString();
+  }
+  // 목록 파일 신선도 — STALE_H 시간보다 오래되면 {h, text} (미래 시각 = 시계 차이 → 경고 없음)
+  function stale(gen, now) {
+    var t = Date.parse(gen);
+    if (isNaN(t)) return null;
+    var h = (now - t) / 3600000;
+    if (!(h > STALE_H)) return null;
+    return { h: Math.floor(h), text: '목록 파일이 ' + Math.floor(h / 24) + '일 전(' + kst(t) + ')에 만들어졌습니다 — 새 리포트가 없었거나 배포가 멈췄을 수 있습니다.' };
+  }
+  // 그 나라 시간대의 오늘 (YYYY-MM-DD) — now = ms
+  function todayIn(c, now) {
+    var parts = new Intl.DateTimeFormat('en-CA', { timeZone: TZ[c], year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date(now));
+    var g = function (t) { for (var i = 0; i < parts.length; i++) if (parts[i].type === t) return parts[i].value; return ''; };
+    return g('year') + '-' + g('month') + '-' + g('day');
+  }
+  // 마감 번들 전 날짜의 상태 — today = 그 나라의 오늘 · past = 오늘 이전 (마감 번들이 끝내 없는 날) · ahead = 오늘 이후 (시간대 차이)
+  function liveState(c, d, now) { var t = todayIn(c, now); return d === t ? 'today' : d < t ? 'past' : 'ahead'; }
+  // 카드 1장 → 진행 중 카드 한 줄 재료 (토스 = 슬롯 전부 시각 순 · 그 밖 = 대표·주요 문서 LIVE_MAX 개 + 나머지 수)
+  function liveRow(cd) {
+    var row = { k: cd.k, common: cd.common, type: cd.type, n: cd.n };
+    if (cd.type === 'toss') {
+      row.slots = cd.slots.map(function (s) {
+        var lead = s.main || s.docs[0];
+        return { hm: s.hm, time: s.time, kind: s.kind, k: s.k, rep: s.rep, main: !!s.main,
+                 path: lead ? lead.path : '', label: lead ? lead.label : '' };
+      });
+      row.noClose = !cd.slots.some(function (s) { return s.rep; });
+      return row;
+    }
+    var docs = [];
+    cd.groups.forEach(function (g) { if (g.rep) docs.push(g.rep); g.main.forEach(function (d) { docs.push(d); }); });
+    if (!docs.length) cd.groups.forEach(function (g) { g.rest.forEach(function (d) { docs.push(d); }); });   // 주요가 없으면 그 밖의 문서
+    row.docs = docs.slice(0, LIVE_MAX).map(function (d) { return { path: d.path, label: d.label }; });
+    row.more = cd.n - row.docs.length;
+    return row;
+  }
+  // 진행 중 카드 — 기본 날짜보다 새 날짜 중 가장 새 날짜의 리포트 (그 날짜의 카드 전부 · 공통 뉴스 포함). 없으면 null.
+  //   휴장일(뉴스만) = 뉴스는 공통 범위라 나라 날짜가 아니다 → 진행 중 없음 (뉴스 안내 줄이 따로 알린다)
+  function live(M, c, now) {
+    var sc = M.cty[c];
+    if (!sc || !sc.pending.length) return null;
+    var d = sc.pending[0], cards = cardsAt(M, c, d), n = 0;
+    cards.forEach(function (cd) { n += cd.n; });
+    return { c: c, d: d, state: liveState(c, d, now), def: sc.def, close: sc.close, n: n,
+             rows: cards.map(liveRow), more: sc.pending.slice(1) };
+  }
+  // 전체 목록 탭 '대표' 배지 — 토스 행 = 행 수와 상관없이 대표(마감 슬롯)에 · 그 밖의 종류 = 보이는 행이 2개 이상일 때만 대표 행에
+  function repBadge(M, rows) {
+    return rows.map(function (e) { return (e.rule === 'ts_main' || rows.length >= 2) && !!M.rep[e.path]; });
+  }
+  // 토스 날짜에 대표(마감 슬롯)가 없는가 — 토스 행이 있고 그중 대표가 하나도 없을 때 (장마감 전 · 마감 폴더 없는 날)
+  function tossNoRep(entries) {
+    var any = false;
+    for (var i = 0; i < entries.length; i++) {
+      if (entries[i].show !== 'toss') continue;
+      if (entries[i].rep) return false;
+      any = true;
+    }
+    return any;
+  }
+
+  root.NIXI = {
+    STALE_H: STALE_H, CTY: CTY, CLOSE_KINDS: CLOSE_KINDS, TZ: TZ, LIVE_MAX: LIVE_MAX,
+    kinds: kinds, build: build, firstCountry: firstCountry, kindsFor: kindsFor, datesFor: datesFor, defaultDate: defaultDate,
+    cardsAt: cardsAt, missing: missing, etcAt: etcAt, resolve: resolve, query: query, stale: stale, repBadge: repBadge, tossNoRep: tossNoRep,
+    todayIn: todayIn, liveState: liveState, live: live, wd: wd, dlabel: dlabel, kst: kst
+  };
 })(typeof window !== 'undefined' ? window : globalThis);
 </script>
 
@@ -443,8 +1143,9 @@ tr.dhr,.cty.m,.nt.m{display:none}
   var CACHE_KEY = 'nix_reports_index_tree_v1';  // GitHub API(?src=api) 응답만 캐시 — 레이트 리밋 때문 (목록 파일은 캐시 안 함)
   var CACHE_TTL = 10 * 60 * 1000;   // 10분
   var UI_KEY = 'nix_reports_index_ui_v1';
-  var N_RECENT = 10;                // 기본 = 최신 날짜 10개
-  var WD = ['일', '월', '화', '수', '목', '금', '토'];
+  var N_RECENT = 10;                // 전체 목록 기본 = 최신 날짜 10개 · 종류 탭 '최근' 칩 10개
+  var I = window.NIXI, V = window.NIXV;
+  var wd = I.wd, dlabel = I.dlabel, kst = I.kst;
 
   var $ = function (id) { return document.getElementById(id); };
   function h(tag, attrs) {
@@ -469,14 +1170,8 @@ tr.dhr,.cty.m,.nt.m{display:none}
   function sget(kind, key) { try { var s = store(kind); return s ? JSON.parse(s.getItem(key) || 'null') : null; } catch (e) { return null; } }
   function sset(kind, key, val) { try { var s = store(kind); if (s) s.setItem(key, JSON.stringify(val)); } catch (e) { /* 저장 불가(사파리 개인정보 모드 등) — 화면은 그대로 */ } }
 
-  function wd(d) { var a = d.split('-'); return WD[new Date(Date.UTC(+a[0], +a[1] - 1, +a[2])).getUTCDay()]; }
-  function dlabel(d) { return d ? d + ' (' + wd(d) + ')' : '날짜 없음'; }
-  function kst(ms) {
-    var parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit',
-      hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date(ms));
-    var g = function (t) { for (var i = 0; i < parts.length; i++) if (parts[i].type === t) return parts[i].value; return ''; };
-    return g('year') + '-' + g('month') + '-' + g('day') + ' ' + g('hour') + ':' + g('minute') + ' KST';
-  }
+  function mdl(d) { return d ? d.slice(5) + ' (' + wd(d) + ')' : ''; }
+  function hmKst(ms) { return kst(ms).slice(11, 16); }
   function num(n) { return Number(n).toLocaleString('ko-KR'); }
   function href(p) { return p.split('/').map(encodeURIComponent).join('/'); }
 
@@ -498,21 +1193,27 @@ tr.dhr,.cty.m,.nt.m{display:none}
     if (s && s !== 'manifest') throw new Error('알 수 없는 목록 소스입니다: src=' + s + ' (허용: api)');
     return { kind: 'manifest', url: bust(MANIFEST_URL), name: MANIFEST_URL };
   }
-  // 같은 페이지의 다른 소스 링크 (검색어 유지)
+  // 같은 페이지의 다른 소스 링크 (나라·종류·날짜·검색어 유지)
   function srcHref(src) {
-    var qs = new URLSearchParams();
+    var qs = new URLSearchParams(location.search);
+    qs.delete('src'); qs.delete('tree'); qs.delete('manifest');
     if (src) qs.set('src', src);
-    if (Q.length) qs.set('q', Q.join(' '));
     var s = qs.toString();
-    return location.pathname + (s ? '?' + s : '');
+    return location.pathname + (s ? '?' + s : '') + location.hash;
+  }
+  function keep() {
+    var qs = new URLSearchParams(location.search), out = {};
+    ['src', 'tree', 'manifest'].forEach(function (x) { var v = qs.get(x); if (v) out[x] = v; });
+    return out;
   }
 
   // 소스 목록을 받아 합친다 (지금은 1개 = 목록 파일 또는 저장소 트리 1회 GET).
   function fetchTrees(srcs) {
     return Promise.all(srcs.map(fetchTree)).then(function (rs) {
-      var out = { at: Date.now(), lm: '', gen: '', rem: null, lim: null, total: 0, paths: [] };
+      var out = { at: Date.now(), lm: '', gen: '', slice: '', rem: null, lim: null, total: 0, paths: [] };
       rs.forEach(function (r) {
         out.total += r.total; out.paths = out.paths.concat(r.paths);
+        if (r.slice) out.slice = r.slice;
         if (r.lm && (!out.lm || Date.parse(r.lm) > Date.parse(out.lm))) out.lm = r.lm;
         if (r.gen && (!out.gen || Date.parse(r.gen) > Date.parse(out.gen))) out.gen = r.gen;
         if (r.rem != null) { out.rem = r.rem; out.lim = r.lim; }
@@ -589,27 +1290,305 @@ tr.dhr,.cty.m,.nt.m{display:none}
       bad('count(' + JSON.stringify(j.count) + ')와 실제 파일명 수(' + paths.length + ')가 다릅니다.');
     var gen = typeof j.generated_at === 'string' ? j.generated_at : '';
     if (!gen || isNaN(Date.parse(gen))) bad('generated_at 이 시각 형식이 아닙니다 (' + JSON.stringify(j.generated_at) + ').');
-    return { total: j.count, paths: paths, gen: gen, lm: res.headers.get('last-modified') || '', rem: null, lim: null };
+    // 날짜 조각 목록(ticker_date 가 있는 목록 = 로컬 서버가 그 날짜·나라 번들만 담아 만든 것)은 낡음 검사 대상이 아니다 —
+    //   지난 날짜 조각의 생성 시각이 오래된 것은 정상이다 (새 리포트가 없었다는 뜻이 아님). 전체 신선도는 목록 전체 파일이 알린다.
+    var slice = typeof j.ticker_date === 'string' ? j.ticker_date : '';
+    return { total: j.count, paths: paths, gen: gen, slice: slice, lm: res.headers.get('last-modified') || '', rem: null, lim: null };
   }
 
   // ── 화면 상태 ──
   var UI = sget('localStorage', UI_KEY) || {};
   UI.collapsed = UI.collapsed || {};
   UI.all = !!UI.all;
-  var SEC = {};      // id → {def, dates[desc], byDate{}, nFinal, nAll}
-  var ST = {};       // id → {mode:'recent'|'all'|'date', date}
+  var DATA = null, SRC = null, RES = null, M = null;
+  var CUR = null, LASTKEY = '';
+  var SEC = {};      // 전체 목록: id → {def, dates[desc], byDate{}, nFinal, nAll}
+  var ST = {};       // 전체 목록: id → {mode:'recent'|'all'|'date', date}
   var Q = [];        // 검색어(소문자 · 공백 분리 · 모두 포함)
-  var DATA = null, SRC = null, RES = null;
 
   function saveUI() { sset('localStorage', UI_KEY, { collapsed: UI.collapsed, all: UI.all }); }
   function match(e) { for (var i = 0; i < Q.length; i++) if (e.hay.indexOf(Q[i]) < 0) return false; return true; }
 
-  function index(res) {
+  // ── 이동 (주소 = 화면 상태 · 뒤로 가기 됨) ──
+  function urlFor(st) { return location.pathname + '?' + I.query(M, st, keep()) + (st.hash || ''); }
+  function go(st) { history.pushState(null, '', urlFor(st)); route(); }
+  function plain(ev) { return ev.button === 0 && !ev.metaKey && !ev.ctrlKey && !ev.shiftKey && !ev.altKey; }
+  function linkTo(st, attrs) {   // 진짜 링크 (새 탭으로 열기 가능) · 그냥 누르면 페이지 안에서 이동
+    var a = attrs || {};
+    a.href = urlFor(st);
+    a.onclick = function (ev) { if (plain(ev)) { ev.preventDefault(); go(st); } };
+    var args = [ 'a', a ];
+    for (var i = 2; i < arguments.length; i++) args.push(arguments[i]);
+    return h.apply(null, args);
+  }
+  function stKey(r) { return [r.c, r.k, r.d, r.q].join('|'); }
+
+  function route() {
+    var qs = new URLSearchParams(location.search);
+    var r = I.resolve(M, { c: qs.get('c') || '', k: qs.get('k') || '', d: qs.get('d') || '', q: qs.get('q') || '', hash: location.hash });
+    var key = stKey(r);
+    if (CUR && key === LASTKEY) { scrollHash(); return; }   // 같은 상태 · 해시(바로가기 칩)만 바뀜 → 스크롤만
+    LASTKEY = key; CUR = r;
+    renderTabs(r);
+    renderNotes(r);
+    if (r.k === 'list') renderList(r); else renderDay(r);
+    document.title = 'NixStock 리포트 · ' + I.CTY[r.c] + (r.k === 'list' ? ' · 전체 목록' :
+      ' · ' + (r.k === 'all' ? '' : M.ki[r.k].label + ' · ') + dlabel(r.d));
+    syncHdr();
+    scrollHash();
+  }
+  function scrollHash() {
+    if (!CUR || CUR.k !== 'list' || location.hash.slice(0, 5) !== '#sec-') return;
+    var t = document.getElementById(location.hash.slice(1));
+    if (t) t.scrollIntoView();
+  }
+
+  // ── 머리: 나라 탭 · 종류 탭 ──
+  function renderTabs(r) {
+    var ct = $('ctabs'); ct.textContent = '';
+    ['kr', 'us'].forEach(function (c) {
+      var sc = M.cty[c], L = sc.def, P0 = sc.pending[0] || '';   // 라벨 날짜 = 기본 날짜 (마감 최신일) · 점 = 진행 중 날짜 있음
+      var lab = [h('span', { class: 'cn', text: I.CTY[c] }), h('span', { class: 'cd', text: L ? mdl(L) : '리포트 없음' }),
+                 P0 ? h('span', { class: 'cdot', 'aria-hidden': 'true', text: '●' }) : null];
+      if (!L) { ct.append(h('span', { class: 'ctab', 'aria-disabled': 'true', title: '리포트 없음' }, lab)); return; }
+      var k2 = (r.k === 'all' || r.k === 'list' || I.kindsFor(M, c).indexOf(r.k) >= 0) ? r.k : 'all';
+      ct.append(linkTo({ c: c, k: k2, q: k2 === 'list' ? r.q : '' },
+        { class: 'ctab', 'aria-current': c === r.c ? 'page' : null,
+          title: I.CTY[c] + (P0 ? ' 기본 ' + dlabel(L) + ' (마감 최신) · 진행 중 ' + dlabel(P0) : ' 최신 ' + dlabel(L)) }, lab));
+    });
+    var kt = $('ktabs'); kt.textContent = '';
+    var tabs = [{ k: 'all', label: '전체' }].concat(I.kindsFor(M, r.c).map(function (k) { return { k: k, label: M.ki[k].label }; }),
+      [{ k: 'list', label: '전체 목록' }]);
+    tabs.forEach(function (t) {
+      var ds = t.k === 'list' ? [] : I.datesFor(M, r.c, t.k);
+      kt.append(linkTo({ c: r.c, k: t.k, q: t.k === 'list' ? r.q : '' },
+        { class: 'ktab' + (t.k === 'list' ? ' lst' : ''), 'aria-current': t.k === r.k ? 'page' : null,
+          title: t.k === 'list' ? '기간 전체 세로 목록 (검색 · 모든 파일 보기)' : ds.length + '일 · 최신 ' + dlabel(ds[0]) }, t.label));
+    });
+    var act = kt.querySelector('[aria-current="page"]');
+    if (act && act.scrollIntoView && kt.scrollWidth > kt.clientWidth) {
+      try { act.scrollIntoView({ block: 'nearest', inline: 'nearest' }); } catch (e) { /* 오래된 브라우저 */ }
+    }
+  }
+
+  function renderStatus() {
+    var st = $('status'); st.textContent = '';
+    var parts = [];
+    if (DATA.kind === 'manifest') parts.push(['목록 생성 시각 ', h('b', { text: kst(Date.parse(DATA.gen)) })]);   // 목록 내용이 마지막으로 바뀐 배포
+    else if (DATA.lm) parts.push(['저장소 최종 변경 ', h('b', { text: kst(Date.parse(DATA.lm)) })]);
+    var age = Math.max(0, Math.round((Date.now() - DATA.at) / 60000));
+    parts.push(['가져온 시각 ', h('b', { text: hmKst(DATA.at) }), DATA.cached ? ' (캐시 · ' + age + '분 전)' : '']);
+    parts.push(['리포트 ', h('b', { text: num(RES.entries.length) }), '개']);
+    if (DATA.rem != null && !DATA.cached) parts.push(['GitHub API 남은 요청 ', h('b', { text: DATA.rem + '/' + (DATA.lim || 60) }), ' (시간당 · IP 당)']);
+    parts.forEach(function (p, i) { if (i) st.append(h('span', { class: 'sep', 'aria-hidden': 'true', text: '·' })); st.append(h('span', null, p)); });
+    if (RES.rejected.length) st.append(h('div', { text: '경로 형식이 맞지 않아 뺀 항목 ' + RES.rejected.length + '개' }));
+  }
+
+  // ── 안내 (항목마다 1줄 · 시작 마크 ⚠️ 주의 / ℹ️ 안내) ──
+  function renderNotes(r) {
+    var list = [];
+    if (DATA.kind === 'manifest' && !DATA.slice) { var s = I.stale(DATA.gen, Date.now()); if (s) list.push({ lv: 'warn', text: s.text }); }
+    r.notes.forEach(function (n) { list.push(n); });
+    if (r.k === 'all' && r.d === M.cty[r.c].def) {
+      var P0 = M.cty[r.c].pending[0] || '';
+      M.kinds.forEach(function (x) {   // 공통 종류(뉴스)가 나라 기본 날짜보다 더 최신 (진행 중 카드에 이미 보이는 날짜면 생략)
+        var cd = M.com.kd[x.k];
+        if (cd && cd.length && cd[0] > r.d && cd[0] > P0)
+          list.push({ lv: 'info', text: x.label + ' 리포트는 ' + dlabel(cd[0]) + '까지 있습니다 — ', link: { st: { c: r.c, k: x.k }, text: x.label + ' 탭' } });
+      });
+    }
+    if (r.k !== 'list') {
+      var ne = I.etcAt(M, r.c, r.d);
+      if (ne) list.push({ lv: 'info', text: '이 날짜에 분류 안 된 문서 ' + ne + '개 — ', link: { st: { c: r.c, k: 'list', hash: '#sec-etc' }, text: '전체 목록의 기타' } });
+    }
+    var box = $('notes'); box.textContent = '';
+    list.forEach(function (n) {
+      var tx = h('span', { class: 'tx' }, n.text);
+      if (n.link) tx.append(linkTo(n.link.st, null, n.link.text));
+      box.append(h('div', { class: 'ln ' + n.lv, role: n.lv === 'warn' ? 'alert' : null },
+        h('span', { class: 'mk', 'aria-hidden': 'true', text: n.lv === 'warn' ? '⚠️' : 'ℹ️' }), tx));
+    });
+  }
+
+  // ── 날짜 화면 (전체 · 종류 탭) ──
+  function navBtn(st, ok, txt, label) {
+    if (!ok) return h('span', { class: 'nb', 'aria-disabled': 'true', title: label, text: txt });
+    return linkTo(st, { class: 'nb', 'aria-label': label, title: label }, txt);
+  }
+  function optLabel(r, d, latest, def) {
+    var cs = I.cardsAt(M, r.c, d, r.k === 'all' ? null : r.k);
+    var n = 0; cs.forEach(function (cd) { n += cd.n; });
+    var tag = d === def ? (def === latest ? ' · 최신' : ' · 기본 (마감 최신)') : (r.k === 'all' && d > def ? ' · 마감 전' : '');
+    return dlabel(d) + tag + ' · ' + (r.k === 'all' ? cs.length + '종' : '문서 ' + num(n));
+  }
+  function newTab(path, label, full) {
+    return h('a', { class: 'nt', href: href(path), target: '_blank', rel: 'noopener', title: PAGES_BASE + path,
+      'aria-label': label + ' 새 탭에서 열기', text: full ? '새 탭 ↗' : '↗' });
+  }
+  function docRow(d, badge, cls) {
+    return h('div', { class: 'doc' + (cls ? ' ' + cls : '') },
+      h('a', { class: 'dl', href: href(d.path), title: PAGES_BASE + d.path, text: d.label }),
+      badge ? h('span', { class: 'bdg', text: badge }) : null,
+      newTab(d.path, d.label, !!badge));
+  }
+  function moreList(docs, open, what) {
+    if (!docs.length) return null;
+    return h('details', { class: 'more', open: open || null },
+      h('summary', { text: (what || '그 밖의 문서') + ' ' + num(docs.length) + '개' }),
+      h('ul', null, docs.map(function (d) {
+        return h('li', null, h('a', { href: href(d.path), title: PAGES_BASE + d.path, text: d.label }), ' ', newTab(d.path, d.label, false));
+      })));
+  }
+  // 마감 슬롯이 없는 토스 날짜 표시 — 대표 배지(금색)가 아닌 중립 칩 (구조 = 회색 · 이상 아님)
+  function noCloseChip() {
+    return h('span', { class: 'nbdg', title: '이 날짜 폴더에 장마감 슬롯이 아직 없어 대표 표시가 없습니다 (장마감 전이거나 마감 폴더가 없는 날).', text: '마감 슬롯 없음' });
+  }
+  function cardHead(r, cd, D, latestK) {
+    var lab = M.ki[cd.k].label + (cd.common ? ' (공통)' : '');
+    var title = r.k === 'all' ? linkTo({ c: r.c, k: cd.k, d: D }, { title: lab + ' 탭에서 이 날짜 보기' }, lab) : lab;
+    var cnt = cd.type === 'toss'
+      ? '슬롯 ' + cd.slots.length + ' · 전체 ' + num(cd.n)
+      : '주요 ' + num(cd.nf) + ' · 전체 ' + num(cd.n);
+    var vw = null;
+    if (cd.type === 'bundle') {
+      var u = cd.k + '/' + r.c + '/' + (D !== latestK ? '?d=' + D : '');
+      vw = h('a', { class: 'vw', href: u, title: '고정 주소 뷰어 (' + cd.k + '/' + r.c + '/) — 날짜·문서 선택' }, '뷰어 ↗');
+    }
+    var nr = cd.type === 'toss' && !cd.slots.some(function (s) { return s.rep; });   // 마감 슬롯 없음 = 대표 없음 (중립 칩)
+    return h('div', { class: 'ch' }, h('h3', null, title), h('span', { class: 'cnt', text: cnt }), nr ? noCloseChip() : null, vw);
+  }
+  function renderCard(r, cd, D, open) {
+    var latestK = I.datesFor(M, r.c, cd.k)[0];
+    var el = h('section', { class: 'card' + (cd.type === 'toss' ? ' wide' : ''), 'data-k': cd.k, 'aria-label': M.ki[cd.k].label },
+      cardHead(r, cd, D, latestK));
+    if (cd.type === 'toss') {
+      var box = h('div', { class: 'slots' });
+      cd.slots.forEach(function (s) {
+        var lead = s.main || s.docs[0];
+        var badge = s.rep ? '대표' : null;                                         // 대표 = 마감 슬롯만 (마감이 없는 날은 칩만)
+        box.append(h('div', { class: 'slot' + (s.rep ? ' rp' : ''), 'data-hm': s.hm, 'data-kind': s.k },
+          h('span', { class: 'tm', text: s.time }),
+          h('div', { class: 'sb2' },
+            h('div', { class: 'sl' },
+              h('span', { class: 'sk', text: s.kind }),
+              lead ? h('a', { class: 'dl', href: href(lead.path), title: PAGES_BASE + lead.path, text: lead.label }) : null,
+              badge ? h('span', { class: 'bdg', text: badge }) : null,
+              lead ? newTab(lead.path, lead.label, !!badge) : null,
+              s.main ? null : h('span', { class: 'wbdg', title: '이 슬롯 폴더에 슬롯 대표 페이지가 없어 첫 문서로 연결합니다', text: '⚠️ 대표 페이지 없음' })),
+            moreList(s.main ? s.docs : s.docs.slice(1), false, '문서'))));
+      });
+      el.append(box);
+      return el;
+    }
+    var multi = cd.groups.length > 1;
+    cd.groups.forEach(function (g) {
+      if (multi || g.name) el.append(h('div', { class: 'gname', text: g.name || g.grp }));
+      if (g.rep) el.append(docRow(g.rep, '대표', 'rp'));
+      g.main.forEach(function (d) { el.append(docRow(d, null)); });
+      var more = moreList(g.rest, open);
+      if (more) el.append(more);
+      if (g.note) el.append(h('div', { class: 'cnote', text: 'ℹ️ ' + g.note.text }));
+    });
+    return el;
+  }
+  // ── 진행 중 카드 (기본 화면 위 · 기본 날짜보다 새 날짜 = 마감 번들 전) ──
+  var LIVE_TXT = { today: '오늘 진행 중', ahead: '진행 중', past: '마감 리포트 없음' };
+  function closeNames() { return I.CLOSE_KINDS.map(function (k) { return M.ki[k].label; }).join('·'); }
+  function renderLive(r, L) {
+    var st = LIVE_TXT[L.state];
+    var box = h('section', { class: 'live ' + L.state, id: 'live', 'aria-label': st + ' ' + dlabel(L.d) },
+      h('div', { class: 'lh' },
+        h('span', { class: 'lst', text: st }),
+        h('span', { class: 'ld', text: dlabel(L.d) }),
+        h('span', { class: 'lsum' }, '리포트 ', h('b', { text: String(L.rows.length) }), '종 · 문서 ', h('b', { text: num(L.n) }), '개'),
+        linkTo({ c: r.c, k: 'all', d: L.d }, { class: 'lgo', title: dlabel(L.d) + ' 날짜 화면' }, '이 날짜 보기 →')),
+      h('div', { class: 'lnote' }, (L.state === 'past'
+        ? '이 날짜에는 마감 리포트(' + closeNames() + ')가 없습니다. '
+        : '마감 리포트(' + closeNames() + ')는 아직 없습니다. 올라오면 이 날짜가 기본 화면이 됩니다. ') +
+        '아래 = 마감 리포트가 있는 최신일 ', h('b', { text: mdl(L.def) })));
+    L.rows.forEach(function (x) {
+      var lab = M.ki[x.k].label + (x.common ? ' (공통)' : '');
+      var v = h('div', { class: 'lv' });
+      if (x.slots) {   // 토스 = 그날 슬롯 전부 (시각 순) · 대표 = 마감 슬롯만 · 마감 전이면 중립 칩
+        x.slots.forEach(function (s) {
+          var t = [h('b', { text: s.time }), ' ' + s.kind];
+          v.append(s.path
+            ? h('a', { class: 'chip' + (s.rep ? ' rp' : ''), href: href(s.path), 'data-hm': s.hm, title: s.label + ' — ' + PAGES_BASE + s.path }, t)
+            : h('span', { class: 'chip zero', 'data-hm': s.hm }, t));
+        });
+        if (x.noClose) v.append(noCloseChip());
+      } else {
+        x.docs.forEach(function (d) { v.append(h('a', { class: 'chip', href: href(d.path), title: PAGES_BASE + d.path, text: d.label })); });
+        if (x.more > 0) v.append(linkTo({ c: r.c, k: x.k, d: L.d }, { class: 'chip zero', title: lab + ' 탭에서 이 날짜 보기' }, '외 ' + num(x.more) + '개'));
+      }
+      box.append(h('div', { class: 'lrow', 'data-k': x.k },
+        linkTo({ c: r.c, k: x.k, d: L.d }, { class: 'lk', title: lab + ' 탭에서 이 날짜 보기' }, lab), v));
+    });
+    if (L.more.length) {
+      var more = [];
+      L.more.forEach(function (d, i) { if (i) more.push(' · '); more.push(linkTo({ c: r.c, k: 'all', d: d }, null, mdl(d))); });
+      box.append(h('div', { class: 'lnote' }, '그 밖의 마감 전 날짜: ', more));
+    }
+    return box;
+  }
+  function renderDay(r) {
+    $('listctl').hidden = true; $('jump').hidden = true;
+    var main = $('main'); main.textContent = '';
+    var ds = I.datesFor(M, r.c, r.k);
+    if (!ds.length || !r.d) { main.append(h('div', { class: 'empty', text: I.CTY[r.c] + ' 에 올라간 리포트가 아직 없습니다.' })); return; }
+    var latest = ds[0], i = ds.indexOf(r.d), def = I.defaultDate(M, r.c, r.k), isAll = r.k === 'all';
+    var pend = isAll && def !== latest;   // 전체 탭에 마감 전 날짜가 있다 (기본 = 마감 최신일 · 최신일보다 이전)
+    var cards = I.cardsAt(M, r.c, r.d, r.k === 'all' ? null : r.k);
+    var nDoc = 0; cards.forEach(function (cd) { nDoc += cd.n; });
+    var sel = h('select', { id: 'dsel', 'aria-label': '날짜', onchange: function (ev) { go({ c: r.c, k: r.k, d: ev.target.value }); } },
+      ds.map(function (d) { return h('option', { value: d, selected: d === r.d, text: optLabel(r, d, latest, def) }); }));
+    var head = h('section', { class: 'day', 'aria-label': '날짜 선택' },
+      h('div', { class: 'dh' },
+        h('div', { class: 'dt1' },
+          h('span', { class: 'big', id: 'dbig', text: dlabel(r.d) }),
+          r.d === def ? h('span', { class: 'lchip', text: I.CTY[r.c] + (pend ? ' 기본 · 마감 최신' : ' 최신') })
+                      : linkTo({ c: r.c, k: r.k }, { class: 'tolatest' }, (pend ? '기본(마감 최신) ' : '최신 ') + mdl(def) + ' →'),
+          isAll && r.d > def ? h('span', { class: 'nbdg', id: 'dlive', title: '마감 리포트(' + closeNames() + ')가 아직 없는 날짜',
+            text: LIVE_TXT[I.liveState(r.c, r.d, Date.now())] }) : null),
+        h('div', { class: 'dnav' },
+          navBtn({ c: r.c, k: r.k, d: ds[i + 1] }, i + 1 < ds.length, '◀', '이전 날짜 (더 오래된 날짜)'),
+          h('label', null, h('span', { class: 'sr', text: '날짜' }), sel),
+          navBtn({ c: r.c, k: r.k, d: ds[i - 1] }, i > 0, '▶', '다음 날짜 (더 최근 날짜)'))),
+      h('div', { class: 'sum' }, r.k === 'all'
+        ? ['리포트 ', h('b', { text: String(cards.length) }), '종 · 문서 ', h('b', { text: num(nDoc) }), '개']
+        : [M.ki[r.k].label + ' · 문서 ', h('b', { text: num(nDoc) }), '개 · 이 종류 날짜 ', h('b', { text: String(ds.length) }), '일']));
+    if (r.k !== 'all') {
+      head.append(h('div', { class: 'recent', 'aria-label': '최근 날짜' }, ds.slice(0, N_RECENT).map(function (d) {
+        return linkTo({ c: r.c, k: r.k, d: d }, { class: 'chip', 'aria-current': d === r.d ? 'page' : null }, mdl(d));
+      })));
+    }
+    var L = isAll && r.d === def ? I.live(M, r.c, Date.now()) : null;   // 기본 화면에서만 (날짜를 고르면 그 날짜 그대로)
+    if (L) main.append(renderLive(r, L));
+    main.append(head);
+    var grid = h('div', { class: 'cards' });
+    cards.forEach(function (cd) { grid.append(renderCard(r, cd, r.d, r.k !== 'all')); });
+    main.append(grid);
+    if (r.k === 'all') {
+      var miss = I.missing(M, r.c, r.d);
+      if (miss.length) main.append(h('div', { class: 'miss', 'aria-label': '이 날짜에 없는 종류' }, miss.map(function (x) {
+        return h('div', null, '이 날짜에 없음: ' + x.label,
+          x.prev ? [' · 직전 ', linkTo({ c: r.c, k: x.k, d: x.prev }, null, mdl(x.prev))] : null,
+          x.next ? [' · 다음 ', linkTo({ c: r.c, k: x.k, d: x.next }, null, mdl(x.next))] : null);
+      })));
+    }
+  }
+
+  // ── 전체 목록 탭 (기간 전체 세로 나열 — 그 나라 + 공통) ──
+  function inCountry(e, C) {
+    var m = /_(kr|us)$/.exec(e.sec);
+    if (m) return m[1].toUpperCase() === C;
+    return e.c === C || e.c === '공통';
+  }
+  function index(entries) {
     SEC = {};
     window.NIX.SECTIONS.forEach(function (s) { SEC[s.id] = { def: s, dates: [], byDate: {}, nFinal: 0, nAll: 0 }; });
-    res.entries.forEach(function (e) {
+    entries.forEach(function (e) {
       var S = SEC[e.sec];
-      e.hay = (e.path + ' ' + e.label + ' ' + (e.sub || '') + ' ' + S.def.label + ' ' + e.c + ' ' + e.date).toLowerCase();
       var d = e.date || '';
       if (!S.byDate[d]) { S.byDate[d] = []; S.dates.push(d); }
       S.byDate[d].push(e);
@@ -628,24 +1607,6 @@ tr.dhr,.cty.m,.nt.m{display:none}
       ST[id] = ST[id] || { mode: 'recent', date: '' };
     });
   }
-
-  function renderStatus() {
-    var st = $('status'); st.textContent = '';
-    var latest = '';
-    RES.entries.forEach(function (e) { if (e.date > latest) latest = e.date; });
-    var finals = RES.entries.filter(function (e) { return e.final; }).length;
-    var parts = [];
-    if (DATA.kind === 'manifest') parts.push(['목록 생성 시각 ', h('b', { text: kst(Date.parse(DATA.gen)) })]);   // 목록 내용이 마지막으로 바뀐 배포
-    else if (DATA.lm) parts.push(['저장소 최종 변경 ', h('b', { text: kst(Date.parse(DATA.lm)) })]);
-    var age = Math.max(0, Math.round((Date.now() - DATA.at) / 60000));
-    parts.push(['목록 가져온 시각 ', h('b', { text: kst(DATA.at) }), DATA.cached ? ' (캐시 · ' + age + '분 전)' : '']);
-    parts.push(['리포트 HTML ', h('b', { text: num(RES.entries.length) }), '개 · 대표 ', h('b', { text: num(finals) }), '개']);
-    if (latest) parts.push(['최신 리포트 날짜 ', h('b', { text: dlabel(latest) })]);
-    if (DATA.rem != null && !DATA.cached) parts.push(['GitHub API 남은 요청 ', h('b', { text: DATA.rem + '/' + (DATA.lim || 60) }), ' (시간당 · IP 당)']);
-    parts.forEach(function (p, i) { if (i) st.append(h('span', { class: 'sep', 'aria-hidden': 'true', text: '·' })); st.append(h('span', null, p)); });
-    if (RES.rejected.length) st.append(h('div', { text: '경로 형식이 맞지 않아 뺀 항목 ' + RES.rejected.length + '개' }));
-  }
-
   // 표에 실제로 쓰는 날짜 집합 (머리 건수·바로가기 칩·표가 같은 집합을 센다)
   function datesFor(id) {
     var S = SEC[id], st = ST[id];
@@ -658,24 +1619,22 @@ tr.dhr,.cty.m,.nt.m{display:none}
     datesFor(id).forEach(function (d) { S.byDate[d].forEach(function (e) { if (match(e)) { nAny++; if (UI.all || e.final) n++; } }); });
     return { n: n, nAny: nAny };
   }
-
   function renderJump() {
     var nav = $('jump'); nav.textContent = '';
     window.NIX.SECTIONS.forEach(function (s) {
       var S = SEC[s.id];
-      if (s.optional && !S.nAll) return;
+      if (!S.nAll) return;
       var txt;
       if (Q.length) { var vc = visibleCount(S, s.id); if (!vc.nAny) return; txt = vc.n + '건'; }
       else txt = S.dates.length + '일';
-      nav.append(h('a', { class: 'chip' + (S.nAll ? '' : ' zero'), href: '#sec-' + s.id }, s.label, h('span', { class: 'n', text: txt })));
+      nav.append(h('a', { class: 'chip', href: '#sec-' + s.id }, s.label, h('span', { class: 'n', text: txt })));
     });
   }
-
   function setMode(id, mode, date) { ST[id] = { mode: mode, date: date || '' }; renderSection(id); }
-
   function rowsFor(S, d) {
     return S.byDate[d].filter(function (e) { return (UI.all || e.final) && match(e); });
   }
+  function showAll() { UI.all = true; $('allf').checked = true; saveUI(); renderAll(); }
 
   function buildTable(id, S, dates) {
     var thead = h('thead', null, h('tr', null,
@@ -684,31 +1643,38 @@ tr.dhr,.cty.m,.nt.m{display:none}
       h('th', { scope: 'col', class: 'pth', text: '경로 (사이트 기준 상대 URL)' })));
     var tbody = h('tbody');
     var shown = 0;
+    var isToss = id.indexOf('toss_') === 0;
+    var noRep = function (d) { return isToss && I.tossNoRep(S.byDate[d] || []); };   // 토스 날짜에 마감 슬롯(대표) 없음 → 중립 칩
     dates.forEach(function (d) {
       var rows = rowsFor(S, d);
+      var hidden = UI.all ? 0 : S.byDate[d].filter(function (e) { return !e.final && match(e); }).length;
       var dhr = function () {   // 좁은 화면 전용 날짜 머리줄 (넓은 화면은 왼쪽 날짜 칸)
-        return h('tr', { class: 'dhr' }, h('th', { colspan: '5', scope: 'rowgroup', text: dlabel(d) }));
+        return h('tr', { class: 'dhr' }, h('th', { colspan: '5', scope: 'rowgroup' }, dlabel(d), noRep(d) ? noCloseChip() : null));
+      };
+      var dcell = function (span) {
+        return h('td', { class: 'dt', rowspan: span > 1 ? String(span) : null }, d || '날짜 없음', d ? h('span', { class: 'wd', text: '(' + wd(d) + ')' }) : null,
+          noRep(d) ? noCloseChip() : null);
       };
       if (!rows.length) {
         if (!Q.length && !UI.all && S.byDate[d].length) {
           tbody.append(dhr());
-          tbody.append(h('tr', { class: 'nofin' },
-            h('td', { class: 'dt' }, d || '날짜 없음', d ? h('span', { class: 'wd', text: '(' + wd(d) + ')' }) : null),
-            h('td', { colspan: '4', text: '대표 리포트 없음 — "모든 파일 보기"에서 ' + S.byDate[d].length + '개' })));
+          tbody.append(h('tr', { class: 'nofin' }, dcell(1),
+            h('td', { colspan: '4' }, '주요 리포트 없음 — ', h('button', { type: 'button', onclick: showAll, text: '모든 파일 보기' }),
+              '에서 ' + S.byDate[d].length + '개')));
         }
         return;
       }
       tbody.append(dhr());
+      var badges = I.repBadge(M, rows);
       rows.forEach(function (e, i) {
-        var tr = h('tr', { class: (e.final ? 'fin' : 'aux') + (UI.all ? ' allmode' : '') });
-        if (i === 0) tr.append(h('td', { class: 'dt', rowspan: String(rows.length) },
-          d || '날짜 없음', d ? h('span', { class: 'wd', text: '(' + wd(d) + ')' }) : null));
+        var tr = h('tr', { class: (e.final ? 'fin' : 'aux') + (UI.all ? ' allmode' : '') + (badges[i] ? ' rep' : '') });
+        if (i === 0) tr.append(dcell(rows.length + (hidden ? 1 : 0)));
         var u = href(e.path);
         tr.append(h('td', { class: 'cc' }, h('span', { class: 'cty', text: e.c })));
         tr.append(h('td', { class: 'nm' },
           h('span', { class: 'cty m', text: e.c }),
           h('a', { href: u, title: PAGES_BASE + e.path, text: e.label }),
-          (UI.all && e.final) ? h('span', { class: 'bdg', text: '대표' }) : null,
+          badges[i] ? h('span', { class: 'bdg', text: '대표' }) : null,
           h('a', { class: 'nt m', href: u, target: '_blank', rel: 'noopener', 'aria-label': e.label + ' 새 탭에서 열기', text: '새 탭 ↗' }),
           e.sub ? h('span', { class: 'sub2', text: e.sub }) : null,
           h('span', { class: 'pth m', text: e.path })));
@@ -717,6 +1683,8 @@ tr.dhr,.cty.m,.nt.m{display:none}
         tbody.append(tr);
         shown++;
       });
+      if (hidden) tbody.append(h('tr', { class: 'more' }, h('td', { colspan: '4' },
+        '그 밖의 문서 ' + num(hidden) + '개 — ', h('button', { type: 'button', onclick: showAll, text: '모든 파일 보기' }))));
     });
     return { el: h('div', { class: 'tblwrap' }, h('table', null, h('caption', { class: 'sr', text: S.def.label + ' 리포트 목록' }), thead, tbody)), shown: shown };
   }
@@ -724,14 +1692,14 @@ tr.dhr,.cty.m,.nt.m{display:none}
   function renderSection(id) {
     var S = SEC[id], st = ST[id];
     var sec = $('sec-' + id);
+    if (!sec) return;
     var body = $('body-' + id);
     var cnt = sec.querySelector('.cnt');
     var vc = visibleCount(S, id);
-    sec.hidden = (S.def.optional && !S.nAll) || (Q.length > 0 && vc.nAny === 0 && st.mode !== 'date');
+    sec.hidden = Q.length > 0 && vc.nAny === 0 && st.mode !== 'date';
     if (Q.length) cnt.textContent = '검색 ' + vc.n + '건' + (vc.nAny > vc.n ? ' (모든 파일에서 ' + vc.nAny + '건)' : '');
-    else cnt.textContent = S.nAll ? S.dates.length + '일 · 대표 ' + num(S.nFinal) + ' · 전체 ' + num(S.nAll) + ' · 최신 ' + dlabel(S.dates[0]) : '리포트가 아직 없습니다';
+    else cnt.textContent = S.dates.length + '일 · 주요 ' + num(S.nFinal) + ' · 전체 ' + num(S.nAll) + ' · 최신 ' + dlabel(S.dates[0]);
     body.textContent = '';
-    if (!S.nAll) { body.append(h('div', { class: 'empty', text: '아직 올라간 리포트가 없습니다. 첫 리포트가 올라오면 이 페이지를 다시 올리지 않아도 자동으로 나타납니다.' })); return; }
 
     // 날짜 조작줄: 최근 10일 / 전체 날짜 · 날짜 입력 · 최신순 날짜 목록
     var real = S.dates.filter(Boolean);
@@ -744,7 +1712,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
       h('option', { value: '', text: '날짜 목록 (최신순 ' + real.length + '일)' }),
       real.map(function (d) {
         var nf = S.byDate[d].filter(function (e) { return e.final; }).length;
-        return h('option', { value: d, selected: st.mode === 'date' && st.date === d, text: dlabel(d) + ' · 대표 ' + nf + ' / 전체 ' + S.byDate[d].length });
+        return h('option', { value: d, selected: st.mode === 'date' && st.date === d, text: dlabel(d) + ' · 주요 ' + nf + ' / 전체 ' + S.byDate[d].length });
       }));
     body.append(h('div', { class: 'dctl' }, seg,
       h('label', null, '날짜', din),
@@ -768,7 +1736,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
     if (!dates.length) return;
     var t = buildTable(id, S, dates);
     if (!t.shown && Q.length) {
-      body.append(h('div', { class: 'empty', text: vc.nAny > 0 && !UI.all ? '대표 리포트에는 없습니다 — "모든 파일 보기"를 켜면 ' + vc.nAny + '건이 보입니다.' : '검색 결과가 없습니다.' }));
+      body.append(h('div', { class: 'empty', text: vc.nAny > 0 && !UI.all ? '주요 리포트에는 없습니다 — "모든 파일 보기"를 켜면 ' + vc.nAny + '건이 보입니다.' : '검색 결과가 없습니다.' }));
       return;
     }
     body.append(t.el);
@@ -777,6 +1745,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
   function renderAll() {
     var main = $('main'); main.textContent = '';
     window.NIX.SECTIONS.forEach(function (s) {
+      if (!SEC[s.id].nAll) return;   // 이 나라에 없는 구역은 숨긴다
       var collapsed = !!UI.collapsed[s.id];
       var btn = h('button', { class: 'sh', type: 'button', 'aria-expanded': String(!collapsed), 'aria-controls': 'body-' + s.id,
         onclick: function () {
@@ -789,13 +1758,31 @@ tr.dhr,.cty.m,.nt.m{display:none}
         h('h2', { id: 'h-' + s.id }, btn), h('div', { class: 'sb', id: 'body-' + s.id, hidden: collapsed })));
       renderSection(s.id);
     });
-    if (Q.length && !main.querySelector('.sec:not([hidden])')) main.append(h('div', { class: 'empty', text: '검색 결과가 없습니다: ' + Q.join(' ') }));
+    if (Q.length) {   // 다른 나라에만 있는 검색 결과 — 없어 보이지 않게 한 줄
+      var oc = CUR.c === 'kr' ? 'us' : 'kr', OC = I.CTY[oc], C = I.CTY[CUR.c];
+      var no = RES.entries.filter(function (e) { return inCountry(e, OC) && !inCountry(e, C) && match(e); }).length;
+      if (no) main.prepend(h('div', { class: 'ln info', id: 'xhint' }, h('span', { class: 'mk', 'aria-hidden': 'true', text: 'ℹ️' }),
+        h('span', { class: 'tx' }, OC + ' 에도 검색 결과 ' + num(no) + '건이 있습니다 — ',
+          linkTo({ c: oc, k: 'list', q: CUR.q }, null, OC + ' 전체 목록에서 보기'))));
+    }
+    if (!main.querySelector('.sec')) main.append(h('div', { class: 'empty', text: I.CTY[CUR.c] + ' 리포트가 아직 없습니다.' }));
+    else if (Q.length && !main.querySelector('.sec:not([hidden])')) main.append(h('div', { class: 'empty', text: '검색 결과가 없습니다: ' + Q.join(' ') }));
     renderJump();
+  }
+  function renderList(r) {
+    $('listctl').hidden = false; $('jump').hidden = false;
+    var qi = $('q');
+    if (qi.value !== r.q) qi.value = r.q;
+    setQ();
+    var C = I.CTY[r.c];
+    index(RES.entries.filter(function (e) { return inCountry(e, C); }));
+    renderAll();
   }
 
   function showError(err) {
     $('status').textContent = '목록을 만들지 못했습니다.';
-    $('jump').textContent = '';
+    $('ctabs').textContent = ''; $('ktabs').textContent = ''; $('notes').textContent = '';
+    $('jump').textContent = ''; $('jump').hidden = true; $('listctl').hidden = true;
     var main = $('main'); main.textContent = '';
     main.append(h('div', { class: 'err', role: 'alert' },
       h('h2', { text: '리포트 목록을 만들 수 없습니다' }),
@@ -806,6 +1793,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
         : h('p', null, '진단: ', h('a', { href: srcHref('api'), text: 'GitHub API 로 보기' }),
             ' (이전 방식 · 저장소 트리를 직접 읽음 · 비인증 시간당 60회 한도)'),
       h('p', null, h('button', { class: 'btn', type: 'button', onclick: function () { load(true); }, text: '다시 시도' }))));
+    syncHdr();
   }
 
   function load(force) {
@@ -833,26 +1821,42 @@ tr.dhr,.cty.m,.nt.m{display:none}
     DATA = data;
     RES = window.NIX.classify(data.paths);
     if (!RES.entries.length) { showError(new Error('목록에 리포트 HTML 이 없습니다 (전체 항목 ' + num(data.total || 0) + '개).')); return false; }
-    index(RES);
+    var secl = {};
+    window.NIX.SECTIONS.forEach(function (s) { secl[s.id] = s.label; });
+    RES.entries.forEach(function (e) {   // 검색 대상 문자열 (경로 · 라벨 · 이름 · 구역 · 국가 · 날짜)
+      e.hay = (e.path + ' ' + e.label + ' ' + (e.sub || '') + ' ' + secl[e.sec] + ' ' + e.c + ' ' + e.date).toLowerCase();
+    });
+    M = I.build(data.paths, RES, V);
+    if (!I.firstCountry(M)) {
+      showError(new Error('KR · US 어느 나라에도 날짜가 있는 리포트가 없습니다 (리포트 HTML ' + num(RES.entries.length) + '개 · 기타 ' + num(M.nEtc) + '개).'));
+      return false;
+    }
     renderStatus();
-    renderAll();
-    if (location.hash) { var t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); }
+    CUR = null; LASTKEY = '';
+    route();
     return true;
   }
 
-  // 고정 헤더 높이 → 섹션 앵커 여백
+  // 고정 헤더 높이 → 구역 앵커 여백
   function syncHdr() { document.documentElement.style.setProperty('--hdr', ($('top').offsetHeight + 8) + 'px'); }
   window.addEventListener('resize', syncHdr);
+  window.addEventListener('popstate', function () { if (M) route(); });
   syncHdr();
 
   var qi = $('q'), timer = null;
-  var q0 = new URLSearchParams(location.search).get('q');
-  if (q0) qi.value = q0;
   function setQ() { Q = qi.value.toLowerCase().split(/\s+/).filter(Boolean); }
-  setQ();
-  qi.addEventListener('input', function () { clearTimeout(timer); timer = setTimeout(function () { setQ(); if (RES) renderAll(); }, 120); });
+  qi.addEventListener('input', function () {
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      setQ();
+      if (!M || !CUR || CUR.k !== 'list') return;
+      CUR.q = qi.value.trim(); LASTKEY = stKey(CUR);
+      history.replaceState(null, '', urlFor({ c: CUR.c, k: 'list', q: CUR.q }));   // 검색어도 주소에 (공유 · 새로 고침 유지)
+      renderAll();
+    }, 120);
+  });
   var af = $('allf'); af.checked = UI.all;
-  af.addEventListener('change', function () { UI.all = af.checked; saveUI(); if (RES) renderAll(); });
+  af.addEventListener('change', function () { UI.all = af.checked; saveUI(); if (CUR && CUR.k === 'list') renderAll(); });
   $('reload').addEventListener('click', function () { load(true); });
   load(false);
 })();

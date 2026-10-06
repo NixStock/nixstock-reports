@@ -169,6 +169,7 @@ main.stage{flex:1 1 auto;min-height:0;position:relative;background:var(--bg)}
   var TS = 'toss/(?<c>kr|us)/(?<d>' + D + ')_' + KC + '_toss_(?<k>[a-z]+)_(?<hm>\\d{4})/';
   var NW = 'news/(?<d>' + D + ')_daily_news_report/';
   var TK = 'ticker/(?<d>' + D + ')_(?<c>kr|us)_(?<t>[^_/]+)_(?<s>[^/]+)/';
+  var CN = 'cardnews/(?<d>' + D + ')_(?<c>kr|us)_cardnews_close/';
 
   // 지수 폴더 → 이름·순서 (리포트 <title> 기준)
   var IDX = {
@@ -204,6 +205,8 @@ main.stage{flex:1 1 auto;min-height:0;position:relative;background:var(--bg)}
     { id: 'index_kr',    label: '인덱스 KR', optional: true },
     { id: 'rrg_kr',      label: 'RRG KR' },
     { id: 'rrg_us',      label: 'RRG US' },
+    { id: 'cardnews_kr', label: '카드뉴스 KR' },
+    { id: 'cardnews_us', label: '카드뉴스 US' },
     { id: 'toss_kr',     label: '토스 KR' },
     { id: 'toss_us',     label: '토스 US' },
     { id: 'news',        label: '뉴스' },
@@ -213,12 +216,12 @@ main.stage{flex:1 1 auto;min-height:0;position:relative;background:var(--bg)}
 
   // ★분류 규칙 표 (위에서부터 첫 일치 1개) — 경로는 저장소 루트 기준
   //  [규칙, 섹션({c}=국가), 경로 정규식, 기본 표시, 정렬, 라벨]
-  //  기본 표시: 1 = 대표 리포트(기본 화면) · 0 = "모든 파일 보기"에서만
-  //            'toss' = 그날 마감(close) 슬롯 대표 페이지 · 마감이 없으면 그날 마지막 슬롯
-  //            'rrg'  = 같은 폴더에 rrg_alltickers 가 없을 때만 대표
+  //  기본 표시: 1 = 주요(기본 화면) · 0 = "모든 파일 보기"에서만
+  //            'toss' = 슬롯 대표 페이지 전부 주요 · 그중 대표(rep) = 그날 마감(close) 슬롯만 · 마감이 없는 날은 대표 없음
+  //            'rrg'  = 같은 폴더에 rrg_alltickers 가 없을 때만 주요
   //  섹션 null = 목록에서 제외(사이트 자체 페이지)
   var RULES = [
-    ['site_root',   null,          R('(?:index|reports_index)\\.html'), 0, 0, null],
+    ['site_root',   null,          R('(?:(?:market|tactical|index|cardnews|rrg)/(?:kr|us)/)?(?:index|reports_index)\\.html'), 0, 0, null],
 
     ['mt_ig',       'market_{c}',  R(MT + 'infographic/market_temp_' + KC + '_comparison_infographic_' + D + '\\.html'), 1, 0,
       function () { return '비교 인포그래픽'; }],
@@ -283,6 +286,9 @@ main.stage{flex:1 1 auto;min-height:0;position:relative;background:var(--bg)}
     ['rg_rot',      'rrg_{c}',     R(RG + 'rrg_rotations_' + KC + '_' + D + '\\.html'), 0, 61,
       function () { return '개선 → 리딩 회전'; }],
     ['rg_other',    'rrg_{c}',     R(RG + '.+\\.html'), 0, 99, function (g, p) { return base(p); }],
+
+    ['cn_rep',      'cardnews_{c}', R(CN + '\\k<c>_cardnews_\\k<d>\\.html'), 1, 0, function () { return '카드뉴스'; }],
+    ['cn_other',    'cardnews_{c}', R(CN + '.+\\.html'), 0, 99, function (g, p) { return base(p); }],
 
     ['ts_main',     'toss_{c}',    R(TS + KC + '_toss_[^/]*_' + D + '\\.html'), 'toss',
       function (g) { return tossOrd(g, 0); }, function (g) { return '토스 ' + slot(g); }],
@@ -354,7 +360,7 @@ main.stage{flex:1 1 auto;min-height:0;position:relative;background:var(--bg)}
         e.show = hit[3];
         e.ord = typeof hit[4] === 'function' ? hit[4](g) : hit[4];
         e.label = hit[5](g, p);
-        e.k = g.k || ''; e.hm = g.hm || '';
+        e.k = g.k || ''; e.hm = g.hm || ''; e.slot = g.k ? slot(g) : '';
         if (g.t) e.sub = slugName(g.s);
         e.unlisted = /_other$/.test(hit[0]);
       } else {
@@ -365,7 +371,7 @@ main.stage{flex:1 1 auto;min-height:0;position:relative;background:var(--bg)}
       e.grp = groupKey(p);
       entries.push(e);
     }
-    // 2단계: 토스 대표(그날 마감 슬롯 · 없으면 마지막 슬롯) · RRG 대체 대표
+    // 2단계: 토스 대표(그날 마감 슬롯만 · 마감이 없으면 대표 없음) · RRG 대체 주요
     var toss = {}, rrgHasAll = {};
     entries.forEach(function (e) {
       if (e.show === 'toss') { var k = e.sec + '|' + e.date; (toss[k] = toss[k] || []).push(e); }
@@ -377,10 +383,11 @@ main.stage{flex:1 1 auto;min-height:0;position:relative;background:var(--bg)}
         if (ac !== bc) return bc - ac;
         return b.hm < a.hm ? -1 : b.hm > a.hm ? 1 : (a.path < b.path ? -1 : 1);
       });
-      c[0].pick = true;
+      if (c[0].k === 'close') c[0].pick = true;   // 마감 슬롯이 있을 때만 대표 (장중·NXT·장전은 대표가 되지 않는다)
     });
     entries.forEach(function (e) {
-      if (e.show === 'toss') e.final = !!e.pick;
+      e.rep = false;
+      if (e.show === 'toss') { e.final = true; e.rep = !!e.pick; }   // 슬롯 대표 페이지 = 전부 주요 · 대표 = 마감 슬롯만
       else if (e.show === 'rrg') e.final = !rrgHasAll[e.grp];
       else e.final = e.show === 1;
       delete e.pick;
@@ -388,7 +395,7 @@ main.stage{flex:1 1 auto;min-height:0;position:relative;background:var(--bg)}
     return { entries: entries, ignored: ignored, rejected: rejected };
   }
 
-  root.NIX = { classify: classify, RULES: RULES, SECTIONS: SECTIONS, safePath: safePath };
+  root.NIX = { classify: classify, RULES: RULES, SECTIONS: SECTIONS, safePath: safePath, TOSS_KIND: TOSS_KIND };
 })(typeof window !== 'undefined' ? window : globalThis);
 </script>
 

@@ -23,7 +23,11 @@
         토스 = 그날 슬롯 전부를 시각 순으로 · 대표 = 그날 마감 슬롯만 (마감이 없는 날은 대표 없음 · 중립 칩).
         티커 탭 = 날짜별 종목 표 (검색 · 코드/이름 정렬 · 첫 200행 + 더 보기). 공개 = 목록 파일의 티커 항목 ·
           이름 = 정식 이름(공개 목록 ticker_names · 로컬 조각 names — 원천 SSOT summary_asof.ticker_name_map) 위 · 영문 폴더 이름 아래 ·
+          이름 보조(공개 목록 ticker_names_alt · 로컬 조각 names_alt — 원천 SSOT name_alt · 새 키만 · 옛 화면은 무시) 가 있으면
+            KR = 한글 정식 위 · 영문 정식(KRX) 아래 / US = 한글(KIS) 위 · 영문 정식 아래 (한글 없으면 영문 1줄 + 다른 폴더 이름) ·
           검색 = 코드 · 영문 폴더 이름 · 정식 이름 (공백·대소문자·구두점 무시 · '삼성' → 삼성전자·삼성SDI …) · 이름 정렬 = 정식 이름 우선 localeCompare('ko') ·
+            + 둘째 이름 · 추가 검색어(x) = 정확 · 별칭(a) = 둘째 순위 (걸린 별칭을 작게 표시) · 한 낱말·한글 2음절 이상이면 한글 근사 일치 = 셋째 순위
+            ('비슷한 이름' 표시 · 자모 · 가중 편집 거리 ≤ 자모 수/8 · 음절 경계 시작·끝 · 비슷한 소리 치환 반값) · 순위 안에서 = 고른 정렬 ·
           로컬(목록 파일에 ticker_lists 가 있음) = 색인 1회 + 날짜×나라 조각(_local/ticker/{D}_{c}.json)을 티커 탭에서만 받는다 (최근 8개만 캐시).
           종목 = 같은 날짜·나라의 고유 코드 — 같은 코드 묶음(이름 표기만 다른 폴더)은 1행으로 합치고(문서는 모두 '그 밖'), 매수 신호 스캔은 종목이 아닌 '스캔 N건'.
           종목 수 문구는 한 함수(nix-index-core tkCounts · tkText)에서 나온다 — 조각을 받기 전 색인 값은 폴더 수 근사라 '(색인)' 로 표시.
@@ -227,6 +231,8 @@ table.tkt td.tkr .rl,table.tkt td.tkr details.more>summary{white-space:nowrap}
 table.tkt td.tkr li{white-space:normal;overflow-wrap:anywhere}   /* anywhere = '그 밖' 긴 파일명 라벨이 열 최소 폭을 넓히지 않게 (break-word 는 펼친 행에서 이름 칸을 찌그러뜨림 · 2026-10-06) */
 table.tkt td.tkn .fn,table.tkt td.tkn .sl{display:block}
 table.tkt td.tkn .sl{font-size:12px;color:var(--ink3);margin-top:1px}
+table.tkt td.tkn .hm{display:block;font-size:12px;color:var(--ink3);margin-top:2px}   /* 검색에 걸린 별칭 · 비슷한 이름 (걸린 행만) */
+table.tkt td.tkn .hm .hb{display:inline-block;margin-right:5px;padding:0 5px;border:1px solid var(--line2);border-radius:5px;font-size:11px;font-weight:700;color:var(--ink2)}
 .nodash{color:var(--ink3)}
 .nk{display:table;margin:3px 0 0;padding:0 6px;border-radius:6px;font-size:11.5px;font-weight:700;color:var(--ink2);border:1px solid var(--line2)}   /* 코드 아래 줄 (코드 칸 폭 유지) */
 .tkmore{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
@@ -1239,6 +1245,49 @@ tr.dhr,.cty.m,.nt.m{display:none}
     });
     return { map: out, err: errs.join(' · ') };
   }
+  // 이름 보조 사전 검사 (서버 조각 names_alt = {코드: 객체} · 공개 목록 ticker_names_alt = {나라: {코드: 객체}})
+  //   객체 = {ko?: 한글 이름(US) · en?: 영문 정식 이름(KR) · a?: [별칭] · x?: [추가 검색어]} — 모르는 키는 무시 (뒤에 늘어날 수 있다)
+  //   보조는 덤이다: 없거나 형식이 어긋나도 목록·표·정식 이름 검색은 정상 · 어긋난 코드는 빼고 사유 1줄 (그 코드는 정식 이름만)
+  var ALT_ARR_MAX = 16;
+  function altObj(v) {
+    if (!v || typeof v !== 'object' || Array.isArray(v)) return null;
+    var o = {}, ok = true;
+    ['ko', 'en'].forEach(function (k) {
+      if (v[k] == null) return;
+      if (typeof v[k] !== 'string') { ok = false; return; }
+      if (v[k].trim()) o[k] = v[k].trim();
+    });
+    ['a', 'x'].forEach(function (k) {
+      if (v[k] == null) return;
+      if (!Array.isArray(v[k])) { ok = false; return; }
+      var arr = [];
+      v[k].forEach(function (x) { if (typeof x !== 'string') ok = false; else if (x.trim() && arr.length < ALT_ARR_MAX) arr.push(x.trim()); });
+      if (arr.length) o[k] = arr;
+    });
+    return ok ? o : null;
+  }
+  function parseNamesAlt(o, what) {
+    if (o == null) return { map: null, err: '' };
+    if (typeof o !== 'object' || Array.isArray(o)) return { map: null, err: what + ' 형식 오류 (객체가 아닙니다)' };
+    var out = Object.create(null), bad = 0;
+    Object.keys(o).forEach(function (k) { var v = altObj(o[k]); if (v) out[k] = v; else bad++; });
+    return { map: out, err: bad ? what + ' 에 형식이 어긋난 항목 ' + bad + '개 (그 코드는 정식 이름만)' : '' };
+  }
+  function parseTickerNamesAlt(o) {   // 공개 목록 ticker_names_alt → {kr|us|etc: {코드: 객체}}
+    if (o == null) return { map: null, err: '' };
+    if (typeof o !== 'object' || Array.isArray(o)) return { map: null, err: 'ticker_names_alt 형식 오류 (객체가 아닙니다)' };
+    var out = {}, errs = [];
+    Object.keys(o).forEach(function (cc) {
+      if (cc !== 'kr' && cc !== 'us' && cc !== 'etc') { errs.push('ticker_names_alt 의 모르는 나라 ' + JSON.stringify(cc)); return; }
+      var r = parseNamesAlt(o[cc], 'ticker_names_alt.' + cc);
+      if (r.map) out[cc] = r.map;
+      if (r.err) errs.push(r.err);
+    });
+    return { map: out, err: errs.join(' · ') };
+  }
+  // KRX 영문 이름은 붙여 쓴 것이 있다 ('SamsungElectronics' 269/2,766) — 공백이 하나도 없을 때만 소문자→대문자 경계를 띄워 보여 준다
+  //   (표시만 · 검색은 원문과 띄운 형태 둘 다 · 화면 폴더 이름 slugName 과 같은 규칙의 일부)
+  function enDisp(s) { return /\s/.test(s) ? s : s.replace(/([a-z])([A-Z])/g, '$1 $2'); }
   function folderOf(grp) { return grp.slice(grp.indexOf('/') + 1); }
   // 묶음 폴더 형식 순위 — 같은 (날짜 · 나라 · 코드) 묶음이 여럿일 때 어느 쪽이 앞(대표)인지 (0 = 가장 앞)
   //   0 = 표준 이름 형식 {D}_{c}_{코드}_{이름} (이름 ≠ 코드) · 1 = 이름 없음 · 이름 = 코드 · 2 = 옛 {D}_{c}_ticker_{코드}_… · 3 = 나라 없음 {D}_ticker_{코드}_…
@@ -1263,9 +1312,12 @@ tr.dhr,.cty.m,.nt.m{display:none}
   //   행 = {grp(앞선 묶음), grps(합쳐진 폴더 전부), nb(묶음 수), date, c('KR'|'US'|'공통'), code, name(영문 슬러그 이름), fname(정식 이름 · 없으면 ''),
   //         sub2(이름 칸 둘째 줄 = 정식 이름과 다른 슬러그 · 없으면 ''), sname(이름 정렬 키), noName, rep(대표 문서), docs(그 밖 문서), n(문서 수),
   //         hay(검색 대상 · NFC 소문자) · hayc(같은 것의 compact — 공백·구두점 무시 검색)}
+  //         + top(이름 칸 첫 줄 = 한글 이름 · 없으면 영문 이름 · 없으면 슬러그) · ko · en · al(별칭) · ahay·ahayc(별칭 검색 대상) · ks(근사 비교 한글 문자열)
+  //         sub2 = 이름 칸 둘째 줄 (한글·영문 둘 다 있으면 영문 · 아니면 첫 줄과 다른 슬러그 · 같으면 '') · sname = top
   //   nameOf(c, code) = 정식 이름 조회 (서버 조각 names · 공개 목록 ticker_names — 없으면 '') · 없으면(옛 호출) 정식 이름 없음 = 이전과 같은 행
+  //   altOf(c, code) = 이름 보조 객체 조회 (서버 조각 names_alt · 공개 목록 ticker_names_alt — 없으면 null) · 없으면 = 보조 없음 (위와 같은 행)
   //   문서 = {path, label(라벨 앞 '{코드} ' 를 뺀 짧은 라벨 · 같은 라벨이 둘 이상이면 ' · 파일명'), rule, final, grp} · 행 정렬 = 코드 순 (코드 없는 행 = 맨 앞)
-  function tickerRows(entries, nameOf) {
+  function tickerRows(entries, nameOf, altOf) {
     var by = {}, rows = [];
     entries.forEach(function (e) {
       if (e.sec !== 'ticker') return;
@@ -1306,13 +1358,26 @@ tr.dhr,.cty.m,.nt.m{display:none}
       r.docs = docs.filter(function (d, j) { return j !== ri; });
       r.n = docs.length;
       var fn = (nameOf && r.code && nameOf(r.c, r.code)) || '', slugNo = !r.name || alnum(r.name) === alnum(r.code);
-      r.fname = fn;
-      r.noName = !fn && slugNo;
-      r.sub2 = fn && !slugNo && compact(r.name) !== compact(fn) ? r.name : '';   // 같으면(예 'Apple Inc' · 'Apple Inc.') 1줄
-      r.sname = fn || (slugNo ? '' : r.name);
+      var al = (altOf && r.code && altOf(r.c, r.code)) || null;
+      // 한글 쪽 · 영문 쪽 — KR = 정식(한글) + 보조 en · US = 보조 ko + 정식(영문) · 나라 미상 = 보조 키 → 없으면 정식 이름에 한글이 있는지
+      var kr = r.c === 'KR' || (r.c !== 'US' && (al && (al.en || al.ko) ? !!al.en : HANGUL.test(fn)));
+      var ko = kr ? fn : (al && al.ko) || '', en = kr ? (al && al.en ? enDisp(al.en) : '') : fn, slug = slugNo ? '' : r.name;
+      var top = ko || en || slug, sec = ko && en ? en : (top !== slug ? slug : '');
+      if (sec && compact(sec) === compact(top)) sec = '';                          // 같으면(예 'Apple Inc' · 'Apple Inc.') 1줄
+      r.fname = fn; r.ko = ko; r.en = en; r.top = top;
+      r.noName = !top;
+      r.sub2 = sec;
+      r.sname = top;
+      var ext = [];                                                                // 보조 정확 검색어 (둘째 이름 · 원문 영문 · 추가 검색어)
+      if (al) [al.ko, al.en, en].concat(al.x || []).forEach(function (x) { if (x && x !== fn && ext.indexOf(x) < 0) ext.push(x); });
       r.hay = fold(r.code + ' ' + bl.map(function (b) { return b.name + ' ' + b.name.replace(/\s+/g, ''); }).join(' ') +
-        (fn ? ' ' + fn + ' ' + fn.replace(/\s+/g, '') : ''));
-      r.hayc = [r.code].concat(bl.map(function (b) { return b.name; }), fn ? [fn] : []).map(compact).join(' ');
+        (fn ? ' ' + fn + ' ' + fn.replace(/\s+/g, '') : '') + ext.map(function (x) { return ' ' + x + ' ' + x.replace(/\s+/g, ''); }).join(''));
+      r.hayc = [r.code].concat(bl.map(function (b) { return b.name; }), fn ? [fn] : [], ext).map(compact).join(' ');
+      r.al = (al && al.a) || [];
+      r.ahay = fold(r.al.map(function (x) { return x + ' ' + x.replace(/\s+/g, ''); }).join(' '));
+      r.ahayc = r.al.map(compact).join(' ');
+      r.ks = [ko].concat(r.al).filter(function (x, j, a) { return x && HANGUL.test(x) && a.indexOf(x) === j; });   // 근사 비교 = 한글 이름 + 한글 별칭
+      r.kf = null;                                                                 // 자모 (첫 근사 검색 때 만든다)
       delete r.bd; delete r.src;
     });
     return tickerSort(rows, 'code');
@@ -1382,11 +1447,17 @@ tr.dhr,.cty.m,.nt.m{display:none}
   function lruGet(m, k) { if (!m.has(k)) return undefined; var v = m.get(k); m.delete(k); m.set(k, v); return v; }
   function lruPut(m, k, v, max) { m.delete(k); m.set(k, v); while (m.size > max) m.delete(m.keys().next().value); return m; }
   // 행 정렬 — 'code' = 코드 문자열 순 · 'name' = 이름 순 (정식 이름 우선 · 한국어 정렬 localeCompare('ko') · 이름 없는 행 = 뒤) · 코드 없는 행(스캔) = 늘 맨 앞
+  //   검색 중이면(tickerFilter 가 남긴 mx · mt · md) 순위 먼저: 완전 일치(mx 0 — 코드·이름·별칭 하나가 질의 전체와 같음) →
+  //   정확(mt 0) > 별칭(1) > 비슷한 이름(2 · 거리 오름차순) → 그 안에서 고른 정렬 ('애플' → AAPL 이 파생 ETF 보다 앞 · '로빈후드' → HOOD 가 앞)
   var KO = typeof Intl !== 'undefined' && Intl.Collator ? new Intl.Collator('ko') : null;   // = localeCompare(…, 'ko') (행마다 새로 만들지 않게 1개)
   function koCmp(a, b) { return KO ? KO.compare(a, b) : a.localeCompare(b, 'ko'); }
   function tickerSort(rows, by) {
     return rows.slice().sort(function (a, b) {
       if (!a.code !== !b.code) return a.code ? 1 : -1;
+      var am = a.mt || 0, bm = b.mt || 0;
+      if ((a.mx || 0) !== (b.mx || 0)) return (a.mx || 0) - (b.mx || 0);
+      if (am !== bm) return am - bm;
+      if (am === 2 && a.md !== b.md) return a.md - b.md;
       if (by === 'name') {
         var an = !a.sname, bn = !b.sname;
         if (an !== bn) return an ? 1 : -1;
@@ -1400,14 +1471,112 @@ tr.dhr,.cty.m,.nt.m{display:none}
   // 검색 — 공백으로 나눈 낱말이 모두 들어 있는 행 (대소문자 무시 · 코드 · 영문 슬러그 · 정식 이름 · 이름은 공백 뺀 형태도 대상)
   //   낱말마다 그대로(hay) 또는 공백·구두점 뺀 형태(hayc)로 부분 일치 — '삼성' → 삼성전자·삼성SDI … · 'sk하이닉스' · 'apple inc.' · 'brk.b'
   //   구두점만인 낱말(예 안내 문구의 '·')은 무시한다
-  function tickerFilter(rows, q) {
-    var t = fold(q).split(/\s+/).filter(Boolean).map(function (x) { return [x, compact(x)]; }).filter(function (x) { return x[1]; });
-    if (!t.length) return rows;
-    return rows.filter(function (r) {
-      var hc = r.hayc || '';
-      for (var i = 0; i < t.length; i++) if (r.hay.indexOf(t[i][0]) < 0 && hc.indexOf(t[i][1]) < 0) return false;
-      return true;
+  //   순위 (행에 남김 — tickerSort 가 쓴다 · 검색어 없으면 전부 0): mt 0 = 정확(위 대상) · 1 = 별칭(정확 대상 + 별칭 a 로 모든 낱말이 걸림 · ma = 걸린 별칭)
+  //     · 2 = 비슷한 이름 (한 낱말 · 한글 2음절 이상 · 한글 이름·한글 별칭과 자모 근사 일치 · md = 거리(×2 정수) · ma = 걸린 문자열이 첫 줄과 다를 때만)
+  //     mx 0 = 완전 일치 (질의 전체의 compact 가 코드·이름·추가 검색어·별칭 하나의 compact 와 같음) · 1 = 그 밖 (근사는 늘 1)
+  function tokens(q) { return fold(q).split(/\s+/).filter(Boolean).map(function (x) { return [x, compact(x)]; }).filter(function (x) { return x[1]; }); }
+  function hitAll(h1, h2, t) {
+    for (var i = 0; i < t.length; i++) if (h1.indexOf(t[i][0]) < 0 && h2.indexOf(t[i][1]) < 0) return false;
+    return true;
+  }
+  function aliasHit(r, t) {   // 정확 대상에 없는 낱말마다 그 낱말이 든 첫 별칭 (중복 없이)
+    var out = [];
+    t.forEach(function (x) {
+      if (r.hay.indexOf(x[0]) >= 0 || (r.hayc || '').indexOf(x[1]) >= 0) return;
+      for (var i = 0; i < r.al.length; i++) {
+        var a = r.al[i];
+        if (fold(a).indexOf(x[0]) >= 0 || compact(a).indexOf(x[1]) >= 0) { if (out.indexOf(a) < 0) out.push(a); return; }
+      }
     });
+    return out.join(' · ');
+  }
+  function tickerFilter(rows, q) {
+    var t = tokens(q);
+    rows.forEach(function (r) { r.mt = 0; r.md = 0; r.ma = ''; r.mx = 0; });
+    if (!t.length) return rows;
+    var fz = fuzzyQuery(t), out = [], qw = ' ' + t.map(function (x) { return x[1]; }).join('') + ' ';
+    rows.forEach(function (r) {
+      var hc = r.hayc || '';
+      if (hitAll(r.hay, hc, t)) { r.mx = (' ' + hc + ' ').indexOf(qw) >= 0 ? 0 : 1; out.push(r); return; }
+      if (r.ahay && hitAll(r.hay + ' ' + r.ahay, hc + ' ' + r.ahayc, t)) {
+        r.mt = 1; r.ma = aliasHit(r, t); r.mx = (' ' + r.ahayc + ' ').indexOf(qw) >= 0 ? 0 : 1; out.push(r); return;
+      }
+      r.mx = 1;
+      if (!fz || !r.ks || !r.ks.length) return;
+      if (!r.kf) r.kf = r.ks.map(function (x) { return jmEnc(compact(x)); });
+      var best = -1, bs = '';
+      for (var i = 0; i < r.kf.length; i++) {
+        var d = jmDist(fz.p, r.kf[i], fz.lim);
+        if (d >= 0 && (best < 0 || d < best)) { best = d; bs = r.ks[i]; }
+      }
+      if (best >= 0) { r.mt = 2; r.md = best; r.ma = compact(bs) === compact(r.top) ? '' : bs; out.push(r); }
+    });
+    return out;
+  }
+  // ── 한글 비슷한 이름 (근사 일치 · 계획 plan_names_alt_ko_en_search_monthly_20261006 §5) ──
+  //   자모 분해 (첫소리 ㅇ 은 뺌 · 겹받침 그대로) · 질의 전체 vs 텍스트 부분열 · 시작·끝 = 음절 경계 (시작이 경계가 아니면 건너뛴 자모만큼 비용)
+  //   비용 ×2 정수: 같음 0 · 비슷한 소리 치환 1 · 'ㅡ' 넣기·빼기 1 · 그 밖 2 · 상한 = floor(자모 수 × 2 / 8) (soft8 · 0 이면 근사 안 함)
+  //   비슷한 소리 = 표기 흔들림 (된소리 · 스/즈 · 받침 ㅅ/드 · ㅏ/ㅓ · ㅓ/ㅡ · ㅗ/ㅓ · ㅐ/ㅔ · ㅚ/ㅙ/ㅞ · ㅕ/ㅖ) — 표 밖 오타(ㅑ·ㅜ 등)는 잡음을 줄이려고 잡지 않는다
+  var HANGUL = /[가-힣]/;
+  var JM_CHO = 'ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ', JM_JUNG = 'ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ',
+    JM_JONG = ['', 'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ', 'ㄷ', 'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ', 'ㅀ', 'ㅁ', 'ㅂ', 'ㅄ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'],
+    JM_SIM = [['ㄷ', 'ㅅ'], ['ㅅ', 'ㅈ'], ['ㅅ', 'ㅆ'], ['ㅂ', 'ㅃ'], ['ㄱ', 'ㄲ'], ['ㅈ', 'ㅉ'], ['ㄷ', 'ㄸ'], ['ㅏ', 'ㅓ'], ['ㅓ', 'ㅡ'], ['ㅗ', 'ㅓ'],
+      ['ㅐ', 'ㅔ'], ['ㅚ', 'ㅙ'], ['ㅚ', 'ㅞ'], ['ㅙ', 'ㅞ'], ['ㅕ', 'ㅖ']],
+    JM = null, JB0 = new Int32Array(256), JB1 = new Int32Array(256);
+  function jmTables() {   // 자모 번호(1..n-1) · 치환 비용 표 n×n · 넣기·빼기 비용 — 자모 밖 글자 = n + 코드 포인트 (치환 2 · 같은 글자 0)
+    if (JM) return JM;
+    var id = {}, n = 1, i;
+    Array.from(JM_CHO + JM_JUNG + JM_JONG.join('')).forEach(function (ch) { if (!id[ch]) id[ch] = n++; });
+    var sub = new Uint8Array(n * n).fill(2), ind = new Uint8Array(n).fill(2);
+    for (i = 0; i < n; i++) sub[i * n + i] = 0;
+    JM_SIM.forEach(function (g) { var a = id[g[0]], b = id[g[1]]; sub[a * n + b] = sub[b * n + a] = 1; });
+    ind[id['ㅡ']] = 1;
+    JM = { id: id, n: n, sub: sub, ind: ind };
+    return JM;
+  }
+  function jmEnc(s) {   // compact 문자열 → {a: 자모 번호, b: 음절 시작 표시, n, hs: 한글 음절 수}
+    var T = jmTables(), a = [], b = [], hs = 0;
+    Array.from(s).forEach(function (ch) {
+      var c = ch.codePointAt(0);
+      if (c >= 0xAC00 && c <= 0xD7A3) {
+        var i = c - 0xAC00, cho = JM_CHO[(i / 588) | 0], jung = JM_JUNG[((i % 588) / 28) | 0], jong = JM_JONG[i % 28], first = true;
+        hs++;
+        if (cho !== 'ㅇ') { a.push(T.id[cho]); b.push(1); first = false; }
+        a.push(T.id[jung]); b.push(first ? 1 : 0);
+        if (jong) { a.push(T.id[jong]); b.push(0); }
+      } else { a.push(T.id[ch] || T.n + c); b.push(1); }
+    });
+    return { a: Int32Array.from(a), b: Uint8Array.from(b), n: a.length, hs: hs };
+  }
+  function jmDist(p, t, lim) {   // 근사 부분 일치 거리 (×2 정수) · 상한 넘으면 -1 (행 최솟값이 상한을 넘는 즉시 멈춤)
+    var T = JM, N = T.n, m = p.n, n = t.n, x, i;
+    if (JB0.length < n + 1) { JB0 = new Int32Array(n + 64); JB1 = new Int32Array(n + 64); }
+    var prev = JB0, cur = JB1, run = 0, tmp;
+    for (x = 0; x <= n; x++) { if (x === n || t.b[x]) run = 0; prev[x] = run * 2; run++; }
+    for (i = 0; i < m; i++) {
+      var pc = p.a[i], dc = pc < N ? T.ind[pc] : 2, mn;
+      cur[0] = prev[0] + dc; mn = cur[0];
+      for (x = 1; x <= n; x++) {
+        var tc = t.a[x - 1], v = prev[x - 1] + (pc === tc ? 0 : (pc < N && tc < N ? T.sub[pc * N + tc] : 2)), d = prev[x] + dc,
+          s2 = cur[x - 1] + (tc < N ? T.ind[tc] : 2);
+        if (d < v) v = d;
+        if (s2 < v) v = s2;
+        cur[x] = v;
+        if (v < mn) mn = v;
+      }
+      if (mn > lim) return -1;
+      tmp = prev; prev = cur; cur = tmp;
+    }
+    var best = -1;
+    for (x = 1; x <= n; x++) if ((x === n || t.b[x]) && (best < 0 || prev[x] < best)) best = prev[x];
+    return best >= 0 && best <= lim ? best : -1;
+  }
+  function fuzzyQuery(t) {   // 근사 검색 대상 질의 → {p, lim} · 아니면 null (낱말 2개 이상 · 한글 1음절 이하 · 상한 0)
+    if (t.length !== 1 || !HANGUL.test(t[0][1])) return null;
+    var p = jmEnc(t[0][1]);
+    if (p.hs < 2) return null;
+    var lim = Math.floor(p.n * 2 / 8);
+    return lim > 0 ? { p: p, lim: lim } : null;
   }
 
   root.NIXI = {
@@ -1417,6 +1586,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
     todayIn: todayIn, dateTag: dateTag, latestCards: latestCards,
     parseTickerIndex: parseTickerIndex, tickerRows: tickerRows, tickerStats: tickerStats, tickerSort: tickerSort, tickerFilter: tickerFilter,
     parseNames: parseNames, parseTickerNames: parseTickerNames, compact: compact,
+    parseNamesAlt: parseNamesAlt, parseTickerNamesAlt: parseTickerNamesAlt, enDisp: enDisp,
     tkCountsOf: tkCountsOf, tkCounts: tkCounts, tkSegs: tkSegs, tkText: tkText, tkLearn: tkLearn, tkCountryFor: tkCountryFor,
     tickerViewQuery: tickerViewQuery, lruGet: lruGet, lruPut: lruPut,
     wd: wd, dlabel: dlabel, kst: kst
@@ -1501,11 +1671,14 @@ tr.dhr,.cty.m,.nt.m{display:none}
   // 소스 목록을 받아 합친다 (지금은 1개 = 목록 파일 또는 저장소 트리 1회 GET).
   function fetchTrees(srcs) {
     return Promise.all(srcs.map(fetchTree)).then(function (rs) {
-      var out = { at: Date.now(), lm: '', gen: '', slice: '', sliceC: '', tl: '', tn: null, tnErr: '', rem: null, lim: null, total: 0, paths: [] };
+      var out = { at: Date.now(), lm: '', gen: '', slice: '', sliceC: '', tl: '', tn: null, tnErr: '', ta: null, taErr: '', rem: null, lim: null, total: 0,
+                  paths: [] };
       rs.forEach(function (r) {
         out.total += r.total; out.paths = out.paths.concat(r.paths);
         if (r.tn) out.tn = r.tn;
         if (r.tnErr) out.tnErr = r.tnErr;
+        if (r.ta) out.ta = r.ta;                 // 이름 보조 (공개 목록 ticker_names_alt) — 정식 이름과 같은 길
+        if (r.taErr) out.taErr = r.taErr;
         if (r.slice) { out.slice = r.slice; out.sliceC = r.sliceC || ''; }
         if (r.tl) out.tl = r.tl;
         if (r.lm && (!out.lm || Date.parse(r.lm) > Date.parse(out.lm))) out.lm = r.lm;
@@ -1593,7 +1766,12 @@ tr.dhr,.cty.m,.nt.m{display:none}
     var tn = I.parseTickerNames(j.ticker_names), fn = I.parseNames(j.names, '조각 names');
     var tnErr = [typeof j.ticker_names_error === 'string' ? j.ticker_names_error : '', tn.err].filter(Boolean).join(' · ');
     var fnErr = [typeof j.names_error === 'string' ? j.names_error : '', fn.err].filter(Boolean).join(' · ');
+    // 이름 보조 (덤 — 같은 규칙): 공개 목록 ticker_names_alt(_error) · 로컬 조각 names_alt(_error) — 없으면(옛 목록) 보조 없음
+    var ta = I.parseTickerNamesAlt(j.ticker_names_alt), fa = I.parseNamesAlt(j.names_alt, '조각 names_alt');
+    var taErr = [typeof j.ticker_names_alt_error === 'string' ? j.ticker_names_alt_error : '', ta.err].filter(Boolean).join(' · ');
+    var faErr = [typeof j.names_alt_error === 'string' ? j.names_alt_error : '', fa.err].filter(Boolean).join(' · ');
     return { total: j.count, paths: paths, gen: gen, slice: slice, sliceC: sliceC, tl: tl, tn: tn.map, tnErr: tnErr, fn: fn.map, fnErr: fnErr,
+             ta: ta.map, taErr: taErr, fa: fa.map, faErr: faErr,
              lm: (res && res.headers.get('last-modified')) || '', rem: null, lim: null };
   }
   // 같은 사이트 JSON 1회 GET (티커 색인 · 조각) — 실패는 Error (화면은 그 자리에 사유를 그린다 · 페이지 오류 화면 아님)
@@ -1935,9 +2113,10 @@ tr.dhr,.cty.m,.nt.m{display:none}
     if (hit) return Promise.resolve(hit);
     if (TFLIGHT[src.url]) return TFLIGHT[src.url];
     var p = getJson(src.url).then(function (x) {
-      var j = x.j, mf = parseManifest(j, x.res), cl = window.NIX.classify(mf.paths), fnm = mf.fn;
-      var rows = I.tickerRows(cl.entries, fnm ? function (c, code) { return fnm[code] || ''; } : null);   // 조각 names = 그 조각 코드 → 정식 이름
-      var v = { url: src.url, c: src.c, rows: rows, st: I.tickerStats(rows), files: mf.total, rejected: cl.rejected.length, nerr: mf.fnErr,
+      var j = x.j, mf = parseManifest(j, x.res), cl = window.NIX.classify(mf.paths), fnm = mf.fn, fam = mf.fa;
+      var rows = I.tickerRows(cl.entries, fnm ? function (c, code) { return fnm[code] || ''; } : null,   // 조각 names = 그 조각 코드 → 정식 이름
+        fam ? function (c, code) { return fam[code] || null; } : null);                                   // 조각 names_alt = 그 조각 코드 → 보조 객체
+      var v = { url: src.url, c: src.c, rows: rows, st: I.tickerStats(rows), files: mf.total, rejected: cl.rejected.length, nerr: mf.fnErr, aerr: mf.faErr,
                 bundles: typeof j.bundles === 'number' ? j.bundles : null,
                 tdate: typeof j.ticker_date === 'string' ? j.ticker_date : '', tc: typeof j.ticker_country === 'string' ? j.ticker_country : '' };
       I.tkLearn(M, src.d, src.c, rows);                       // 그 날짜 카드의 종목 수 확정 (캐시에서 밀려나도 확정 값은 남는다)
@@ -1966,7 +2145,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
     TK.head = tkHead(r, ds);
     main.append(TK.head);
     var tq = h('input', { id: 'tq', type: 'search', autocomplete: 'off', spellcheck: 'false', enterkeyhint: 'search', maxlength: '100',
-      placeholder: '코드·이름 검색 (예: 005930 · 삼성전자 · samsung · AAPL)', oninput: onTq });
+      placeholder: '코드·이름 검색 (예: 005930 · 삼성전자 · samsung · AAPL · 애플)', oninput: onTq });
     tq.value = r.q;
     var seg = h('div', { class: 'seg', role: 'group', 'aria-label': '정렬', id: 'tsort' }, [['code', '코드순'], ['name', '이름순']].map(function (x) {
       return h('button', { type: 'button', 'data-s': x[0], 'aria-pressed': String(UI.tsort === x[0]), onclick: function () { setTsort(x[0]); }, text: x[1] });
@@ -1977,10 +2156,14 @@ tr.dhr,.cty.m,.nt.m{display:none}
     if (!M.tix) {   // 공개 = 목록 파일의 티커 항목 (그 나라 + 나라 미상)
       var C = I.CTY[r.c];
       var ents = RES.entries.filter(function (e) { return e.sec === 'ticker' && e.date === r.d && (e.c === C || e.c === '공통'); });
-      var tn = DATA.tn, prow = I.tickerRows(ents, tn ? function (c, code) {   // 공개 목록 ticker_names = {나라: {코드: 정식 이름}} (공통 = etc)
+      var tn = DATA.tn, ta = DATA.ta, prow = I.tickerRows(ents, tn ? function (c, code) {   // 공개 목록 ticker_names = {나라: {코드: 정식 이름}} (공통 = etc)
         var m = tn[c === '공통' ? 'etc' : c.toLowerCase()];
         return (m && m[code]) || '';
+      } : null, ta ? function (c, code) {                                                     // 공개 목록 ticker_names_alt = {나라: {코드: 보조 객체}}
+        var m = ta[c === '공통' ? 'etc' : c.toLowerCase()];
+        return (m && m[code]) || null;
       } : null), pst = I.tickerStats(prow), pn = pst.merged > 0 ? [mergeNote(pst.merged, '')] : [];
+      if (DATA.taErr) pn.unshift(altErrNote(DATA.taErr, ''));
       if (DATA.tnErr) pn.unshift(nameErrNote(DATA.tnErr, ''));
       tkShow(prow, ents.length, pn);
       return;
@@ -1999,6 +2182,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
           notes.push({ lv: 'info', text: 'HTML 없는 묶음 ' + num(f.bundles - f.st.bundles) + '개 (목록에서 제외 · ' + f.url + ')' });
         if (f.st.merged > 0) notes.push(mergeNote(f.st.merged, f.url));
         if (f.rejected) notes.push({ lv: 'warn', text: '경로 형식이 맞지 않아 뺀 항목 ' + num(f.rejected) + '개 (' + f.url + ')' });
+        if (f.aerr) notes.unshift(altErrNote(f.aerr, f.url));
         if (f.nerr) notes.unshift(nameErrNote(f.nerr, f.url));
       });
       tkShow(rows, files, notes);
@@ -2015,6 +2199,10 @@ tr.dhr,.cty.m,.nt.m{display:none}
   // 정식 이름 사전 오류 안내 (서버 조각 names_error · 공개 목록 ticker_names_error) — 표는 영문 슬러그 이름으로 정상 표시
   function nameErrNote(err, url) {
     return { lv: 'warn', text: '회사 이름 사전 오류 — 한글·정식 이름 없이 영문 이름만 표시합니다 · ' + String(err).slice(0, 300) + (url ? ' (' + url + ')' : '') };
+  }
+  // 이름 보조 오류 안내 (서버 조각 names_alt_error · 공개 목록 ticker_names_alt_error · 형식 어긋남) — 표는 정식 이름으로 정상 표시·검색
+  function altErrNote(err, url) {
+    return { lv: 'warn', text: '이름 보조(둘째 이름·별칭) 오류 — 정식 이름으로만 표시·검색합니다 · ' + String(err).slice(0, 300) + (url ? ' (' + url + ')' : '') };
   }
   // 같은 날짜·나라·코드 묶음을 1행으로 합쳤다는 안내 (조용히 줄이지 않는다)
   function mergeNote(n, url) {
@@ -2075,11 +2263,13 @@ tr.dhr,.cty.m,.nt.m{display:none}
       h('button', { class: 'btn', type: 'button', id: 'tkall', onclick: function () { tkMore(left); },
         text: '모두 보기 (' + num(t.rows.filter(function (r) { return r.code; }).length) + '종목)' }));   // 스캔 행(코드 없음 · 맨 앞)은 종목이 아니다
   }
-  // 이름 칸 — 정식 이름(있으면) 위 · 영문 슬러그 아래 작게 (같거나 없으면 1줄) · 정식 이름이 없으면 이전과 같다 (슬러그 · 없으면 '—')
+  // 이름 칸 — 첫 줄(top: 한글 이름 · 없으면 영문 이름 · 없으면 슬러그) 위 · 둘째 줄(sub2) 아래 작게 (같거나 없으면 1줄) · 다 없으면 '—'
+  //   검색에 별칭·비슷한 이름으로 걸린 행만 셋째 줄에 '별칭' · '비슷한 이름' 표시 (+ 걸린 문자열) — 걸리지 않은 행은 이전과 같은 노드
   function tkName(x) {
-    if (x.noName) return h('span', { class: 'nodash', text: '—' });
-    if (!x.fname) return x.name;
-    return x.sub2 ? [h('span', { class: 'fn', text: x.fname }), h('span', { class: 'sl', text: x.sub2 })] : x.fname;
+    var base = x.noName ? h('span', { class: 'nodash', text: '—' })
+      : x.sub2 ? [h('span', { class: 'fn', text: x.top }), h('span', { class: 'sl', text: x.sub2 })] : x.top;
+    if (!x.mt) return base;
+    return [].concat(base, h('span', { class: 'hm' }, h('span', { class: 'hb', text: x.mt === 2 ? '비슷한 이름' : '별칭' }), x.ma || null));
   }
   function tkRow(x) {
     var rep = x.rep;
@@ -2103,7 +2293,12 @@ tr.dhr,.cty.m,.nt.m{display:none}
     if (!t || !t.sum) return;
     var kids = [I.CTY[t.r.c] + ' ' + dlabel(t.r.d) + ' · '].concat(segNodes(I.tkSegs(I.tkCounts(M, t.r.c, t.r.d))));
     if (t.all) kids.push(' · 문서 ', h('b', { text: num(t.files) }), '개');
-    if (t.rows && t.r.q) kids.push(' · 검색 ', h('b', { text: num(t.rows.length) }), '종목');
+    if (t.rows && t.r.q) {
+      var na = 0, nf = 0;
+      t.rows.forEach(function (x) { if (x.mt === 1) na++; else if (x.mt === 2) nf++; });
+      kids.push(' · 검색 ', h('b', { text: num(t.rows.length) }), '종목');
+      if (na || nf) kids.push(' (' + [na ? '별칭 ' + num(na) : '', nf ? '비슷한 이름 ' + num(nf) : ''].filter(Boolean).join(' · ') + ')');
+    }
     t.sum.textContent = '';
     kids.forEach(function (k) { t.sum.append(k); });
   }

@@ -1,0 +1,33 @@
+US #tactical 종합(전체 링크) · 2026-10-06 마감 · By Claude Opus 4.8
+
+US #tactical · 2026-10-07 05:00 KST / 2026-10-06 16:00 ET 마감 By Claude Opus 4.8
+
+★결론 — 반등 우위 · 온도 NEUTRAL(59.4) · 폭 NEUTRAL · RRG 개선 45·지연 37 (벤치 US500 (S&P 500)·창 54봉) · 크레딧 MEDIUM · killswitch 주의 (근거는 아래 · 수식·읽는 법은 리포트)
+
+▶ 쉬운 해석: 온도 NEUTRAL = 보통(중립) · 오른 종목·내린 종목 반반(폭 중립) (54.92%) · 업종 자금은 '개선' 쪽이 가장 많음(주도 9·개선 45·약화 41·지연 37 · 벤치 US500 (S&P 500)·창 54봉) · 방향이 바뀐 자산 상승 4종 / 하락 5종 · 방어 전환 점검(killswitch) 주의 단계
+
+- 판정
+
+  · 반등 우위
+  · 온도 NEUTRAL(59.4)
+  · 폭 NEUTRAL ⚖️
+  · RRG 주도 9·개선 45·약화 41·지연 37 (벤치 US500 (S&P 500)·창 54봉)
+  · 크레딧 MEDIUM
+
+- 세부
+
+  · 종합 판정 반등 우위 — 온도 NEUTRAL·RRG 개선 45·상승전환 4종.
+  · 시장 폭 NEUTRAL ⚖️ — 54.92 composite.
+  · RRG 리더십 (벤치 US500 (S&P 500)·창 54봉): Leading 9·Improving 45·Weakening 41·Lagging 37 — 개선 우위.
+  · 로테이션 IN iShares Ethereum Trust(ETHA)·포토닉스 커넥티비티IC/DSP (4종 EW)·사이버보안 Top12 (EW)(12종)·AI인프라 L4 네트워크/옵틱 (7종 EW) / OUT Crown Castle (통신타워)(CCI)·Invesco Solar(TAN)·NextEra Energy(NEE)·Invesco WilderHill Clean Energy(PBW).
+  · 추세 전환 스캔(벤치 US500 (S&P 500)·창 5·12·22·54·120·245봉): 상승전환 4(S&P500·KOSDAQ·비트코인·이더리움) · 하락전환 5(러셀2000·WTI·원달러·항셍·유로스톡스50).
+
+📎 [리포트] https://nixstock.github.io/nixstock-reports/tactical/2026-10-06_us_tactical_close/overview/us_tactical_overview_2026-10-06.html
+📎 [데이터] https://nixstock.github.io/nixstock-reports/tactical/2026-10-06_us_tactical_close/overview/tactical_backdata_us_2026-10-06.html
+📎 [인포그래픽] https://nixstock.github.io/nixstock-reports/tactical/2026-10-06_us_tactical_close/infographic/us_tactical_infographic_2026-10-06.html
+※ 확률적 참고 · 예측 아님 · 투자권유(매수·매도·비중) 아님 · 모델 확률 검증용 · 자체 알고리즘(학습방법·산식·가중 비공개) · killswitch=경고(매도 확정 아님)
+
+🔒 자체 알고리즘 · 학습방법·산식·가중 비공개 (이름·값·임계·등급·검증 결과 공개)
+
+$SPY $VOO $IVV $QQQ $QQQM $IWM
+#택티컬 #RRG #섹터로테이션 #시장폭 #미국주식 #미국증시 #뉴욕증시 #미국지수 #증시전망 #SP500 #SPX #에스앤피500 #미국대형주 #나스닥100 #나스닥 #NASDAQ100 #NDX #기술주 #러셀2000 #Russell2000 #미국소형주 #RUT #killswitch #debasement #NixStock

@@ -1,7 +1,7 @@
 {"schema":1,
-"generated_at":"2026-10-07T06:12:12+09:00",
+"generated_at":"2026-10-07T06:13:19+09:00",
 "repo":"NixStock/nixstock-reports",
-"count":3040,
+"count":3044,
 "ticker_names":{"us":{"AAPL":"Apple Inc.","AMZN":"Amazon.com, Inc.","ETN":"Eaton Corporation, PLC","GOOGL":"Alphabet Inc.","META":"Meta Platforms, Inc.","MSFT":"Microsoft Corporation","NVDA":"NVIDIA Corporation","TMF":"Direxion Daily 20+ Year Treasury Bull 3X Shares","TSLA":"Tesla, Inc."}},
 "ticker_names_alt":{"us":{"AAPL":{"ko":"애플"},"AMZN":{"ko":"아마존닷컴"},"ETN":{"a":["이튼"],"ko":"이턴 코퍼레이션"},"GOOGL":{"a":["구글"],"ko":"알파벳 A"},"META":{"ko":"메타 플랫폼스(페이스북)"},"MSFT":{"ko":"마이크로소프트"},"NVDA":{"ko":"엔비디아"},"TMF":{"x":["DIREXION 20+Y TREASURY DAILY 3X"]},"TSLA":{"ko":"테슬라"}}},
 "dirs":{
@@ -304,6 +304,7 @@
 "rrg/us/2026-10-01_rrg_alltickers_us_close":["index.html","rrg_alltickers_us_2026-10-01.html","rrg_backdata_us_2026-10-01.html","rrg_rotations_us_2026-10-01.html"],
 "rrg/us/2026-10-02_rrg_alltickers_us_close":["index.html","rrg_alltickers_us_2026-10-02.html","rrg_backdata_us_2026-10-02.html","rrg_rotations_us_2026-10-02.html"],
 "rrg/us/2026-10-05_rrg_alltickers_us_close":["index.html","rrg_alltickers_us_2026-10-05.html","rrg_backdata_us_2026-10-05.html","rrg_rotations_us_2026-10-05.html"],
+"rrg/us/2026-10-06_rrg_alltickers_us_close":["index.html","rrg_alltickers_us_2026-10-06.html","rrg_backdata_us_2026-10-06.html","rrg_rotations_us_2026-10-06.html"],
 "tactical/2026-09-08_kr_tactical_close/infographic":["kr_tactical_infographic_2026-09-08.html","kr_tactical_infographic_2026-09-08_p1.html","kr_tactical_infographic_2026-09-08_p2.html"],
 "tactical/2026-09-08_kr_tactical_close/overview":["daily_trend_buysell_kr_2026-09-08.html","kr_tactical_overview_2026-09-08.html","tactical_rrg_web_kr_2026-09-08.html","tactical_web_kr_2026-09-08.html"],
 "tactical/2026-09-08_us_tactical_close/infographic":["us_tactical_infographic_2026-09-08.html","us_tactical_infographic_2026-09-08_p1.html","us_tactical_infographic_2026-09-08_p2.html"],

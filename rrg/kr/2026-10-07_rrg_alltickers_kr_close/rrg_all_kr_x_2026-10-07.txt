@@ -1,0 +1,18 @@
+KR #rrg 종합(전체 링크) · 2026-10-07 · By Opus 5.5
+
+📊 KR RS·RRG 전수 스캔 (10/7)
+코스피200 대비 6TF 3,387종(스캔 3,906·미산출 519 제외) — 개선 85% 우세
+🔄 리딩 103·개선 2,886·약화 77·지연 321 · 신규 개선→리딩 30종
+🔗 전종목 6TF·RS/Mom·검증에지·TV차트 ↓
+https://nixstock.github.io/nixstock-reports/rrg/kr/2026-10-07_rrg_alltickers_kr_close/rrg_alltickers_kr_2026-10-07.html
+
+━━━ 📎 전체 리포트 링크 (4종) ━━━
+📎 [전종목 6TF] https://nixstock.github.io/nixstock-reports/rrg/kr/2026-10-07_rrg_alltickers_kr_close/rrg_alltickers_kr_2026-10-07.html
+📎 [백데이터] https://nixstock.github.io/nixstock-reports/rrg/kr/2026-10-07_rrg_alltickers_kr_close/rrg_backdata_kr_2026-10-07.html
+📎 [회전 인포] https://nixstock.github.io/nixstock-reports/rrg/kr/2026-10-07_rrg_alltickers_kr_close/rrg_rotations_kr_2026-10-07.html
+📎 [랜딩] https://nixstock.github.io/nixstock-reports/rrg/kr/2026-10-07_rrg_alltickers_kr_close/index.html
+※ 확률적 참고 · 예측 아님 · 투자권유(매수·매도·비중) 아님 · 모델 확률 검증용 · 자체 알고리즘(학습방법·산식·가중 비공개) · RS=상태 컨텍스트
+
+🔒 자체 알고리즘 · 학습방법·산식·가중 비공개 (이름·값·임계·등급·검증 결과 공개)
+
+#RRG #상대강도 #섹터로테이션 #국내주식 #한국증시 #코스피 #코스닥 #증시전망 #NixStock

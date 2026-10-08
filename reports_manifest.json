@@ -1,7 +1,7 @@
 {"schema":1,
-"generated_at":"2026-10-09T06:45:31+09:00",
+"generated_at":"2026-10-09T07:40:18+09:00",
 "repo":"NixStock/nixstock-reports",
-"count":3456,
+"count":3457,
 "ticker_names":{"us":{"AAPL":"Apple Inc.","AMZN":"Amazon.com, Inc.","ETN":"Eaton Corporation, PLC","GOOGL":"Alphabet Inc.","META":"Meta Platforms, Inc.","MSFT":"Microsoft Corporation","NVDA":"NVIDIA Corporation","TMF":"Direxion Daily 20+ Year Treasury Bull 3X Shares","TSLA":"Tesla, Inc."}},
 "ticker_names_alt":{"us":{"AAPL":{"ko":"애플"},"AMZN":{"ko":"아마존닷컴"},"ETN":{"a":["이튼"],"ko":"이턴 코퍼레이션"},"GOOGL":{"a":["구글"],"ko":"알파벳 A"},"META":{"ko":"메타 플랫폼스(페이스북)"},"MSFT":{"ko":"마이크로소프트"},"NVDA":{"ko":"엔비디아"},"TMF":{"x":["DIREXION 20+Y TREASURY DAILY 3X"]},"TSLA":{"ko":"테슬라"}}},
 "dirs":{
@@ -308,6 +308,7 @@
 "news/2026-10-06_daily_news_report":["daily_news_report_2026-10-06.html"],
 "news/2026-10-07_daily_news_report":["daily_news_report_2026-10-07.html"],
 "news/2026-10-08_daily_news_report":["daily_news_report_2026-10-08.html"],
+"news/2026-10-09_daily_news_report":["daily_news_report_2026-10-09.html"],
 "r":["toss-kr-close-2026-09-08.html"],
 "rrg/kr/2026-09-18_rrg_alltickers_kr_close":["index.html","rrg_alltickers_kr_2026-09-18.html","rrg_backdata_kr_2026-09-18.html"],
 "rrg/kr/2026-09-21_rrg_alltickers_kr_close":["index.html","rrg_alltickers_kr_2026-09-21.html","rrg_backdata_kr_2026-09-21.html","rrg_rotations_kr_2026-09-21.html"],

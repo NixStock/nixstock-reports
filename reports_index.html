@@ -258,9 +258,14 @@ table.tkt td.tkn .hm .hb{display:inline-block;margin-right:5px;padding:0 5px;bor
 .note .alt{margin-left:8px}
 .note button{background:none;border:0;color:var(--link);padding:0;cursor:pointer;font-size:12.5px}
 .empty{font-size:13px;color:var(--ink2);padding:10px 2px;overflow-wrap:anywhere}   /* 검색어를 다시 보여 주는 문구 = 끊김 없는 긴 검색어도 줄바꿈 (좁은 화면 가로 스크롤 방지) */
-.tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+/* ★헤더 고정(사용자 2026-10-07 "표 헤더 고정해야 한다. 기본룰이다" · SSOT nixreport.TBLWRAP_DECL): .tblwrap = overflow:auto + max-height
+   (세로로도 스크롤해야 thead th sticky 가 상자 상단에 붙는다 — 종전 overflow-x:auto 만 = 티커 200행·종류별 40~110행 헤더 미고정).
+   sticky 는 thead th 에만 — tbody 의 날짜 묶음 행 머리(tr.dhr th)는 고정하지 않는다. */
+.tblwrap{overflow:auto;-webkit-overflow-scrolling:touch;max-height:80vh;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+@media print{.tblwrap,.tw,section[data-glossary-ssot] .gw,[style*="max-height:80vh"],[style*="max-height:78vh"]{max-height:none!important}}   /* ★인쇄/PDF(2026-10-07 · SSOT nixreport.TBLWRAP_PRINT_CSS) */
 table{width:100%;border-collapse:collapse}
 th{background:var(--thbg);color:var(--think);font-weight:700;font-size:12.5px;text-align:center;padding:7px 10px;white-space:nowrap}
+thead th{position:sticky;top:0;z-index:2}
 td{padding:8px 10px;border-top:1px solid var(--line);vertical-align:top}
 td.dt{white-space:nowrap;font-weight:700;font-variant-numeric:tabular-nums;background:var(--card3);text-align:center}
 td.dt .wd{display:block;font-weight:400;font-size:12.5px;color:var(--ink2)}
@@ -306,6 +311,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
   #tq{font-size:16px}
   /* 좁은 화면 목록: 날짜 = 머리줄 · 국가·새 탭 = 리포트 칸 안으로 → 리포트 칸이 표 전체 폭을 쓴다 */
   thead,td.dt,td.cc,td.op,td.pth{display:none}
+  .tblwrap:not(:has(>table.tkt)){max-height:none}   /* 머리 행을 숨긴 목록 표 = 고정할 헤더 없음 → 세로 상자 해제(이중 스크롤 방지) · 티커 표는 머리 고정 유지 */
   tr.dhr{display:table-row}
   tr.dhr th{text-align:left;background:var(--thbg);color:var(--think);font-size:13px;padding:6px 10px;border-top:1px solid var(--line)}
   tbody tr.dhr:first-child th{border-top:0}

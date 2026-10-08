@@ -1,0 +1,31 @@
+KR #tactical 종합(전체 링크) · 2026-10-08 마감 · By Opus 5.5
+
+KR #tactical V1.0 · 2026-10-08 15:30 KST 마감 By Opus 5.5
+
+★결론 — 반등 우위 · 온도 COOL(39.33) · 폭 VERY BEARISH · RRG 개선 29·지연 6 (벤치 코스피200·창 54봉) (근거는 아래 · 수식·읽는 법은 리포트)
+
+▶ 쉬운 해석: 온도 COOL = 선선(약간 싸짐) · 대부분 종목이 내림(폭 매우 약함) (27.3%) · 업종 자금은 '개선' 쪽이 가장 많음(주도 0·개선 29·약화 3·지연 6 · 벤치 코스피200·창 54봉) · 방향이 바뀐 자산 상승 4종 / 하락 5종
+
+- 판정
+
+  · 반등 우위
+  · 온도 COOL(39.33)
+  · 폭 VERY BEARISH 🥶
+  · RRG 주도 0·개선 29·약화 3·지연 6 (벤치 코스피200·창 54봉)
+
+- 세부
+
+  · 종합 판정 반등 우위 — 온도 COOL·RRG 개선 29·상승전환 4종.
+  · 시장 폭 VERY BEARISH 🥶 —  composite.
+  · RRG 리더십 (벤치 코스피200·창 54봉): Leading 0·Improving 29·Weakening 3·Lagging 6 — 개선 우위.
+  · 로테이션 IN 반도체 장비 EW (KR)(19종)·반도체 밸류체인 EW (KR)(20종)·반도체 공정주도주 EW (KR)(21종)·반도체 공정 EW (KR)(19종) / OUT 증권(102970)·자동차(091180)·헬스케어(143860)·소프트웨어(157490).
+  · 추세 전환 스캔(벤치 SPY·창 5·12·22·54·120·245봉): 상승전환 4(S&P500·KOSDAQ·비트코인·이더리움) · 하락전환 5(러셀2000·WTI·원달러·항셍·유로스톡스50).
+
+📎 [리포트] https://nixstock.github.io/nixstock-reports/tactical/2026-10-08_kr_tactical_close/overview/kr_tactical_overview_2026-10-08.html
+📎 [데이터] https://nixstock.github.io/nixstock-reports/tactical/2026-10-08_kr_tactical_close/overview/tactical_backdata_kr_2026-10-08.html
+📎 [인포그래픽] https://nixstock.github.io/nixstock-reports/tactical/2026-10-08_kr_tactical_close/infographic/kr_tactical_infographic_2026-10-08.html
+※ 확률적 참고 · 예측 아님 · 투자권유(매수·매도·비중) 아님 · 모델 확률 검증용 · 자체 알고리즘(학습방법·산식·가중 비공개) · killswitch=경고(매도 확정 아님)
+
+🔒 자체 알고리즘 · 학습방법·산식·가중 비공개 (이름·값·임계·등급·검증 결과 공개)
+
+#택티컬 #RRG #섹터로테이션 #시장폭 #국내주식 #한국증시 #코스피 #코스닥 #증시전망 #코스피200 #KOSPI200 #KOSPI #국내대형주 #코스닥150 #KOSDAQ150 #KOSDAQ #국내중소형주 #수급 #NixStock

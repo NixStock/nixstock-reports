@@ -1,0 +1,38 @@
+KR #market_temp 종합(전체 링크) · 2026-10-08 마감 · By Opus 5.5
+
+KR #market_temp 3지수 종합 #NixStock V1.4 · 2026-10-08 정규장 마감 (16:22 KST/03:22 ET) By Opus 5.5
+
+■ 통합 COOL 39.33℃ · 코스피200 COOL 39.53℃ · 코스닥150 COOL 39.03℃
+   온도·이중선·팬·반전검증·부트스트랩·수급·FOMC 15섹션 · 반전 미armed
+
+▶ 쉬운 해석: 한국 증시 온도 COOL = 차가움(싸진 구간) · 반전신호 꺼짐(대기) · 단 외인·기관 동반 순매도로 확증 부족 = 바닥권 관찰(매수 확정 아님) · 양극화 동조(온도차 0) · 쏠림: 폭 대형 18%·성장 40%(Δ22pp) · 동반 약세·폭 협소(대형 지수 -2.67%·성장 지수 -1.17%) · 온도 서열(대형>성장)↔폭 서열(대형<성장) 반대
+
+◆ 온도 (일·주·월 V2)
+· 통합: COOL V2 39.33℃ (V1 36.58 · 차이 +2.8℃) — 지수별 V2 코스피200 최온·코스닥150 최냉
+· 코스피200: 일 COOL 39.53·주 NEUTRAL 43.24·월 NEUTRAL 52.29 (Δ일 -9.3)
+· 코스닥150: 일 COOL 39.03·주 COOL 34.74·월 NEUTRAL 40.9 (Δ일 -8.4)
+
+◆ 시장폭 · 수급 3주체
+· 폭: 코스피200 18% VERY BEARISH 🥶 · 코스닥150 40% BEARISH 🌧️
+· 코스피: 외국인 -20,262·기관 -12,932·개인 +25,531 (억원) · 잠정(16:22)
+· 코스닥: 외국인 +471·기관 -851·개인 +465 (억원) · 잠정(16:22)
+
+◆ 촉매 · 시나리오
+· FOMC(2026-10-28 D-20) 인상확률 17%·동결확률 82%(Kalshi · 조사 2026-10-08 12:30 KST) · 지난 FOMC(2026-09-16 D+22) 25bp 인상 → 3.75~4.00%
+· A(반등): 코스닥150 COOL(V2 39.03) + M1 저점 edge +5pp(hit 57%)✅ → 외인·기관 순매수 전환 시 반등
+· B(냉각): 외인·기관 동반 순매도 지속 + 반전 미armed → 저점 재확인·성장주 압박
+
+◆ 매크로: VIX 15.08·1년저점권 · MOVE 102.56·1년고점권 · 원/달러 1,339.24·1년저점권 · 美10Y 5.28·1년고점권 (기준 10-07)
+
+📎 [인포그래픽] https://nixstock.github.io/nixstock-reports/market/2026-10-08_kr_market_temp_close/infographic/market_temp_kr_comparison_infographic_2026-10-08.html
+📎 [KR 통합 리포트] https://nixstock.github.io/nixstock-reports/market/2026-10-08_kr_market_temp_close/overview/kr/market_temp_web_kr_report_kr_2026-10-08.html
+📎 [KR 통합 데이터] https://nixstock.github.io/nixstock-reports/market/2026-10-08_kr_market_temp_close/overview/kr/market_temp_web_kr_dwm_2026-10-08.html
+📎 [코스피200 리포트] https://nixstock.github.io/nixstock-reports/market/2026-10-08_kr_market_temp_close/overview/kospi200/market_temp_web_kr_report_kospi200_2026-10-08.html
+📎 [코스피200 데이터] https://nixstock.github.io/nixstock-reports/market/2026-10-08_kr_market_temp_close/overview/kospi200/market_temp_web_kr_kospi200_dwm_2026-10-08.html
+📎 [코스닥150 리포트] https://nixstock.github.io/nixstock-reports/market/2026-10-08_kr_market_temp_close/overview/kosdaq150/market_temp_web_kr_report_kosdaq150_2026-10-08.html
+📎 [코스닥150 데이터] https://nixstock.github.io/nixstock-reports/market/2026-10-08_kr_market_temp_close/overview/kosdaq150/market_temp_web_kr_kosdaq150_dwm_2026-10-08.html
+※ 확률적 참고 · 예측 아님 · 투자권유(매수·매도·비중) 아님 · 모델 확률 검증용 · 자체 알고리즘(학습방법·산식·가중 비공개) · 과열은 타이밍 신호 아님 · #toss 아님(자체계산)
+
+🔒 자체 알고리즘 · 학습방법·산식·가중 비공개 (이름·값·임계·등급·검증 결과 공개)
+
+#코스피200 #코스닥150 #KOSPI #KOSDAQ #KOSPI200 #국내대형주 #KOSDAQ150 #국내중소형주 #마켓온도 #시장온도 #공포탐욕지수 #시장폭 #반전신호 #국내주식 #한국증시 #코스피 #코스닥 #증시전망 #NixStock

@@ -1,0 +1,34 @@
+US #tactical 종합(전체 링크) / 2026-10-09 마감 / By Opus 5.5
+
+US #tactical / 2026-10-10 05:00 KST / 2026-10-09 16:00 ET 마감 By Opus 5.5
+
+▶ [[ 결론 / 쉬운 해석 ]]
+🔴 반등 우위
+⚪ 온도 NEUTRAL(59.36) = 보통(중립)
+⚪ 폭 NEUTRAL (52.24%) = 오른 종목·내린 종목 반반(폭 중립)
+🟡 업종 자금은 '개선' 쪽이 가장 많음
+🟡 크레딧 MEDIUM
+🟡 방어 전환 점검(killswitch) 주의 단계
+
+◆ [[ RRG 리더십 (벤치 US500 (S&P 500)·창 54봉) ]]
+- 주도(Leading) 8 / 개선(Improving) 45 / 약화(Weakening) 41 / 지연(Lagging) 38
+
+◆ [[ 로테이션 ]]
+- IN: 사이버보안 Top12 (EW)(12종), 포토닉스 커넥티비티IC/DSP (4종 EW), ETFMG Prime Cybersecurity(HACK), First Trust Cybersecurity(CIBR)
+- OUT: Neocloud (11종 EW), Global X Uranium(URA), VanEck Uranium & Nuclear(NLR), Invesco Solar(TAN)
+
+◆ [[ 추세 전환 스캔 (벤치 US500 (S&P 500)·창 5, 12, 22, 54, 120, 245봉) ]]
+- 상승전환 4: S&P500, KOSDAQ, 비트코인, 이더리움
+- 하락전환 7: 러셀2000, KOSPI, 구리, WTI, 원달러, 항셍
+
+📎 [리포트] https://nixstock.github.io/nixstock-reports/tactical/2026-10-09_us_tactical_close/overview/us_tactical_overview_2026-10-09.html
+📎 [데이터] https://nixstock.github.io/nixstock-reports/tactical/2026-10-09_us_tactical_close/overview/tactical_backdata_us_2026-10-09.html
+📎 [인포그래픽] https://nixstock.github.io/nixstock-reports/tactical/2026-10-09_us_tactical_close/infographic/us_tactical_infographic_2026-10-09.html
+※ 확률적 참고 / 예측 아님 / 투자권유(매수, 매도, 비중) 아님
+※ 모델 확률 검증용 / 자체 알고리즘(학습방법, 산식, 가중 비공개)
+※ killswitch=경고(매도 확정 아님)
+
+🔒 자체 알고리즘 · 학습방법·산식·가중 비공개 (이름·값·임계·등급·검증 결과 공개)
+
+$SPY $VOO $IVV $QQQ $QQQM $IWM
+#택티컬 #RRG #섹터로테이션 #시장폭 #미국주식 #미국증시 #뉴욕증시 #미국지수 #증시전망 #SP500 #SPX #에스앤피500 #미국대형주 #나스닥100 #나스닥 #NASDAQ100 #NDX #기술주 #러셀2000 #Russell2000 #미국소형주 #RUT #killswitch #debasement #NixStock

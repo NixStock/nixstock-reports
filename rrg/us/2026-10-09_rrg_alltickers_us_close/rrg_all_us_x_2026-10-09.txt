@@ -1,0 +1,26 @@
+US #rrg 종합(전체 링크) / 2026-10-09 / By Opus 5.5
+
+📊 US RS·RRG 전수 스캔 (10/9)
+🔵 지연 40% 우세
+SPY 대비 6TF 3,738종(스캔 4,026·미산출 288 제외)
+리딩 557
+개선 852
+약화 816
+지연 1,513
+🔄 신규 개선→리딩 77종
+🔗 전종목 6TF, RS/Mom, 검증에지, TV차트 ↓
+https://nixstock.github.io/nixstock-reports/rrg/us/2026-10-09_rrg_alltickers_us_close/rrg_alltickers_us_2026-10-09.html
+
+━━━ 📎 전체 리포트 링크 (4종) ━━━
+📎 [전종목 6TF] https://nixstock.github.io/nixstock-reports/rrg/us/2026-10-09_rrg_alltickers_us_close/rrg_alltickers_us_2026-10-09.html
+📎 [백데이터] https://nixstock.github.io/nixstock-reports/rrg/us/2026-10-09_rrg_alltickers_us_close/rrg_backdata_us_2026-10-09.html
+📎 [회전 인포] https://nixstock.github.io/nixstock-reports/rrg/us/2026-10-09_rrg_alltickers_us_close/rrg_rotations_us_2026-10-09.html
+📎 [랜딩] https://nixstock.github.io/nixstock-reports/rrg/us/2026-10-09_rrg_alltickers_us_close/index.html
+※ 확률적 참고 / 예측 아님 / 투자권유(매수, 매도, 비중) 아님
+※ 모델 확률 검증용 / 자체 알고리즘(학습방법, 산식, 가중 비공개)
+※ RS=상태 컨텍스트
+
+🔒 자체 알고리즘 · 학습방법·산식·가중 비공개 (이름·값·임계·등급·검증 결과 공개)
+
+$SPY $VOO $IVV $QQQ $QQQM $IWM
+#RRG #상대강도 #섹터로테이션 #미국주식 #미국증시 #뉴욕증시 #미국지수 #증시전망 #NixStock

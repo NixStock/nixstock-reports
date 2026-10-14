@@ -1,0 +1,62 @@
+US #market_temp 종합(전체 링크) / 2026-10-13 마감 / By Opus 5.5
+
+US #market_temp 6지수 종합 #NixStock / 2026-10-13 장마감 (2026-10-14 11:12 KST) By Opus 5.5
+
+▶ [[ 결론 / 쉬운 해석 ]]
+🔴 US500, US100 따뜻~과열권(온도 높음=비쌈)
+⚪ US1500(통합), US30, MidCap400, Russell2000 중립
+⚪ 매도신호 켜진 곳 없음(미armed)
+🟡 단 US100, US30, Russell2000 시장폭 약세 = 표면 낙관 vs 내부 취약(확증 부족)
+
+◆ [[ 온도 (일 / 주 / 월 — 존, V1, V2) ]]
+- US1500(통합): (일: NEUTRAL, 58.61, 56.93 (Δ일 -5.5)), (주: NEUTRAL, 59.61, 58.28), (월: WARM, 66.76, 63.79)
+- US500: (일: WARM, 65.23, 69.02 (Δ일 -7.4)), (주: WARM, 65, 69.64), (월: HOT, 69.68, 70.17)
+- US100: (일: WARM, 65.32, 65.95 (Δ일 -6.9)), (주: WARM, 65.9, 67.38), (월: WARM, 69.68, 67.01)
+- US30: (일: NEUTRAL, 58.08, 56.71 (Δ일 -8.2)), (주: NEUTRAL, 58.31, 57.79), (월: WARM, 66.84, 62.16)
+- MidCap400: (일: NEUTRAL, 55.7, 53.85 (Δ일 -4.0)), (주: NEUTRAL, 56.9, 55.9), (월: WARM, 65.41, 60.26)
+- Russell2000: (일: NEUTRAL, 53.43, 47.99 (Δ일 -6.0)), (주: NEUTRAL, 56.9, 52.31), (월: NEUTRAL, 64.58, 55.84)
+
+◆ [[ 시장폭 ]]
+  + US1500(통합) 53% BULLISH / US500 52% BULLISH / US100 45% BEARISH
+  + US30 50% BEARISH / MidCap400 56% BULLISH / Russell2000 40% BEARISH
+
+◆ [[ 포지셔닝 (F&G·NixB&B·BofA) ]]
+- F&G 44.74(Fear·10-13)
+- NixB&B 5.65/10(Neutral·4구성·10-13)
+- BofA B&B(2026-09-30 D+13) 8.8/10 · ⚠️ 1주 경과·Extreme Bullish
+
+◆ [[ 촉매 · 시나리오 ]]
+- 향후 FOMC(2026-10-28 D-15) 인상확률 19% ▲+1pp(매파)
+  / 동결확률 79%(Kalshi / 조사 2026-10-14 07:30 KST)
+- 지난 FOMC(2026-09-16 D+27) 25bp 인상 → 3.75~4.00%
+- 시나리오 A(반등): US1500(통합), US30, MidCap400, Russell2000 존 성숙 + 반전 저점 edge + 전방 h54 상승우위(6/6지수 >50%·검증가능 6/6지수(n≥10))
+  → 시장폭 회복 시 반등
+- 시나리오 B(냉각): 과열 초입 + 대형주 시장폭 약세(BEARISH) 지속 → 평균회귀 조정 리스크
+
+◆ [[ 매크로 ]]
+- VIX 15.2·-6.98%
+- WTI 90.7·+0.53%
+- US10Y 4.796%
+- F&G 54.43(Neutral)
+
+📎 [인포그래픽] https://nixstock.github.io/nixstock-reports/market/2026-10-13_us_market_temp_close/infographic/market_temp_us_comparison_infographic_2026-10-13.html
+📎 [US500 리포트] https://nixstock.github.io/nixstock-reports/market/2026-10-13_us_market_temp_close/overview/us500/market_temp_us500_2026-10-13.html
+📎 [US500 데이터] https://nixstock.github.io/nixstock-reports/market/2026-10-13_us_market_temp_close/overview/us500/market_temp_web_us500_dwm_2026-10-13.html
+📎 [US100 리포트] https://nixstock.github.io/nixstock-reports/market/2026-10-13_us_market_temp_close/overview/us100/market_temp_us100_2026-10-13.html
+📎 [US100 데이터] https://nixstock.github.io/nixstock-reports/market/2026-10-13_us_market_temp_close/overview/us100/market_temp_web_us100_dwm_2026-10-13.html
+📎 [US30(다우) 리포트] https://nixstock.github.io/nixstock-reports/market/2026-10-13_us_market_temp_close/overview/us30/market_temp_us30_2026-10-13.html
+📎 [US30(다우) 데이터] https://nixstock.github.io/nixstock-reports/market/2026-10-13_us_market_temp_close/overview/us30/market_temp_web_us30_dwm_2026-10-13.html
+📎 [MidCap400 리포트] https://nixstock.github.io/nixstock-reports/market/2026-10-13_us_market_temp_close/overview/us400/market_temp_us400_2026-10-13.html
+📎 [MidCap400 데이터] https://nixstock.github.io/nixstock-reports/market/2026-10-13_us_market_temp_close/overview/us400/market_temp_web_us400_dwm_2026-10-13.html
+📎 [US1500(종합) 리포트] https://nixstock.github.io/nixstock-reports/market/2026-10-13_us_market_temp_close/overview/us1500/market_temp_us1500_2026-10-13.html
+📎 [US1500(종합) 데이터] https://nixstock.github.io/nixstock-reports/market/2026-10-13_us_market_temp_close/overview/us1500/market_temp_web_us1500_dwm_2026-10-13.html
+📎 [Russell2000 리포트] https://nixstock.github.io/nixstock-reports/market/2026-10-13_us_market_temp_close/overview/us2000/market_temp_us2000_2026-10-13.html
+📎 [Russell2000 데이터] https://nixstock.github.io/nixstock-reports/market/2026-10-13_us_market_temp_close/overview/us2000/market_temp_web_us2000_dwm_2026-10-13.html
+※ 확률적 참고 / 예측 아님 / 투자권유(매수, 매도, 비중) 아님
+※ 모델 확률 검증용 / 자체 알고리즘(학습방법, 산식, 가중 비공개)
+※ 과열은 타이밍 신호 아님
+
+🔒 자체 알고리즘 · 학습방법·산식·가중 비공개 (이름·값·임계·등급·검증 결과 공개)
+
+$SPY $VOO $IVV $QQQ $QQQM $DIA $MDY $IJH $ITOT $IWM
+#SP500 #SPX #에스앤피500 #미국대형주 #나스닥100 #나스닥 #NASDAQ100 #NDX #기술주 #다우 #다우지수 #다우존스 #DowJones #DJIA #SP400 #MidCap400 #미드캡 #미국중형주 #SP1500 #SPComposite1500 #미국종합지수 #미국전체시장 #러셀2000 #Russell2000 #미국소형주 #RUT #마켓온도 #시장온도 #공포탐욕지수 #시장폭 #반전신호 #미국주식 #미국증시 #뉴욕증시 #미국지수 #증시전망 #NixStock

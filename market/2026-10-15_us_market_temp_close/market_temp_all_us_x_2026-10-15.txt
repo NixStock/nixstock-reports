@@ -1,0 +1,61 @@
+US #market_temp 종합(전체 링크) / 2026-10-15 마감 / By Opus 5.5
+
+US #market_temp 6지수 종합 #NixStock / 2026-10-15 장마감 (2026-10-16 06:13 KST) By Opus 5.5
+
+▶ [[ 결론 / 쉬운 해석 ]]
+🔴 US500, US100, US30 따뜻~과열권(온도 높음=비쌈)
+⚪ US1500(통합), MidCap400, Russell2000 중립
+⚪ 매도신호 켜진 곳 없음(미armed)
+
+◆ [[ 온도 (일 / 주 / 월 — 존, V1, V2) ]]
+- US1500(통합): (일: NEUTRAL, 63.96, 59.42 (Δ일 +3.5)), (주: WARM, 63.67, 60.09), (월: WARM, 65.8, 62.67)
+- US500: (일: WARM, 69.19, 68.53 (Δ일 +2.0)), (주: WARM, 68.43, 69.98), (월: HOT, 68.64, 71.14)
+- US100: (일: WARM, 66.47, 61.52 (Δ일 -0.7)), (주: WARM, 67.4, 64.66), (월: WARM, 67.22, 65.43)
+- US30: (일: WARM, 67.43, 63.39 (Δ일 +4.2)), (주: WARM, 64.66, 62.83), (월: WARM, 66.98, 66.1)
+- MidCap400: (일: NEUTRAL, 61.61, 55.95 (Δ일 +6.2)), (주: NEUTRAL, 61.25, 57.8), (월: WARM, 64.23, 61.73)
+- Russell2000: (일: NEUTRAL, 58.61, 50.08 (Δ일 +6.6)), (주: NEUTRAL, 61.01, 54.68), (월: NEUTRAL, 63.22, 57.84)
+
+◆ [[ 시장폭 ]]
+  + US1500(통합) 76% BULLISH / US500 76% BULLISH / US100 63% BULLISH
+  + US30 73% BULLISH / MidCap400 78% BULLISH / Russell2000 72% BULLISH
+
+◆ [[ 포지셔닝 (F&G·NixB&B·BofA) ]]
+- F&G 31.54(Fear·10-15)
+- NixB&B 6.85/10(Neutral·4구성·10-15)
+- BofA B&B(2026-10-07 D+8) 8.1/10·Extreme Bullish
+
+◆ [[ 촉매 · 시나리오 ]]
+- 향후 FOMC(2026-10-28 D-13) 인상확률 28%
+  / 동결확률 70%(Kalshi / 조사 2026-10-16 03:30 KST)
+- 지난 FOMC(2026-09-16 D+29) 25bp 인상 → 3.75~4.00%
+- 시나리오 A(반등): US1500(통합), MidCap400, Russell2000 존 성숙 + 반전 저점 edge + 전방 h54 상승우위(6/6지수 >50%·검증가능 6/6지수(n≥10))
+  → 시장폭 회복 시 반등
+- 시나리오 B(냉각): 과열권 확대 + 반전 미armed → 고점 재확인·상방 여력 약화
+
+◆ [[ 매크로 ]]
+- VIX 15.2·-6.98%
+- WTI 90.7·+0.53%
+- US10Y 4.796%
+- F&G 54.43(Neutral)
+
+📎 [인포그래픽] https://nixstock.github.io/nixstock-reports/market/2026-10-15_us_market_temp_close/infographic/market_temp_us_comparison_infographic_2026-10-15.html
+📎 [US500 리포트] https://nixstock.github.io/nixstock-reports/market/2026-10-15_us_market_temp_close/overview/us500/market_temp_us500_2026-10-15.html
+📎 [US500 데이터] https://nixstock.github.io/nixstock-reports/market/2026-10-15_us_market_temp_close/overview/us500/market_temp_web_us500_dwm_2026-10-15.html
+📎 [US100 리포트] https://nixstock.github.io/nixstock-reports/market/2026-10-15_us_market_temp_close/overview/us100/market_temp_us100_2026-10-15.html
+📎 [US100 데이터] https://nixstock.github.io/nixstock-reports/market/2026-10-15_us_market_temp_close/overview/us100/market_temp_web_us100_dwm_2026-10-15.html
+📎 [US30(다우) 리포트] https://nixstock.github.io/nixstock-reports/market/2026-10-15_us_market_temp_close/overview/us30/market_temp_us30_2026-10-15.html
+📎 [US30(다우) 데이터] https://nixstock.github.io/nixstock-reports/market/2026-10-15_us_market_temp_close/overview/us30/market_temp_web_us30_dwm_2026-10-15.html
+📎 [MidCap400 리포트] https://nixstock.github.io/nixstock-reports/market/2026-10-15_us_market_temp_close/overview/us400/market_temp_us400_2026-10-15.html
+📎 [MidCap400 데이터] https://nixstock.github.io/nixstock-reports/market/2026-10-15_us_market_temp_close/overview/us400/market_temp_web_us400_dwm_2026-10-15.html
+📎 [US1500(종합) 리포트] https://nixstock.github.io/nixstock-reports/market/2026-10-15_us_market_temp_close/overview/us1500/market_temp_us1500_2026-10-15.html
+📎 [US1500(종합) 데이터] https://nixstock.github.io/nixstock-reports/market/2026-10-15_us_market_temp_close/overview/us1500/market_temp_web_us1500_dwm_2026-10-15.html
+📎 [Russell2000 리포트] https://nixstock.github.io/nixstock-reports/market/2026-10-15_us_market_temp_close/overview/us2000/market_temp_us2000_2026-10-15.html
+📎 [Russell2000 데이터] https://nixstock.github.io/nixstock-reports/market/2026-10-15_us_market_temp_close/overview/us2000/market_temp_web_us2000_dwm_2026-10-15.html
+※ 확률적 참고 / 예측 아님 / 투자권유(매수, 매도, 비중) 아님
+※ 모델 확률 검증용 / 자체 알고리즘(학습방법, 산식, 가중 비공개)
+※ 과열은 타이밍 신호 아님
+
+🔒 자체 알고리즘 · 학습방법·산식·가중 비공개 (이름·값·임계·등급·검증 결과 공개)
+
+$SPY $VOO $IVV $QQQ $QQQM $DIA $MDY $IJH $ITOT $IWM
+#SP500 #SPX #에스앤피500 #미국대형주 #나스닥100 #나스닥 #NASDAQ100 #NDX #기술주 #다우 #다우지수 #다우존스 #DowJones #DJIA #SP400 #MidCap400 #미드캡 #미국중형주 #SP1500 #SPComposite1500 #미국종합지수 #미국전체시장 #러셀2000 #Russell2000 #미국소형주 #RUT #마켓온도 #시장온도 #공포탐욕지수 #시장폭 #반전신호 #미국주식 #미국증시 #뉴욕증시 #미국지수 #증시전망 #NixStock

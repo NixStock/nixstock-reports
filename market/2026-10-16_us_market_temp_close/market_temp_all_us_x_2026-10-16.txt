@@ -1,6 +1,6 @@
 US #market_temp 종합(전체 링크) / 2026-10-16 마감 / By Opus 5.5
 
-US #market_temp 6지수 종합 #NixStock / 2026-10-16 장마감 (2026-10-17 06:10 KST) By Opus 5.5
+US #market_temp 6지수 종합 #NixStock / 2026-10-16 장마감 (2026-10-18 19:00 KST) By Opus 5.5
 
 ▶ [[ 결론 / 쉬운 해석 ]]
 🔴 US500 따뜻~과열권(온도 높음=비쌈)
@@ -27,17 +27,18 @@ US #market_temp 6지수 종합 #NixStock / 2026-10-16 장마감 (2026-10-17 06:1
 
 ◆ [[ 촉매 · 시나리오 ]]
 - 향후 FOMC(2026-10-28 D-12) 인상확률 14% ▲+1pp(매파)
-  / 동결확률 84%(Kalshi / 조사 2026-10-17 03:30 KST)
+  / 동결확률 84%(Kalshi / 조사 2026-10-17 12:30 KST)
 - 지난 FOMC(2026-09-16 D+30) 25bp 인상 → 3.75~4.00%
 - 시나리오 A(반등): US1500(통합), US100, US30, MidCap400, Russell2000 존 성숙 + 반전 저점 edge + 전방 h54 상승우위(6/6지수 >50%·검증가능 6/6지수(n≥10))
   → 시장폭 회복 시 반등
 - 시나리오 B(냉각): 과열 초입 + 대형주 시장폭 약세(BEARISH) 지속 → 평균회귀 조정 리스크
 
 ◆ [[ 매크로 ]]
-- VIX 15.2·-6.98%
-- WTI 90.7·+0.53%
-- US10Y 4.796%
-- F&G 54.43(Neutral)
+- VIX 19.99·+21.45%
+- WTI 99.02·+1.07%
+- 美10Y 5.098%·+0.18%
+- DXY 101.84·-0.16%
+- 기준 10-16 마감
 
 📎 [인포그래픽] https://nixstock.github.io/nixstock-reports/market/2026-10-16_us_market_temp_close/infographic/market_temp_us_comparison_infographic_2026-10-16.html
 📎 [US500 리포트] https://nixstock.github.io/nixstock-reports/market/2026-10-16_us_market_temp_close/overview/us500/market_temp_us500_2026-10-16.html

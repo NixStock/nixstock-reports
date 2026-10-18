@@ -33,10 +33,11 @@ US #market_temp 6지수 종합 #NixStock / 2026-10-15 장마감 (2026-10-16 06:1
 - 시나리오 B(냉각): 과열권 확대 + 반전 미armed → 고점 재확인·상방 여력 약화
 
 ◆ [[ 매크로 ]]
-- VIX 15.2·-6.98%
-- WTI 90.7·+0.53%
-- US10Y 4.796%
-- F&G 54.43(Neutral)
+- VIX 16.46·-2.43%
+- WTI 96.16·+1.13%
+- 美10Y 5.089%·-1.95%
+- DXY 102.02·-0.51%
+- 기준 10-15 마감
 
 📎 [인포그래픽] https://nixstock.github.io/nixstock-reports/market/2026-10-15_us_market_temp_close/infographic/market_temp_us_comparison_infographic_2026-10-15.html
 📎 [US500 리포트] https://nixstock.github.io/nixstock-reports/market/2026-10-15_us_market_temp_close/overview/us500/market_temp_us500_2026-10-15.html

@@ -23,7 +23,7 @@ US #market_temp 4지수 종합 #NixStock · 2026-10-05 장마감 (2026-10-06 06:
 · A(반등): MidCap400·Russell2000 존 성숙 + 반전 저점 edge + 전방 h54 상승우위(4/4지수 >50%·검증가능 4/4지수(n≥10)) → 시장폭 회복 시 반등
 · B(냉각): 과열 초입 + 대형주 시장폭 약세(BEARISH) 지속 → 평균회귀 조정 리스크
 
-◆ 매크로: VIX 15.2·-6.98% · WTI 90.7·+0.53% · US10Y 4.796% · F&G 54.43(Neutral)
+◆ 매크로: VIX 15.52·+1.37% · WTI 89.27·-2.02% · 美10Y 5.311%·+0.64% · DXY 102.15·+0.22% · 기준 10-05 마감
 
 📎 [인포그래픽] https://nixstock.github.io/nixstock-reports/market/2026-10-05_us_market_temp_close/infographic/market_temp_us_comparison_infographic_2026-10-05.html
 📎 [US500 리포트] https://nixstock.github.io/nixstock-reports/market/2026-10-05_us_market_temp_close/overview/us500/market_temp_us500_2026-10-05.html

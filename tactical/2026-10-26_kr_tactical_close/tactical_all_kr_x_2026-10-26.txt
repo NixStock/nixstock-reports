@@ -22,6 +22,7 @@ KR #tactical V1.3 r2 / 수급 확정치 반영 20:22 / 2026-10-26 15:30 KST 마�
 📎 [리포트] https://nixstock.github.io/nixstock-reports/tactical/2026-10-26_kr_tactical_close/overview/kr_tactical_overview_2026-10-26.html
 📎 [데이터] https://nixstock.github.io/nixstock-reports/tactical/2026-10-26_kr_tactical_close/overview/tactical_backdata_kr_2026-10-26.html
 📎 [인포그래픽] https://nixstock.github.io/nixstock-reports/tactical/2026-10-26_kr_tactical_close/infographic/kr_tactical_infographic_2026-10-26.html
+📎 [인포그래픽_rrg] https://nixstock.github.io/nixstock-reports/tactical/2026-10-26_kr_tactical_close/info_rrg/rrg_tactical_kr_2026-10-26.html
 ※ 확률적 참고 / 예측 아님 / 투자권유(매수, 매도, 비중) 아님
 ※ 모델 확률 검증용 / 자체 알고리즘(학습방법, 산식, 가중 비공개)
 ※ killswitch=경고(매도 확정 아님)

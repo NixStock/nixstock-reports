@@ -12,7 +12,7 @@
         루트 index.html(주소 / = 메인) + 루트 reports_index.html — 같은 파일 · 같은 바이트 (배치 목록 SSOT = nix_pages_manifest.SITE_PAGES).
         이 파일을 고쳐도 커밋 → 다음 배포 때 자동 반영 (수동 cp 없음).
   동작: 열 때 같은 사이트의 목록 파일 reports_manifest.json 1회 GET → 경로 복원
-        → 분류 (nix-classify · reports_viewer.html 과 바이트까지 같은 블록 — 테스트가 강제)
+        → 분류 (nix-classify · reports_viewer.html 과 바이트까지 같은 블록 — 테스트가 강제 · RRG 회전 인포 라벨 = 목록 파일 public_labels)
         → 날짜 묶음 · 대표 문서 (nix-viewer-core · 뷰어와 바이트까지 같은 블록 = 고정 주소 뷰어가 여는 대표 문서와 같다)
         → 나라 · 날짜 · 종류별 카드 (nix-index-core) → 화면.
         기본 화면(날짜 지정 없음) = 종류별 최신 — 종류마다 그 종류의 최신일 카드 (토스·뉴스 = 오늘 · 마감 리포트 = 각자 최신일).
@@ -174,9 +174,9 @@ main{padding-bottom:8px}
 .doc .dl{min-width:0;overflow-wrap:anywhere}
 .doc.rp .dl{font-weight:700}
 .nt{font-size:12.5px;white-space:nowrap}
-.bdg{display:inline-block;padding:0 8px;border-radius:20px;font-size:12px;font-weight:800;color:var(--gold);background:var(--gold-bg);border:1px solid var(--gold-bd);white-space:nowrap}
-.wbdg{display:inline-block;padding:0 8px;border-radius:20px;font-size:12px;font-weight:700;color:var(--warn);border:1px solid var(--warn);white-space:nowrap}
-.nbdg{display:inline-block;padding:0 8px;border-radius:20px;font-size:12px;font-weight:700;color:var(--ink2);border:1px solid var(--line2);white-space:nowrap}
+.bdg{display:inline-block;padding:0 8px;border-radius:20px;font-size:12.5px;font-weight:800;color:var(--gold);background:var(--gold-bg);border:1px solid var(--gold-bd);white-space:nowrap}
+.wbdg{display:inline-block;padding:0 8px;border-radius:20px;font-size:12.5px;font-weight:700;color:var(--warn);border:1px solid var(--warn);white-space:nowrap}
+.nbdg{display:inline-block;padding:0 8px;border-radius:20px;font-size:12.5px;font-weight:700;color:var(--ink2);border:1px solid var(--line2);white-space:nowrap}
 td.dt .nbdg{display:block;margin:4px auto 0;font-weight:600}
 tr.dhr th .nbdg{margin-left:8px;vertical-align:1px}
 details.more{margin-top:2px}
@@ -200,7 +200,7 @@ details.more li{padding:2px 0;font-size:13px;overflow-wrap:anywhere}
 
 /* 카드 날짜 · 태그 (종류별 최신 · 날짜 머리) — 오늘 = 파랑 · 진행 중 = 파랑 테두리 · 직전 마감 = 금색 · 이전 = 회색 */
 .cdate{font-size:13px;color:var(--ink2);font-variant-numeric:tabular-nums;white-space:nowrap}
-.tag{display:inline-block;padding:0 8px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap;color:var(--ink2);border:1px solid var(--line2)}
+.tag{display:inline-block;padding:0 8px;border-radius:20px;font-size:12.5px;font-weight:700;white-space:nowrap;color:var(--ink2);border:1px solid var(--line2)}
 .tag.today{color:var(--bg);background:var(--link);border-color:var(--link)}
 .tag.ahead{color:var(--link);border-color:var(--link)}
 .tag.close{color:var(--gold);background:var(--gold-bg);border-color:var(--gold-bd)}
@@ -230,11 +230,11 @@ table.tkt td.tkr .rl a.dl{font-weight:700}
 table.tkt td.tkr .rl,table.tkt td.tkr details.more>summary{white-space:nowrap}
 table.tkt td.tkr li{white-space:normal;overflow-wrap:anywhere}   /* anywhere = '그 밖' 긴 파일명 라벨이 열 최소 폭을 넓히지 않게 (break-word 는 펼친 행에서 이름 칸을 찌그러뜨림 · 2026-10-06) */
 table.tkt td.tkn .fn,table.tkt td.tkn .sl{display:block}
-table.tkt td.tkn .sl{font-size:12px;color:var(--ink3);margin-top:1px}
-table.tkt td.tkn .hm{display:block;font-size:12px;color:var(--ink3);margin-top:2px}   /* 검색에 걸린 별칭 · 비슷한 이름 (걸린 행만) */
-table.tkt td.tkn .hm .hb{display:inline-block;margin-right:5px;padding:0 5px;border:1px solid var(--line2);border-radius:5px;font-size:11px;font-weight:700;color:var(--ink2)}
+table.tkt td.tkn .sl{font-size:12.5px;color:var(--ink3);margin-top:1px}
+table.tkt td.tkn .hm{display:block;font-size:12.5px;color:var(--ink3);margin-top:2px}   /* 검색에 걸린 별칭 · 비슷한 이름 (걸린 행만) */
+table.tkt td.tkn .hm .hb{display:inline-block;margin-right:5px;padding:0 5px;border:1px solid var(--line2);border-radius:5px;font-size:12.5px;font-weight:700;color:var(--ink2)}
 .nodash{color:var(--ink3)}
-.nk{display:table;margin:3px 0 0;padding:0 6px;border-radius:6px;font-size:11.5px;font-weight:700;color:var(--ink2);border:1px solid var(--line2)}   /* 코드 아래 줄 (코드 칸 폭 유지) */
+.nk{display:table;margin:3px 0 0;padding:0 6px;border-radius:6px;font-size:12.5px;font-weight:700;color:var(--ink2);border:1px solid var(--line2)}   /* 코드 아래 줄 (코드 칸 폭 유지) */
 .tkmore{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
 
 /* 전체 목록 (구역 · 표) */
@@ -392,6 +392,74 @@ tr.dhr,.cty.m,.nt.m{display:none}
   var TK = 'ticker/(?<d>' + D + ')_(?:(?<c>kr|us)_)?(?:ticker_)?(?<t>[^_/]+)(?:_(?<s>[^/]+))?/';
   var TKD = '(?:' + D + '|\\d{8})';   // 옛 파일명 날짜 YYYYMMDD 도 받는다
   var CN = 'cardnews/(?<d>' + D + ')_(?<c>kr|us)_cardnews_close/';
+  // ★RRG 회전 인포 (사용자 2026-10-27 "각 rrg를 -> leading 으로 4장 … 각각은 모두 별도 폴더 · root에는 통합" ·
+  //   계획 claude/plans/plan_rrg_to_from_leading_folders_20261027.md §0 C14 · §10 U9)
+  //   경로 = rrg 번들 {범위}/rrg_{범위}_{c}_{D}.html (범위 루트 통합 뷰어 · 옛 날짜 = 방향 없는 4쪽 뷰어 · 같은 이름) ·
+  //          {범위}/{방향}/rrg_{범위}_{방향}_{c}_{D}.html (방향 뷰어) · tactical·index 번들 = info_rrg/ 아래 같은 꼴 · 끝 _full = 긴 인포.
+  //   폴더 = 파일 토큰 (\k 역참조) · 파일 국가 = 번들 국가. 범위·방향 키는 경로 토큰일 뿐 — 라벨 글자 = 목록 파일 public_labels.rrg_rotation 만
+  //   (생성 scripts/nix_pages_manifest.py ← src/stock/rrg_groups.py · 분류기 안 라벨 글자 0). 표 없음 · 모르는 키 = NOLABEL + 묶음 안 번호
+  //   (파일 이름 · 내부 키를 공개 글자에 쓰지 않는다 · R0-11).
+  var RK = '[a-z][a-z0-9_]*';
+  var RI = 'info_rrg/';    // tactical · index 번들의 회전 인포 폴더 (= rrg_groups.INFO_RRG_DIR · 시험이 잠금)
+  var RS_SUB = '(?<k>' + RK + ')/rrg_\\k<k>_\\k<c>_' + D;
+  var RD_SUB = '(?<k>' + RK + ')/(?<dr>' + RK + ')/rrg_\\k<k>_\\k<dr>_\\k<c>_' + D;
+  var RS_INFO = RI + 'rrg_(?<k>' + RK + ')_\\k<c>_' + D;
+  var RD_INFO = RI + '(?<dr>' + RK + ')/rrg_(?<k>' + RK + ')_\\k<dr>_\\k<c>_' + D;
+  var NOLABEL = '⚠️ 라벨 없음';
+  // 라벨 표 (목록 파일 public_labels) → {ok, err, fmt, cty: {국가: {sc: {범위 키: 라벨}, so: {키: 순서}, dr: {방향 키: 이름}, dro: {키: 순서}}}}
+  //   없음 = ok false · err '' (옛 목록 · 로컬 서버) · 형식 오류 = ok false · err 사유 (classify 결과 labelErr)
+  function rotTable(raw) {
+    var T = { ok: false, err: '', fmt: null, cty: {} };
+    if (raw == null) return T;
+    var bad = function (why) { T.err = '목록 파일 RRG 라벨 표 형식 오류 — ' + why; T.cty = {}; return T; };
+    var isObj = function (o) { return !!o && typeof o === 'object' && !Array.isArray(o); };
+    if (!isObj(raw)) return bad('객체가 아닙니다.');
+    var r = raw.rrg_rotation;
+    if (!isObj(r) || !isObj(r.fmt) || !isObj(r.countries)) return bad('rrg_rotation · fmt · countries 가 없습니다.');
+    var fk = ['combined', 'direction', 'full'], i, j, n;
+    for (i = 0; i < fk.length; i++) if (typeof r.fmt[fk[i]] !== 'string' || !r.fmt[fk[i]]) return bad('fmt.' + fk[i] + ' 가 문자열이 아닙니다.');
+    var cs = Object.keys(r.countries), lists = [['scopes', 'sc', 'so'], ['directions', 'dr', 'dro']];
+    for (i = 0; i < cs.length; i++) {
+      var v = r.countries[cs[i]], o = { sc: {}, so: {}, dr: {}, dro: {} };
+      if (!isObj(v)) return bad(cs[i] + ' 가 객체가 아닙니다.');
+      for (j = 0; j < lists.length; j++) {
+        var a = v[lists[j][0]];
+        if (!Array.isArray(a)) return bad(cs[i] + '.' + lists[j][0] + ' 가 배열이 아닙니다.');
+        for (n = 0; n < a.length; n++) {
+          var x = a[n];
+          if (!Array.isArray(x) || x.length !== 2 || typeof x[0] !== 'string' || !x[0] || typeof x[1] !== 'string' || !x[1].trim())
+            return bad(cs[i] + '.' + lists[j][0] + '[' + n + '] 가 [키, 글자] 가 아닙니다.');
+          o[lists[j][1]][x[0]] = x[1]; o[lists[j][2]][x[0]] = n;
+        }
+      }
+      T.cty[cs[i]] = o;
+    }
+    T.fmt = r.fmt; T.ok = true;
+    return T;
+  }
+  function fillT(t, o) { return t.replace(/\{(scope|direction|label)\}/g, function (m, k) { return o[k] != null ? o[k] : m; }); }
+  // 칸 = sc (범위 루트 통합 뷰어) · scf (그 _full) · dr (방향 뷰어) · drf (그 _full) — 라벨 null = 표 없음 · 모르는 키
+  function rotLabel(T, g, slot) {
+    var cc = T.ok ? T.cty[g.c] : null, s = cc ? cc.sc[g.k] : null, lab;
+    if (s == null) return null;
+    if (slot === 'sc' || slot === 'scf') lab = fillT(T.fmt.combined, { scope: s });
+    else {
+      var d = cc.dr[g.dr];
+      if (d == null) return null;
+      lab = fillT(T.fmt.direction, { scope: s, direction: d });
+    }
+    return slot === 'scf' || slot === 'drf' ? fillT(T.fmt.full, { label: lab }) : lab;
+  }
+  // 정렬 = 100 + 10 × 허브 행 순서 + 칸 (통합 0 · 그 _full 1 · 방향 j 뷰어 2 + 2j · 그 _full 3 + 2j) · 표 밖 = 99
+  function rotOrd(T, g, slot) {
+    var cc = T.ok ? T.cty[g.c] : null, i = cc ? cc.so[g.k] : null;
+    if (i == null) return 99;
+    var j = slot === 'dr' || slot === 'drf' ? cc.dro[g.dr] : 0;
+    if (j == null) return 99;
+    return 100 + 10 * i + (slot === 'sc' ? 0 : slot === 'scf' ? 1 : 2 + 2 * j + (slot === 'drf' ? 1 : 0));
+  }
+  function rotO(slot) { return function (g, T) { return rotOrd(T, g, slot); }; }
+  function rotL(slot) { return function (g, p, T) { return rotLabel(T, g, slot); }; }
 
   // 지수 폴더 → 이름·순서 (리포트 <title> 기준)
   var IDX = {
@@ -437,7 +505,8 @@ tr.dhr,.cty.m,.nt.m{display:none}
   ];
 
   // ★분류 규칙 표 (위에서부터 첫 일치 1개) — 경로는 저장소 루트 기준
-  //  [규칙, 섹션({c}=국가), 경로 정규식, 기본 표시, 정렬, 라벨]
+  //  [규칙, 섹션({c}=국가), 경로 정규식, 기본 표시, 정렬, 라벨]  — 정렬·라벨 함수 = (g, T) · (g, p, T) (T = 라벨 표 · rotTable)
+  //  라벨 null = 라벨 표 없음 · 모르는 키 → NOLABEL + 묶음 안 번호 (RRG 회전 인포 규칙만)
   //  기본 표시: 1 = 주요(기본 화면) · 0 = "모든 파일 보기"에서만
   //            'toss' = 슬롯 대표 페이지 전부 주요 · 그중 대표(rep) = 그날 마감(close) 슬롯만 · 마감이 없는 날은 대표 없음
   //            'rrg'  = 같은 폴더에 rrg_alltickers 가 없을 때만 주요
@@ -479,6 +548,10 @@ tr.dhr,.cty.m,.nt.m{display:none}
       function (g) { return '일간 비교 ' + g.a + ' → ' + g.b; }],
     ['tc_flow',     'tactical_{c}', R(TC + 'compare/tactical_flow_5d_' + KC + '_' + D + '\\.html'), 0, 81,
       function () { return '5일 흐름'; }],
+    ['tc_rs',       'tactical_{c}', R(TC + RS_INFO + '\\.html'), 1, rotO('sc'), rotL('sc')],
+    ['tc_rsf',      'tactical_{c}', R(TC + RS_INFO + '_full\\.html'), 0, rotO('scf'), rotL('scf')],
+    ['tc_rd',       'tactical_{c}', R(TC + RD_INFO + '\\.html'), 0, rotO('dr'), rotL('dr')],
+    ['tc_rdf',      'tactical_{c}', R(TC + RD_INFO + '_full\\.html'), 0, rotO('drf'), rotL('drf')],
     ['tc_other',    'tactical_{c}', R(TC + '.+\\.html'), 0, 99, function (g, p) { return base(p); }],
 
     ['ix_ov',       'index_{c}',   R(IX + 'overview/index_overview_' + KC + '_' + D + '\\.html'), 1, 0,
@@ -497,6 +570,10 @@ tr.dhr,.cty.m,.nt.m{display:none}
       function (g) { return '일간 비교 ' + g.a + ' → ' + g.b; }],
     ['ix_flow',     'index_{c}',   R(IX + 'compare/index_flow_5d_' + KC + '_' + D + '\\.html'), 0, 81,
       function () { return '5일 흐름'; }],
+    ['ix_rs',       'index_{c}',   R(IX + RS_INFO + '\\.html'), 1, rotO('sc'), rotL('sc')],
+    ['ix_rsf',      'index_{c}',   R(IX + RS_INFO + '_full\\.html'), 0, rotO('scf'), rotL('scf')],
+    ['ix_rd',       'index_{c}',   R(IX + RD_INFO + '\\.html'), 0, rotO('dr'), rotL('dr')],
+    ['ix_rdf',      'index_{c}',   R(IX + RD_INFO + '_full\\.html'), 0, rotO('drf'), rotL('drf')],
     ['ix_other',    'index_{c}',   R(IX + '.+\\.html'), 0, 99, function (g, p) { return base(p); }],
 
     ['rg_all',      'rrg_{c}',     R(RG + 'rrg_alltickers_' + KC + '_' + D + '\\.html'), 1, 0,
@@ -507,6 +584,16 @@ tr.dhr,.cty.m,.nt.m{display:none}
       function () { return 'RS·RRG 백데이터'; }],
     ['rg_rot',      'rrg_{c}',     R(RG + 'rrg_rotations_' + KC + '_' + D + '\\.html'), 0, 61,
       function () { return '개선 → 리딩 회전'; }],
+    // ★지도 화면 맞춤 뷰어 (2026-10-27 저녁 · 사용자 "세로모드시 화면에 자동 fit되지 않음" · 번들 루트 rrg_map[_cand]_{c}_{D}.html = 지도 PNG 이름 + .html ·
+    //   이름 SSOT = scripts/nix_rrg_rotation_infographic.map_viewer_paths · 라벨 = 같은 파일 MAP_TITLES (허브 카드 제목과 같은 말 · 시험이 잠금)) — 그 밖 규칙 (rg_other) 로 빠지지 않게
+    ['rg_map',      'rrg_{c}',     R(RG + 'rrg_map_' + KC + '_' + D + '\\.html'), 0, 62,
+      function () { return '한눈에 보기 지도'; }],
+    ['rg_map2',     'rrg_{c}',     R(RG + 'rrg_map_cand_' + KC + '_' + D + '\\.html'), 0, 63,
+      function () { return '한눈에 보기 지도 ② 확정 대기'; }],
+    ['rg_rs',       'rrg_{c}',     R(RG + RS_SUB + '\\.html'), 1, rotO('sc'), rotL('sc')],
+    ['rg_rsf',      'rrg_{c}',     R(RG + RS_SUB + '_full\\.html'), 0, rotO('scf'), rotL('scf')],
+    ['rg_rd',       'rrg_{c}',     R(RG + RD_SUB + '\\.html'), 0, rotO('dr'), rotL('dr')],
+    ['rg_rdf',      'rrg_{c}',     R(RG + RD_SUB + '_full\\.html'), 0, rotO('drf'), rotL('drf')],
     ['rg_other',    'rrg_{c}',     R(RG + '.+\\.html'), 0, 99, function (g, p) { return base(p); }],
 
     ['cn_rep',      'cardnews_{c}', R(CN + '\\k<c>_cardnews_\\k<d>\\.html'), 1, 0, function () { return '카드뉴스'; }],
@@ -568,7 +655,10 @@ tr.dhr,.cty.m,.nt.m{display:none}
     return (s[0] === 'rrg' || s[0] === 'toss') ? s.slice(0, 3).join('/') : s.slice(0, 2).join('/');
   }
 
-  function classify(paths) {
+  // paths = 경로 목록 · labels = 목록 파일 public_labels (없음 = RRG 회전 인포 라벨 NOLABEL + 묶음 안 번호)
+  //   결과 = {entries, ignored, rejected, labels(받은 표 그대로 · 날짜 묶음 계산이 다시 넘긴다), labelErr(형식 오류 사유 · 없으면 ''), nolabel(라벨 없음 수)}
+  function classify(paths, labels) {
+    var T = rotTable(labels);
     var entries = [], ignored = [], rejected = [];
     for (var i = 0; i < paths.length; i++) {
       var p = paths[i];
@@ -586,8 +676,9 @@ tr.dhr,.cty.m,.nt.m{display:none}
         e.date = g.d || firstDate(p);
         e.c = g.c ? g.c.toUpperCase() : hit[1] === 'ticker' ? '공통' : guessC(p);   // 티커 나라 없음 = 공통 (파일명 추측 안 함)
         e.show = hit[3];
-        e.ord = typeof hit[4] === 'function' ? hit[4](g) : hit[4];
-        e.label = hit[5](g, p);
+        e.ord = typeof hit[4] === 'function' ? hit[4](g, T) : hit[4];
+        e.label = hit[5](g, p, T);
+        if (e.label == null) { e.label = NOLABEL; e.nolabel = true; }
         e.k = g.k || ''; e.hm = g.hm || ''; e.slot = g.k ? slot(g) : '';
         if (hit[1] === 'ticker') { e.tk = hit[0] === 'tk_scan' ? '' : g.t; e.sub = g.s ? slugName(g.s) : ''; }
         e.unlisted = /_other$/.test(hit[0]);
@@ -620,10 +711,17 @@ tr.dhr,.cty.m,.nt.m{display:none}
       else e.final = e.show === 1;
       delete e.pick;
     });
-    return { entries: entries, ignored: ignored, rejected: rejected };
+    // 3단계: 라벨 없는 회전 인포 = 묶음 안 경로 순 번호 (같은 라벨이 겹치면 화면이 파일 이름을 붙인다 → 번호로 구분)
+    var nl = {}, nNo = 0;
+    entries.forEach(function (e) { if (e.nolabel) { (nl[e.grp] = nl[e.grp] || []).push(e); nNo++; } });
+    Object.keys(nl).forEach(function (k) {
+      nl[k].sort(function (a, b) { return a.path < b.path ? -1 : a.path > b.path ? 1 : 0; })
+        .forEach(function (e, i) { e.label = NOLABEL + ' ' + (i + 1); });
+    });
+    return { entries: entries, ignored: ignored, rejected: rejected, labels: labels == null ? null : labels, labelErr: T.err, nolabel: nNo };
   }
 
-  root.NIX = { classify: classify, RULES: RULES, SECTIONS: SECTIONS, safePath: safePath, TOSS_KIND: TOSS_KIND };
+  root.NIX = { classify: classify, RULES: RULES, SECTIONS: SECTIONS, safePath: safePath, TOSS_KIND: TOSS_KIND, NOLABEL: NOLABEL };
 })(typeof window !== 'undefined' ? window : globalThis);
 </script>
 
@@ -721,7 +819,10 @@ tr.dhr,.cty.m,.nt.m{display:none}
       bad('count(' + JSON.stringify(j.count) + ')와 실제 파일명 수(' + paths.length + ')가 다릅니다.');
     var gen = typeof j.generated_at === 'string' ? j.generated_at : '';
     if (!gen || isNaN(Date.parse(gen))) bad('generated_at 이 시각 형식이 아닙니다 (' + JSON.stringify(j.generated_at) + ').');
-    return { total: j.count, paths: paths, gen: gen };
+    // RRG 회전 인포 라벨 표 (덤 — 없거나 어긋나도 목록은 정상 · 그 문서 라벨 = '라벨 없음 n' · 형식 검사 = 분류기 rotTable)
+    var lb = j.public_labels && typeof j.public_labels === 'object' && !Array.isArray(j.public_labels) ? j.public_labels : null;
+    return { total: j.count, paths: paths, gen: gen, labels: lb,
+             labelsErr: typeof j.public_labels_error === 'string' ? j.public_labels_error : '' };
   }
 
   function cardnewsEntry(e) {
@@ -733,16 +834,16 @@ tr.dhr,.cty.m,.nt.m{display:none}
       grp: 'cardnews/' + m[1] + '_' + m[2] + '_cardnews_close' };
   }
 
-  // 경로 목록 → 이 종류·국가의 묶음 배열 (날짜 내림차순). 묶음 = {date, grp, want, docs[]}
+  // 경로 목록 (+ 목록 파일 RRG 라벨 표 labels) → 이 종류·국가의 묶음 배열 (날짜 내림차순). 묶음 = {date, grp, want, docs[]}
   //   문서 = {path, rel(묶음 기준), base, tmpl(날짜→{D}), label, ord, final, rule, tab, isDefault, uniqBase}
   //   문서 순서 = 대표 템플릿 → 분류기 대표(final) → 정렬 순서(ord) → 경로
-  function bundles(paths, k, c) {
+  function bundles(paths, k, c, labels) {
     var pre = prefixOf(k, c), sec = key(k, c), sel = [];
     for (var i = 0; i < paths.length; i++) {
       var p = paths[i];
       if (typeof p === 'string' && p.indexOf(pre) === 0 && !sitePage(p)) sel.push(p);
     }
-    var res = root.NIX.classify(sel);
+    var res = root.NIX.classify(sel, labels);
     var by = {}, out = [];
     res.entries.forEach(function (e) {
       if (e.rule === 'unmatched') e = cardnewsEntry(e);
@@ -944,7 +1045,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
     // ① 고정 주소 뷰어 종류 = 뷰어 코어의 날짜 묶음 + 대표 문서 (고정 주소 뷰어가 여는 문서와 같다)
     V.SLOTS.forEach(function (s) {
       var k = s[0], c = s[1];
-      V.bundles(paths, k, c).forEach(function (b) {
+      V.bundles(paths, k, c, res.labels).forEach(function (b) {
         var pd = V.pickDefault(b), cd = cardOf(M.cty[c], b.date, k, 'bundle');
         M.rep[pd.doc.path] = true;
         cd.n += b.docs.length;
@@ -1678,13 +1779,15 @@ tr.dhr,.cty.m,.nt.m{display:none}
   function fetchTrees(srcs) {
     return Promise.all(srcs.map(fetchTree)).then(function (rs) {
       var out = { at: Date.now(), lm: '', gen: '', slice: '', sliceC: '', tl: '', tn: null, tnErr: '', ta: null, taErr: '', rem: null, lim: null, total: 0,
-                  paths: [] };
+                  paths: [], labels: null, labelsErr: '' };
       rs.forEach(function (r) {
         out.total += r.total; out.paths = out.paths.concat(r.paths);
         if (r.tn) out.tn = r.tn;
         if (r.tnErr) out.tnErr = r.tnErr;
         if (r.ta) out.ta = r.ta;                 // 이름 보조 (공개 목록 ticker_names_alt) — 정식 이름과 같은 길
         if (r.taErr) out.taErr = r.taErr;
+        if (r.labels) out.labels = r.labels;     // RRG 회전 인포 라벨 표 (공개 목록 public_labels) — 분류기 · 날짜 묶음이 받는다
+        if (r.labelsErr) out.labelsErr = r.labelsErr;
         if (r.slice) { out.slice = r.slice; out.sliceC = r.sliceC || ''; }
         if (r.tl) out.tl = r.tl;
         if (r.lm && (!out.lm || Date.parse(r.lm) > Date.parse(out.lm))) out.lm = r.lm;
@@ -1776,8 +1879,11 @@ tr.dhr,.cty.m,.nt.m{display:none}
     var ta = I.parseTickerNamesAlt(j.ticker_names_alt), fa = I.parseNamesAlt(j.names_alt, '조각 names_alt');
     var taErr = [typeof j.ticker_names_alt_error === 'string' ? j.ticker_names_alt_error : '', ta.err].filter(Boolean).join(' · ');
     var faErr = [typeof j.names_alt_error === 'string' ? j.names_alt_error : '', fa.err].filter(Boolean).join(' · ');
+    // RRG 회전 인포 라벨 표 (덤 — 없거나 어긋나도 목록은 정상 · 그 문서 라벨 = '라벨 없음 n' · 형식 검사 = 분류기 rotTable)
+    var lb = j.public_labels && typeof j.public_labels === 'object' && !Array.isArray(j.public_labels) ? j.public_labels : null;
     return { total: j.count, paths: paths, gen: gen, slice: slice, sliceC: sliceC, tl: tl, tn: tn.map, tnErr: tnErr, fn: fn.map, fnErr: fnErr,
-             ta: ta.map, taErr: taErr, fa: fa.map, faErr: faErr,
+             ta: ta.map, taErr: taErr, fa: fa.map, faErr: faErr, labels: lb,
+             labelsErr: typeof j.public_labels_error === 'string' ? j.public_labels_error : '',
              lm: (res && res.headers.get('last-modified')) || '', rem: null, lim: null };
   }
   // 같은 사이트 JSON 1회 GET (티커 색인 · 조각) — 실패는 Error (화면은 그 자리에 사유를 그린다 · 페이지 오류 화면 아님)
@@ -2605,7 +2711,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
 
   function build(data) {
     DATA = data;
-    RES = window.NIX.classify(data.paths);
+    RES = window.NIX.classify(data.paths, data.labels);
     if (!RES.entries.length) { showError(new Error('목록에 리포트 HTML 이 없습니다 (전체 항목 ' + num(data.total || 0) + '개).')); return false; }
     var secl = {};
     window.NIX.SECTIONS.forEach(function (s) { secl[s.id] = s.label; });

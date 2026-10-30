@@ -1,0 +1,108 @@
+<!doctype html><html lang=ko><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><title>KR NXT 애프터 · 기관_순매도 2026-10-30 · 5/5</title><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#14161B;color:#D9DCE1;font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;-webkit-font-smoothing:antialiased;padding:20px 14px 44px;max-width:1280px;margin:0 auto;overflow-x:hidden}
+.eyebrow{color:#D3AA57;font-size:var(--fs-body2,12.5px);font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+h1{font-size:var(--fs-kpi,22px);font-weight:800;margin:5px 0 3px}
+.dateline{color:#A9B3C1;font-size:var(--fs-body2,12.5px);margin-bottom:4px}
+.note,.legend{color:#A9B3C1;font-size:var(--fs-body2,12.5px);margin:4px 0}
+.warn{color:#e3a878;font-size:var(--fs-body2,12.5px);margin:6px 0;padding:6px 10px;background:rgba(222,138,87,.12);border:1px solid rgba(222,138,87,.35);border-radius:6px}
+h2{font-size:var(--fs-body,15.5px);font-weight:800;margin:22px 0 6px;padding-left:9px;border-left:3px solid #D3AA57}
+.cnt{font-size:var(--fs-body2,12.5px);color:#A9B3C1;font-weight:600}
+.tw{overflow:auto;-webkit-overflow-scrolling:touch;max-height:80vh;margin-top:3px}
+/* ★가로(landscape) 넓은 표 = 수평스크롤 없이 한번에(사용자 2026-09-21). ≥1100px 에서 full-bleed(1280 캡 탈출)
+   → 전 컬럼이 창 폭 전체 사용. 좁은 화면(모바일)은 .tw 내부 overflow-x 스크롤(폴백). body overflow-x:hidden 로 페이지 가로스크롤 방지. */
+@media(min-width:1100px){.tw{width:calc(100vw - 2 * clamp(16px,2.5vw,40px));margin-left:calc(50% - 50vw + clamp(16px,2.5vw,40px))}}
+/* ★인쇄/PDF(2026-10-07): 화면용 세로 스크롤 상자는 print 에서 풀어 긴 표가 상자 높이에서 잘리지 않게 — SSOT nixreport.TBLWRAP_PRINT_CSS */
+@media print{.tblwrap,.tw,section[data-glossary-ssot] .gw,[style*="max-height:80vh"],[style*="max-height:78vh"]{max-height:none!important}}
+table{width:100%;border-collapse:collapse;font-size:var(--fs-body2,12.5px)}
+table.sortable th{cursor:pointer;user-select:none;white-space:nowrap}
+/* ★가독성 R2/R3/R4 (사용자 2026-09-06): 폰트 ≥12.5px · 회색 ≥#A9B3C1 · 헤더 센터정렬(값은 right/left 유지) */
+th{text-align:center;color:#E4E8EF;font-weight:800;font-size:var(--fs-body2,12.5px);padding:6px 7px;border-bottom:2px solid rgba(212,175,106,.30);text-transform:uppercase;position:sticky;top:0;background:#23272F;z-index:1}
+th:after{content:attr(data-ar);color:#D3AA57;margin-left:2px}
+th.pf{color:#D9DCE1} th.bb{color:#E0C990}
+td{padding:3px 7px;border-bottom:1px solid rgba(46,51,61,.4);color:#d4d8de;white-space:nowrap}
+td.rk{color:#A9B3C1;width:24px;text-align:right;font-variant-numeric:tabular-nums}
+td.nm{font-weight:600;color:#e6e9ee;max-width:170px;overflow:hidden;text-overflow:ellipsis}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+td.amt{color:#c9cdd4} td.desc{color:#A9B3C1;font-size:var(--fs-body2,12.5px)}
+a.tv{color:#dfe4ea;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px;text-decoration-color:currentColor;border-bottom:0}/*link-ssot*/a{color:#E0C990;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px;text-decoration-color:currentColor;border-bottom:0}a:hover{text-decoration-thickness:2px}
+.u{color:#f87171}.d{color:#60a5fa}.g{color:#A9B3C1}.b{font-weight:700}
+.gr{color:#A9B3C1}.b1{color:#8fbdf7}.b2{color:#60a5fa}.r1{color:#f0a0a0}.r2{color:#f87171}
+.pill{display:inline-block;min-width:15px;padding:1px 7px;border-radius:11px;font-weight:800}
+.pillr{background:#f5a35a;border:1px solid #f5a35a;color:#1a1205}
+.pillb{background:#3fca97;border:1px solid #3fca97;color:#062117}
+.bg{color:#3fca97;font-weight:800}.og{color:#f5a35a;font-weight:800}
+.new{color:#D3AA57;font-size:var(--fs-body2,12.5px);font-weight:700}.tr{font-size:var(--fs-body2,12.5px);color:#A9B3C1}
+.foot{margin-top:26px;color:#A9B3C1;font-size:var(--fs-body2,12.5px);text-align:center;border-top:1px solid #2E333D;padding-top:14px;line-height:1.6}
+/* ★표준 지표 묶음 표(2026-10-16 · SSOT ticker_indicator_set): 숫자 칸 오른쪽 · 머리 3단(묶음 띠·기관|외인·열 이름) 고정 ·
+   #·종목 열 왼쪽 고정(가로 스크롤) · 서브 열 = body.hs-{묶음} 이면 숨김(JS 없어도 기본 상태) */
+thead.L0~tbody td,thead.L1~tbody td{text-align:right;font-variant-numeric:tabular-nums}thead.L0~tbody td.nm,thead.L1~tbody td.nm{text-align:left}
+.xb,.xs{display:inline-block;min-width:15px;padding:1px 7px;border-radius:11px;font-weight:800}
+.xb{background:#3fca97;border:1px solid #3fca97;color:#062117}.xs{background:#f5a35a;border:1px solid #f5a35a;color:#1a1205}
+.b1,.b2,.r1,.r2,.gr{font-weight:700}
+thead tr.gb th,thead tr.gb2 th{height:25px;padding:2px 7px;line-height:20px;color:#A9B3C1;font-weight:700;text-transform:none;border-bottom:1px solid rgba(212,175,106,.18)}
+thead tr.gb2 th{top:25px}thead.f2 tr.hl th{top:25px}thead.f3 tr.hl th{top:50px}
+/* z-index 층 = 본문 고정 열 2 < 머리 칸 3 < 머리 고정 열(모서리) 4 — 머리 띠 행 칸이 1 이면 세로 스크롤 때 본문 #·종목 칸이 머리를 덮는다 (2026-10-19 표 헤더 고정 FAIL 전 슬롯) */
+td.rk,th.c-rk{position:sticky;left:0;z-index:2;background:#14161B;min-width:32px;width:32px}
+td.nm,th.c-nm{position:sticky;left:32px;z-index:2;background:#14161B}thead th{z-index:3}th.c-rk,th.c-nm{z-index:4;background:#23272F}
+.q{display:inline-block;min-width:16px;padding:0 4px;border-radius:4px;font-weight:800;color:#14161B;text-align:center}
+.qx{outline:2px solid #D3AA57;outline-offset:1px}
+.hs-rrg .s-rrg,.hs-flow .s-flow{display:none}
+.subt{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0 4px}.subt .pl{color:#A9B3C1;font-size:var(--fs-body2,12.5px);font-weight:800}
+.subt button{font:inherit;font-size:var(--fs-body2,12.5px);font-weight:800;padding:3px 10px;border-radius:12px;cursor:pointer;border:1px dashed rgba(212,175,106,.45);color:#A9B3C1;background:none}
+.subt button[aria-pressed=true]{border-style:solid;color:#14161B;background:#D3AA57;border-color:#D3AA57}
+.tw::-webkit-scrollbar{width:10px;height:10px}.tw::-webkit-scrollbar-track{background:#23272F}.tw::-webkit-scrollbar-thumb{background:#A9B3C1;border-radius:6px;border:2px solid #23272F}.tw::-webkit-scrollbar-thumb:hover{background:#D9DCE1}.tw::-webkit-scrollbar-corner{background:#23272F}@supports (-moz-appearance:none){.tw{scrollbar-width:auto;scrollbar-color:#A9B3C1 #23272F}}
+</style><style>.qL{background:#5DBB7E}.qW{background:#F27A72}.qG{background:#E8A055}.qI{background:#76A6EA}</style><style>.hs-rrg thead.L0 tr.hl th:nth-child(n+17):nth-child(-n+28),.hs-rrg thead.L0~tbody td:nth-child(n+17):nth-child(-n+28),.hs-flow thead.L0 tr.hl th:nth-child(n+45):nth-child(-n+56),.hs-flow thead.L0~tbody td:nth-child(n+45):nth-child(-n+56),.hs-rrg thead.L1 tr.hl th:nth-child(n+18):nth-child(-n+29),.hs-rrg thead.L1~tbody td:nth-child(n+18):nth-child(-n+29),.hs-flow thead.L1 tr.hl th:nth-child(n+46):nth-child(-n+57),.hs-flow thead.L1~tbody td:nth-child(n+46):nth-child(-n+57){display:none}.hs-flow thead.f3 tr.gb2{display:none}.hs-flow thead.f3 tr.hl th{top:25px}</style></head><body class="hs-rrg"><div class="eyebrow">NixStock · KR NXT 애프터 · 기관_순매도 · #TOSS · 5/5</div><h1>KR NXT 애프터 · 기관_순매도 · 5/5</h1><div class="dateline">2026-10-30 · 20:10 KST · 자료: 토스증권(장중 추정)</div><style>.pbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:9px 0 7px}.pbar .pl{color:#A9B3C1;font-size:var(--fs-body2,12.5px);font-weight:800;margin-right:2px}.pbar a,.pbar b,.pbar .off{display:inline-block;padding:4px 11px;border-radius:14px;font-size:var(--fs-body2,13px);font-weight:800;text-decoration:none;white-space:nowrap;border:1px solid rgba(212,175,106,.45);color:#E0C990;background:rgba(212,175,106,.10)}.pbar b.on{background:#D3AA57;border-color:#D3AA57;color:#14161B}.pbar .off{color:#A9B3C1;border-style:dashed;background:none}.pbar .pw{color:#e3a878;font-size:var(--fs-body2,12.5px);font-weight:700}.pbar .pn{color:#A9B3C1;font-size:var(--fs-body2,12.5px);flex-basis:100%}</style><nav class="pbar"><span class="pl">기간</span><b class="on">오늘</b><a href="toss_nxt%EC%95%A0%ED%94%84%ED%84%B0_2010_5_%EA%B8%B0%EA%B4%80_%EC%88%9C%EB%A7%A4%EB%8F%84_p2d_2026-10-30.html">2일</a><a href="toss_nxt%EC%95%A0%ED%94%84%ED%84%B0_2010_5_%EA%B8%B0%EA%B4%80_%EC%88%9C%EB%A7%A4%EB%8F%84_p3d_2026-10-30.html">3일</a><a href="toss_nxt%EC%95%A0%ED%94%84%ED%84%B0_2010_5_%EA%B8%B0%EA%B4%80_%EC%88%9C%EB%A7%A4%EB%8F%84_p5d_2026-10-30.html">5일</a><a href="toss_nxt%EC%95%A0%ED%94%84%ED%84%B0_2010_5_%EA%B8%B0%EA%B4%80_%EC%88%9C%EB%A7%A4%EB%8F%84_p8d_2026-10-30.html">8일</a><a href="toss_nxt%EC%95%A0%ED%94%84%ED%84%B0_2010_5_%EA%B8%B0%EA%B4%80_%EC%88%9C%EB%A7%A4%EB%8F%84_p12d_2026-10-30.html">12일</a><a href="toss_nxt%EC%95%A0%ED%94%84%ED%84%B0_2010_5_%EA%B8%B0%EA%B4%80_%EC%88%9C%EB%A7%A4%EB%8F%84_p16d_2026-10-30.html">16일</a><a href="toss_nxt%EC%95%A0%ED%94%84%ED%84%B0_2010_5_%EA%B8%B0%EA%B4%80_%EC%88%9C%EB%A7%A4%EB%8F%84_p22d_2026-10-30.html">22일</a><a href="toss_nxt%EC%95%A0%ED%94%84%ED%84%B0_2010_5_%EA%B8%B0%EA%B4%80_%EC%88%9C%EB%A7%A4%EB%8F%84_p54d_2026-10-30.html">54일</a><span class="pn">오늘 = 토스 실시간 집계(ETF 포함) · N일 = KRX 확정 합산(정규장+시간외 · NXT 미포함 · 주식만, ETF·ETN·KONEX 제외) — 원천이 달라 오늘 값과 직접 비교 금지</span></nav><div class="legend">당일 종가(2026-10-30) 지표: 헤더 클릭=정렬 · 종목·ETF=TradingView(tf=D) · 수급=외국인·기관(개인 제외) · 원천 RRG 번들 2026-10-30 · Flow 원장 합산 2026-10-30<br>Sig{신호🟢🟠·Wt.P245·Norm·Rank·S051.P245·SU51.P245} — Wt·S051·SU51 = 0~100 (100 = 매수 쪽 · ≥90 / ≤10 극단) · Norm·Rank = −11~11 (− = 매수 쪽 · |v| ≥ 7 극단) · 신호🟢🟠 = 신호·Perf·BB z 극단 칸 개수 (정렬 = 🟢−🟠) · 첫 클릭 정렬 = 위쪽이 매수 쪽 (Norm·Rank 는 작은 값 먼저)<br>RRG 6TF{RRG5·RRG12·RRG22·RRG54·RRG120·RRG245} — 사분면 L 리딩 · I 개선 · W 약화 · G 지연 · ←직전 6봉 자취 (최신→과거 · W2 = 2봉 · =6 = 6봉 그대로) · 테두리 = 방금 바뀜 · 마우스 = RS·Mom · NEW = 번들 미수록 · ⏱ = 갱신 정지<br>Perf{YTD·P5·P12·P22·P54·P120·P245} % — 극단 P5 ±7 · P12 ±12 · P22 ±15 · P54 ±25 · P120 ±40 · P245 ±50 · YTD ±50 · P1 = OHLCV 등락과 같아 생략 · YTD = 연초 첫 거래일 종가 대비 · 상장 기간 부족으로 산출 전인 칸 = · (0% 아님)<br>BB{BB12·BB22·BB54·BB120·BB245} z — |z| ≥ 2 밴드 이탈 극단 (BB5 = 노이즈라 표준 제외)<br>Osc{Rsi14·Rsi22·StoRsi12·StoRsi22} — 0~100 · Rsi ≥70 과매수 / ≤30 과매도 · StoRsi ≥80 과매수 / ≤20 과매도<br>Flow{기관·외인 5·12·22·54·120·245} 억원 — 최근 N 거래일 순매수 합 (KRX 확정 원장 · 빨강 = 순매수 · 파랑 = 순매도 · 원장 부족 = 보유 k/N)<br>극단 원형 = <span class="bg">🟢 초록</span> (과매도·강매수) / <span class="og">🟠 주황</span> (과열·매도) · 일반 = 빨강 + / 파랑 − · · = 값 없음 (마우스 = 사유 · 열마다 가장 흔한 사유는 열 머리)</div><div class="warn">⚠️ 일부 수집 실패: investors: TossWebError 토스 웹 투자자별 순위 HTTP 400</div><div class="note">투자자별 기준시각(basedAt):  — 외국인=장중 잠정 / 기관=전일 확정일 수 있음</div><div class="subt" id="subt"><span class="pl">서브 열</span><button type="button" data-g="rrg" aria-pressed="false">RRG 값 (RS·Mom) +12</button><button type="button" data-g="flow" aria-pressed="true">수급 (기관/외인 순매수) +12</button></div><h2>기관 순매도 상위 <span class="cnt">0 · 순위 기준 = 순매도액</span></h2><div class="tw"><table id="s_institution" class="sortable"><thead class="f3 L1"><tr class="gb"><th colspan=3></th><th colspan=2>OHLCV</th><th colspan=6>신호</th><th colspan=6>RRG 6TF</th><th class="s-rrg" colspan=12>RRG 값 (RS·Mom)</th><th colspan=7>Perf</th><th colspan=5>BB z</th><th colspan=4>Osc</th><th class="s-flow" colspan=12>기관/외인 순매수 (억원)</th></tr><tr class="gb2"><th colspan=17></th><th class="s-rrg" colspan=12></th><th colspan=16></th><th class="s-flow" colspan=6>기관</th><th class="s-flow" colspan=6>외인</th></tr><tr class="hl"><th class="c-rk" data-t="n" data-d="a">#</th><th class="c-nm">종목</th><th data-t="n">순매매액</th><th data-t="n" title="종가 (실시간 표 = 현재가)">현재가</th><th data-t="n" title="당일 등락률 % (= P1 · OHLCV 가 있으면 Perf 의 P1 은 생략)">등락</th><th data-t="n" title="극단 칸 개수 (묶음 신호·Perf·BB z) — 🟢 과매도·강매수 / 🟠 과열·매도 · 정렬 = 🟢−🟠">신호🟢🟠</th><th data-t="n" title="0~100 · 100 = 매수 쪽 · ≥90 / ≤10 극단">Wt.P245</th><th data-t="n" data-d="a" title="−11~11 · − = 매수 쪽 · + = 매도 쪽 · |v| ≥ 7 극단">Norm</th><th data-t="n" data-d="a" title="−11~11 · − = 매수 쪽 · + = 매도 쪽 · |v| ≥ 7 극단">Rank</th><th data-t="n" title="0~100 · 100 = 매수 쪽 · ≥90 / ≤10 극단">S051.P245</th><th data-t="n" title="0~100 · 100 = 매수 쪽 · ≥90 / ≤10 극단">SU51.P245</th><th data-t="n" title="RRG TF5 사분면 (L 리딩 · I 개선 · W 약화 · G 지연) ←직전 6봉 자취 (최신→과거 · W2 = 2봉)">RRG5</th><th data-t="n" title="RRG TF12 사분면 (L 리딩 · I 개선 · W 약화 · G 지연) ←직전 6봉 자취 (최신→과거 · W2 = 2봉)">RRG12</th><th data-t="n" title="RRG TF22 사분면 (L 리딩 · I 개선 · W 약화 · G 지연) ←직전 6봉 자취 (최신→과거 · W2 = 2봉)">RRG22</th><th data-t="n" title="RRG TF54 사분면 (L 리딩 · I 개선 · W 약화 · G 지연) ←직전 6봉 자취 (최신→과거 · W2 = 2봉)">RRG54</th><th data-t="n" title="RRG TF120 사분면 (L 리딩 · I 개선 · W 약화 · G 지연) ←직전 6봉 자취 (최신→과거 · W2 = 2봉)">RRG120</th><th data-t="n" title="RRG TF245 사분면 (L 리딩 · I 개선 · W 약화 · G 지연) ←직전 6봉 자취 (최신→과거 · W2 = 2봉)">RRG245</th><th class="s-rrg" data-t="n" title="RS-Ratio TF5 (100 기준 · ≥100 = 벤치 대비 강)">RS5</th><th class="s-rrg" data-t="n" title="RS-Momentum TF5 (100 기준 · ≥100 = 강해지는 중)">Mom5</th><th class="s-rrg" data-t="n" title="RS-Ratio TF12 (100 기준 · ≥100 = 벤치 대비 강)">RS12</th><th class="s-rrg" data-t="n" title="RS-Momentum TF12 (100 기준 · ≥100 = 강해지는 중)">Mom12</th><th class="s-rrg" data-t="n" title="RS-Ratio TF22 (100 기준 · ≥100 = 벤치 대비 강)">RS22</th><th class="s-rrg" data-t="n" title="RS-Momentum TF22 (100 기준 · ≥100 = 강해지는 중)">Mom22</th><th class="s-rrg" data-t="n" title="RS-Ratio TF54 (100 기준 · ≥100 = 벤치 대비 강)">RS54</th><th class="s-rrg" data-t="n" title="RS-Momentum TF54 (100 기준 · ≥100 = 강해지는 중)">Mom54</th><th class="s-rrg" data-t="n" title="RS-Ratio TF120 (100 기준 · ≥100 = 벤치 대비 강)">RS120</th><th class="s-rrg" data-t="n" title="RS-Momentum TF120 (100 기준 · ≥100 = 강해지는 중)">Mom120</th><th class="s-rrg" data-t="n" title="RS-Ratio TF245 (100 기준 · ≥100 = 벤치 대비 강)">RS245</th><th class="s-rrg" data-t="n" title="RS-Momentum TF245 (100 기준 · ≥100 = 강해지는 중)">Mom245</th><th data-t="n" title="연초 첫 거래일 종가 대비 수익률 % (전년말 대비 아님) (극단 ±50%)">YTD</th><th data-t="n" title="5봉 수익률 % (극단 ±7%)">P5</th><th data-t="n" title="12봉 수익률 % (극단 ±12%)">P12</th><th data-t="n" title="22봉 수익률 % (극단 ±15%)">P22</th><th data-t="n" title="54봉 수익률 % (극단 ±25%)">P54</th><th data-t="n" title="120봉 수익률 % (극단 ±40%)">P120</th><th data-t="n" title="245봉 수익률 % (극단 ±50%)">P245</th><th data-t="n" title="볼린저 z (12봉 · 2σ) · |z| ≥ 2 밴드 이탈 극단">BB12</th><th data-t="n" title="볼린저 z (22봉 · 2σ) · |z| ≥ 2 밴드 이탈 극단">BB22</th><th data-t="n" title="볼린저 z (54봉 · 2σ) · |z| ≥ 2 밴드 이탈 극단">BB54</th><th data-t="n" title="볼린저 z (120봉 · 2σ) · |z| ≥ 2 밴드 이탈 극단">BB120</th><th data-t="n" title="볼린저 z (245봉 · 2σ) · |z| ≥ 2 밴드 이탈 극단">BB245</th><th data-t="n" title="RSI 14 (0~100 · ≥70 과매수 · ≤30 과매도)">Rsi14</th><th data-t="n" title="RSI 22 (0~100 · ≥70 과매수 · ≤30 과매도)">Rsi22</th><th data-t="n" title="StochRSI 12 %K (0~100 · ≥80 과매수 · ≤20 과매도 · 단기 창이라 0·100 포화 흔함)">StoRsi12</th><th data-t="n" title="StochRSI 22 %K (0~100 · ≥80 과매수 · ≤20 과매도 · 단기 창이라 0·100 포화 흔함)">StoRsi22</th><th class="s-flow" data-t="n" title="기관 최근 5 거래일 순매수 합 (억원 · KRX 확정 원장)">5</th><th class="s-flow" data-t="n" title="기관 최근 12 거래일 순매수 합 (억원 · KRX 확정 원장)">12</th><th class="s-flow" data-t="n" title="기관 최근 22 거래일 순매수 합 (억원 · KRX 확정 원장)">22</th><th class="s-flow" data-t="n" title="기관 최근 54 거래일 순매수 합 (억원 · KRX 확정 원장)">54</th><th class="s-flow" data-t="n" title="기관 최근 120 거래일 순매수 합 (억원 · KRX 확정 원장)">120</th><th class="s-flow" data-t="n" title="기관 최근 245 거래일 순매수 합 (억원 · KRX 확정 원장)">245</th><th class="s-flow" data-t="n" title="외인 최근 5 거래일 순매수 합 (억원 · KRX 확정 원장)">5</th><th class="s-flow" data-t="n" title="외인 최근 12 거래일 순매수 합 (억원 · KRX 확정 원장)">12</th><th class="s-flow" data-t="n" title="외인 최근 22 거래일 순매수 합 (억원 · KRX 확정 원장)">22</th><th class="s-flow" data-t="n" title="외인 최근 54 거래일 순매수 합 (억원 · KRX 확정 원장)">54</th><th class="s-flow" data-t="n" title="외인 최근 120 거래일 순매수 합 (억원 · KRX 확정 원장)">120</th><th class="s-flow" data-t="n" title="외인 최근 245 거래일 순매수 합 (억원 · KRX 확정 원장)">245</th></tr></thead><tbody></tbody></table></div><div class="foot">NixStock · KR NXT 애프터 · 기관_순매도 · 2026-10-30 20:10 KST · 5/5 · 거래대금 랭킹=토스 당일 누적(1d) · 지표=당일 종가(2026-10-30) 일봉 summary · 전부 실측(창작 없음) · 확률적 참고이며 예측 · <b style=color:#C0392B>투자권유(매수·매도·비중) 아님</b></div><script>
+(function(){
+ function nv(c){ var v=c.getAttribute('data-v'); if(v===null) v=c.textContent.replace(/[^0-9.+-]/g,'');
+  var f=parseFloat(v); return isNaN(f)? null : f; }
+ function sortBy(tb, idx, num, asc){
+  var tbody=tb.tBodies[0]; if(!tbody) return;
+  var rows=Array.prototype.slice.call(tbody.rows);
+  rows.sort(function(a,b){
+   var x=a.cells[idx], y=b.cells[idx]; if(!x||!y) return 0;
+   if(num){
+    var xv=nv(x), yv=nv(y);
+    if(xv===null||yv===null) return xv===yv? 0 : (xv===null? 1 : -1);   // 값 없음('·'·산출 불가) = 방향과 무관하게 맨 뒤
+    return asc? xv-yv : yv-xv;
+   }
+   var xs=x.textContent.trim(), ys=y.textContent.trim();
+   return asc? xs.localeCompare(ys) : ys.localeCompare(xs);
+  });
+  var frag=document.createDocumentFragment();
+  rows.forEach(function(r){ frag.appendChild(r); });
+  tbody.appendChild(frag);
+ }
+ document.addEventListener('click', function(e){
+  var th = e.target && e.target.closest ? e.target.closest('th') : null;
+  if(!th) return;
+  var tb = th.closest('table');
+  if(!tb || tb.className.indexOf('sortable')<0) return;
+  var hd = th.parentNode.parentNode; if(hd && hd.lastElementChild !== th.parentNode) return;   // 묶음 띠 줄 = 정렬 아님
+  var idx = Array.prototype.indexOf.call(th.parentNode.children, th);
+  var num = th.getAttribute('data-t')==='n';
+  var key = idx+(num?'n':'t');
+  var cur = tb.getAttribute('data-sc');
+  // 첫 클릭 방향: 글자 열·data-d="a" 열(순위·Norm·Rank = 작은 값이 위) = 오름 / 그 밖 숫자 = 내림(큰 값 먼저) — 보유 표(5175)와 같은 규칙
+  var asc = cur===key+'a' ? false : (cur===key+'d' ? true : (!num || th.getAttribute('data-d')==='a'));
+  sortBy(tb, idx, num, asc);
+  tb.setAttribute('data-sc', key+(asc?'a':'d'));
+  var ths = tb.querySelectorAll('thead tr:last-child th');
+  for(var i=0;i<ths.length;i++) ths[i].removeAttribute('data-ar');
+  th.setAttribute('data-ar', asc?' ▲':' ▼');
+ }, false);
+})();
+</script><script>
+(function(){
+ var b=document.body, bar=document.getElementById('subt'); if(!bar) return;
+ function set(g,on){ if(on) b.classList.remove('hs-'+g); else b.classList.add('hs-'+g);
+  var x=bar.querySelector('[data-g="'+g+'"]'); if(x) x.setAttribute('aria-pressed', on?'true':'false'); }
+ var ph=window.matchMedia && window.matchMedia('(max-width:480px)').matches;
+ var bs=bar.querySelectorAll('[data-g]');
+ for(var i=0;i<bs.length;i++){ (function(x){ var g=x.getAttribute('data-g'), s=null;
+  try{ s=localStorage.getItem('nixbd:sub:'+g); }catch(e){}
+  if(s!==null) set(g, s==='1'); else if(ph && x.getAttribute('aria-pressed')==='true') set(g,false);   // 폰 390 기본 = 서브 숨김 (직접 켠 기록이 있으면 그대로)
+  x.addEventListener('click', function(){ var on=b.classList.contains('hs-'+g); set(g,on);
+   try{ localStorage.setItem('nixbd:sub:'+g, on?'1':'0'); }catch(e){} }); })(bs[i]); }
+})();
+</script></body></html>

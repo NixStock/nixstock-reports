@@ -386,7 +386,8 @@ tr.dhr,.cty.m,.nt.m{display:none}
   var TC = 'tactical/(?<d>' + D + ')_(?<c>kr|us)_tactical_close/';
   var IX = 'index/(?<d>' + D + ')_(?<c>kr|us)_index_overview_close/';
   var RG = 'rrg/(?<c>kr|us)/(?<d>' + D + ')_rrg_alltickers_' + KC + '_close/';
-  var TS = 'toss/(?<c>kr|us)/(?<d>' + D + ')_' + KC + '_toss_(?<k>[a-z]+)_(?<hm>\\d{4})/';
+  // US 슬롯 폴더 = 시각(미 동부) 뒤 '_ET' (us_toss_to_web.sh · 2026-10-31 사용자 "US 토스 자동 배포 켜기") — 없으면 KR(한국 시각)
+  var TS = 'toss/(?<c>kr|us)/(?<d>' + D + ')_' + KC + '_toss_(?<k>[a-z]+)_(?<hm>\\d{4})(?:_(?<tz>ET))?/';
   var NW = 'news/(?<d>' + D + ')_daily_news_report/';
   // 티커 묶음 = {D}_{c}_{코드}_{이름} · 이름 없음 {D}_{c}_{코드} · 옛 {D}_{c}_ticker_{코드}_{이름} · 나라 없음 {D}_ticker_{코드}_{이름}
   var TK = 'ticker/(?<d>' + D + ')_(?:(?<c>kr|us)_)?(?:ticker_)?(?<t>[^_/]+)(?:_(?<s>[^/]+))?/';
@@ -479,7 +480,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
   // 토스 슬롯 종류 (nix_toss_slots.json 의 label 과 같은 말)
   var TOSS_KIND = { premarket: '장전', pre: '장전', intraday: '장중', close: '장마감', nxt: 'NXT애프터' };
   function hhmm(s) { return s ? s.slice(0, 2) + ':' + s.slice(2) : ''; }
-  function slot(g) { return (TOSS_KIND[g.k] || g.k) + ' ' + hhmm(g.hm); }
+  function slot(g) { return (TOSS_KIND[g.k] || g.k) + ' ' + hhmm(g.hm) + (g.tz ? ' ' + g.tz : ''); }
   function tossOrd(g, sub) { return Number(g.hm) * 100 + sub; }
   function base(p) { return p.slice(p.lastIndexOf('/') + 1); }
   function slugName(s) {
@@ -730,7 +731,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
    테스트(scripts/test_pages_latest_viewer.py)가 nix-classify + 이 블록을 node 로 떼어 같은 코드로 시험한다. */
 (function (root) {
   'use strict';
-  // 고정 주소 9곳 — Python SSOT nix_pages_manifest.VIEWER_SLOTS 와 같아야 한다 (테스트 강제). 인덱스는 US 만.
+  // 고정 주소 9곳 — Python SSOT nix_pages_manifest.VIEWER_SLOTS 와 같아야 한다 (테스트 강제). 인덱스 = KR · US 공통 (US 마감 묶음 하나 · 고정 주소 index/us).
   var SLOTS = [['market', 'kr'], ['market', 'us'], ['tactical', 'kr'], ['tactical', 'us'], ['index', 'us'],
                ['cardnews', 'kr'], ['cardnews', 'us'], ['rrg', 'kr'], ['rrg', 'us']];
   var KINDS = ['market', 'tactical', 'index', 'cardnews', 'rrg'];
@@ -783,7 +784,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
     var m = SLOT_PATH.exec(p);
     if (m) {
       if (hasSlot(m[2], m[3])) return { k: m[2], c: m[3], base: m[1], via: 'path' };
-      return { error: (m[2] === 'index' ? '인덱스 리포트는 US 만 있습니다' : '이 종류·국가의 고정 주소는 없습니다') +
+      return { error: (m[2] === 'index' ? '인덱스는 KR · US 공통 리포트라 고정 주소가 index/us/ 하나입니다' : '이 종류·국가의 고정 주소는 없습니다') +
         ' (' + m[2] + '/' + m[3] + '/).', base: m[1] };
     }
     var dir = p.slice(0, p.lastIndexOf('/') + 1) || '/';
@@ -980,8 +981,12 @@ tr.dhr,.cty.m,.nt.m{display:none}
   // 마감 번들 종류 (상수 1곳) — 나라별 '직전 마감' 날짜(sc.close) = 이 종류 중 하나라도 있는 최신일 → 카드 날짜 태그에만 쓴다.
   //   키 = 분류기 SECTIONS 에서 파생한 종류 키(kinds) · 분류기에 없는 키면 build() 가 오류를 낸다 (조용히 빠지지 않게).
   var CLOSE_KINDS = ['market', 'tactical'];
-  // '오늘' 판정 시간대 — 번들 날짜 기준과 같게 (KR = KST · US = 미 동부 ET 거래일 · 공통(뉴스) = KST)
+  // '오늘' 판정 시간대 — 번들 날짜 기준과 같게 (KR = KST · US = 미 동부 ET 거래일 · 공통 = 원천 나라 (뉴스 = KST · 인덱스 = ET))
   var TZ = { kr: 'Asia/Seoul', us: 'America/New_York' };
+  // 공통 고정 주소 종류 → 원천 나라 — 뉴스처럼 KR · US 탭 모두에 같은 카드 '{종류} (공통)' (사용자 2026-10-31 "인덱스 (공통) 2026-10-30 (금)")
+  //   인덱스 = US 마감 묶음 하나 (글로벌 크로스에셋 · 고정 주소 index/us) · 카드 뷰어 링크 · 날짜 태그 시간대 = 원천 나라
+  //   (뉴스 = 폴더에 나라 없음 → 분류기가 '공통' · 원천 나라 없음 = KST)
+  var COMMON_KINDS = { index: 'us' };
   var TK_PAGE = 200;                      // 티커 표를 한 번에 그리는 행 수 ('더 보기' = 다음 200행)
   var TK_CACHE_MAX = 8;                   // 티커 조각 캐시 상한 (최근 사용 8개 = 날짜 4일치 · 넘치면 가장 오래 안 쓴 것부터 버림)
   var TAGS = { ahead: '진행 중', today: '오늘', close: '직전 마감', old: '이전' };
@@ -1046,7 +1051,8 @@ tr.dhr,.cty.m,.nt.m{display:none}
     V.SLOTS.forEach(function (s) {
       var k = s[0], c = s[1];
       V.bundles(paths, k, c, res.labels).forEach(function (b) {
-        var pd = V.pickDefault(b), cd = cardOf(M.cty[c], b.date, k, 'bundle');
+        var cm = COMMON_KINDS[k] === c, pd = V.pickDefault(b), cd = cardOf(cm ? M.com : M.cty[c], b.date, k, 'bundle');
+        if (cm) cd.src = c;                                    // 공통 카드 원천 나라 (뷰어 링크 · 날짜 태그 시간대)
         M.rep[pd.doc.path] = true;
         cd.n += b.docs.length;
         cd.nf += b.docs.filter(function (d) { return d.final; }).length;
@@ -1146,6 +1152,13 @@ tr.dhr,.cty.m,.nt.m{display:none}
     return M.kinds.filter(function (x) { return (M.cty[c].kd[x.k] || []).length || (M.com.kd[x.k] || []).length; })
       .map(function (x) { return x.k; });
   }
+  // 종류 탭 = 두 나라 같은 탭 (사용자 2026-10-31 "왜 아직도 kr/us가 다르지?" → "늘 같은 탭") — KR · US · 공통 중 어디든 날짜가 있는 종류
+  //   (분류기 SECTIONS 순서) · 그 나라에 없는 종류 탭 = 빈 화면 + 안내 한 줄 (resolve · renderDay)
+  function kindsTab(M) {
+    return M.kinds.filter(function (x) {
+      return (M.cty.kr.kd[x.k] || []).length || (M.cty.us.kd[x.k] || []).length || (M.com.kd[x.k] || []).length;
+    }).map(function (x) { return x.k; });
+  }
   // 날짜 목록 (내림차순) — 'all'·'list' = 그 나라 날짜 · 종류 = 그 나라 + 공통
   function datesFor(M, c, k) {
     if (!k || k === 'all' || k === 'list') return M.cty[c].dates;
@@ -1193,11 +1206,11 @@ tr.dhr,.cty.m,.nt.m{display:none}
     var g = function (t) { for (var i = 0; i < parts.length; i++) if (parts[i].type === t) return parts[i].value; return ''; };
     return g('year') + '-' + g('month') + '-' + g('day');
   }
-  // 카드 날짜 태그 — 오늘 판정 = 번들 날짜의 시간대 (나라 종류 = 그 나라 · 공통(뉴스) = KST)
+  // 카드 날짜 태그 — 오늘 판정 = 번들 날짜의 시간대 (나라 종류 = 그 나라 · 공통 = 원천 나라 src · 없으면 KST (뉴스))
   //   오늘보다 뒤 = 진행 중 · 오늘 = 오늘 · 직전 마감일 = 직전 마감 · 그보다 이전 = 이전 · 그 밖(직전 마감 ~ 오늘 사이) = 날짜만
-  function dateTag(M, c, d, now, common) {
+  function dateTag(M, c, d, now, common, src) {
     if (!d) return { t: '', text: '' };
-    var t = todayIn(common ? 'kr' : c, now), cl = M.cty[c].close;
+    var t = todayIn(common ? (src || 'kr') : c, now), cl = M.cty[c].close;
     if (d > t) return { t: 'ahead', text: TAGS.ahead };
     if (d === t) return { t: 'today', text: TAGS.today };
     if (cl && d === cl) return { t: 'close', text: TAGS.close };
@@ -1212,8 +1225,9 @@ tr.dhr,.cty.m,.nt.m{display:none}
       if (!d) return;
       var cards = cardsAt(M, c, d, k);
       var common = cards.length > 0 && cards.every(function (cd) { return cd.common; });
-      var tag = dateTag(M, c, d, now, common);
-      out.push({ k: k, d: d, cards: cards, common: common, tag: tag, tier: TIER[tag.t], i: i });
+      var src = common ? cards[0].src || '' : '';
+      var tag = dateTag(M, c, d, now, common, src);
+      out.push({ k: k, d: d, cards: cards, common: common, src: src, tag: tag, tier: TIER[tag.t], i: i });
     });
     out.sort(function (a, b) { return a.tier - b.tier || a.i - b.i; });
     return out;
@@ -1245,7 +1259,12 @@ tr.dhr,.cty.m,.nt.m{display:none}
     else if (!k) k = 'all';
     else if (k !== 'all' && k !== 'list') {
       if (!M.ki[k]) { notes.push(warn('종류 값 오류(k=' + k + ') — 전체를 보여 줍니다.')); k = 'all'; }
-      else if (kindsFor(M, c).indexOf(k) < 0) { notes.push(info(CTY[c] + ' 에는 ' + M.ki[k].label + ' 리포트가 없어 전체를 보여 줍니다.')); k = 'all'; }
+      else if (kindsFor(M, c).indexOf(k) < 0) {
+        var o = c === 'kr' ? 'us' : 'kr', od = (M.cty[o].kd[k] || [])[0];
+        if (!od) { notes.push(info(CTY[c] + ' 에는 ' + M.ki[k].label + ' 리포트가 없어 전체를 보여 줍니다.')); k = 'all'; }
+        else notes.push(info(CTY[c] + ' 에는 ' + M.ki[k].label + ' 리포트가 아직 없습니다 (' + CTY[o] + ' 최신 ' + od + ') — ',
+                             { st: { c: o, k: k }, text: CTY[o] + ' ' + M.ki[k].label + ' 보기' }));
+      }
     }
     var ds = k === 'list' ? [] : datesFor(M, c, k), D = defaultDate(M, c, k);
     if (k !== 'list' && d && ds.length) {
@@ -1687,8 +1706,8 @@ tr.dhr,.cty.m,.nt.m{display:none}
   }
 
   root.NIXI = {
-    STALE_H: STALE_H, CTY: CTY, CLOSE_KINDS: CLOSE_KINDS, TZ: TZ, TK_PAGE: TK_PAGE, TK_CACHE_MAX: TK_CACHE_MAX, TAGS: TAGS,
-    kinds: kinds, build: build, firstCountry: firstCountry, kindsFor: kindsFor, datesFor: datesFor, defaultDate: defaultDate,
+    STALE_H: STALE_H, CTY: CTY, CLOSE_KINDS: CLOSE_KINDS, TZ: TZ, COMMON_KINDS: COMMON_KINDS, TK_PAGE: TK_PAGE, TK_CACHE_MAX: TK_CACHE_MAX, TAGS: TAGS,
+    kinds: kinds, build: build, firstCountry: firstCountry, kindsFor: kindsFor, kindsTab: kindsTab, datesFor: datesFor, defaultDate: defaultDate,
     cardsAt: cardsAt, missing: missing, etcAt: etcAt, resolve: resolve, query: query, stale: stale, repBadge: repBadge, tossNoRep: tossNoRep,
     todayIn: todayIn, dateTag: dateTag, latestCards: latestCards,
     parseTickerIndex: parseTickerIndex, tickerRows: tickerRows, tickerStats: tickerStats, tickerSort: tickerSort, tickerFilter: tickerFilter,
@@ -1974,18 +1993,19 @@ tr.dhr,.cty.m,.nt.m{display:none}
       var L = M.cty[c].latest;   // 라벨 날짜 = 그 나라 최신일
       var lab = [h('span', { class: 'cn', text: I.CTY[c] }), h('span', { class: 'cd', text: L ? mdl(L) : '리포트 없음' })];
       if (!L) { ct.append(h('span', { class: 'ctab', 'aria-disabled': 'true', title: '리포트 없음' }, lab)); return; }
-      var k2 = (r.k === 'all' || r.k === 'list' || I.kindsFor(M, c).indexOf(r.k) >= 0) ? r.k : 'all';
+      var k2 = (r.k === 'all' || r.k === 'list' || I.kindsTab(M).indexOf(r.k) >= 0) ? r.k : 'all';   // 두 나라 같은 탭 → 종류 유지
       ct.append(linkTo({ c: c, k: k2, q: (k2 === 'list' || k2 === 'ticker') ? r.q : '', kq: true },
         { class: 'ctab', 'aria-current': c === r.c ? 'page' : null, title: I.CTY[c] + ' 최신 ' + dlabel(L) }, lab));
     });
     var kt = $('ktabs'); kt.textContent = '';
-    var tabs = [{ k: 'all', label: '전체' }].concat(I.kindsFor(M, r.c).map(function (k) { return { k: k, label: M.ki[k].label }; }),
+    var tabs = [{ k: 'all', label: '전체' }].concat(I.kindsTab(M).map(function (k) { return { k: k, label: M.ki[k].label }; }),
       [{ k: 'list', label: '전체 목록' }]);
     tabs.forEach(function (t) {
       var ds = t.k === 'list' ? [] : I.datesFor(M, r.c, t.k);
       kt.append(linkTo({ c: r.c, k: t.k, q: (t.k === 'list' || t.k === 'ticker') ? r.q : '', kq: true },
         { class: 'ktab' + (t.k === 'list' ? ' lst' : ''), 'aria-current': t.k === r.k ? 'page' : null,
-          title: t.k === 'list' ? '기간 전체 세로 목록 (검색 · 모든 파일 보기)' : ds.length + '일 · 최신 ' + dlabel(ds[0]) }, t.label));
+          title: t.k === 'list' ? '기간 전체 세로 목록 (검색 · 모든 파일 보기)'
+            : ds.length ? ds.length + '일 · 최신 ' + dlabel(ds[0]) : I.CTY[r.c] + ' 에는 아직 없음' }, t.label));
     });
     var act = kt.querySelector('[aria-current="page"]');
     if (act && act.scrollIntoView && kt.scrollWidth > kt.clientWidth) {
@@ -2038,9 +2058,9 @@ tr.dhr,.cty.m,.nt.m{display:none}
   }
   // 카드·머리 날짜 태그 칩 (오늘 · 진행 중 · 직전 마감 · 이전) — 태그 없는 날짜(직전 마감 ~ 오늘 사이) = null
   var TAG_TIP = { close: '이 나라 마감 리포트(마켓온도 · 택티컬)가 있는 최신일', old: '직전 마감일보다 이전 날짜 (이 종류의 더 새 리포트는 아직 없음)' };
-  function tagChip(c, tg, common, id) {
+  function tagChip(c, tg, common, id, src) {
     if (!tg || !tg.t) return null;
-    var tz = common || c === 'kr' ? '한국 날짜 기준' : '미 동부 날짜 기준';
+    var tz = (common ? src || 'kr' : c) === 'kr' ? '한국 날짜 기준' : '미 동부 날짜 기준';
     var tip = TAG_TIP[tg.t] || (tg.t === 'ahead' ? tz + ' — 그 시간대의 오늘보다 뒤 날짜' : tz);
     return h('span', { class: 'tag ' + tg.t, id: id || null, title: tip, text: tg.text });
   }
@@ -2087,12 +2107,13 @@ tr.dhr,.cty.m,.nt.m{display:none}
       : '주요 ' + num(cd.nf) + ' · 전체 ' + num(cd.n);
     var vw = null;
     if (cd.type === 'bundle') {
-      var u = cd.k + '/' + r.c + '/' + (D !== latestK ? '?d=' + D : '');
-      vw = h('a', { class: 'vw', href: u, title: '고정 주소 뷰어 (' + cd.k + '/' + r.c + '/) — 날짜·문서 선택' }, '뷰어 ↗');
+      var vc = cd.src || r.c;                                   // 공통 카드 = 원천 나라 고정 주소 (인덱스 = index/us)
+      var u = cd.k + '/' + vc + '/' + (D !== latestK ? '?d=' + D : '');
+      vw = h('a', { class: 'vw', href: u, title: '고정 주소 뷰어 (' + cd.k + '/' + vc + '/) — 날짜·문서 선택' }, '뷰어 ↗');
     }
     var nr = cd.type === 'toss' && !cd.slots.some(function (s) { return s.rep; });   // 마감 슬롯 없음 = 대표 없음 (중립 칩)
     return h('div', { class: 'ch' }, h('h3', null, title),
-      tg ? h('span', { class: 'cdate', text: mdl(D) }) : null, tg ? tagChip(r.c, tg, cd.common) : null,
+      tg ? h('span', { class: 'cdate', text: mdl(D) }) : null, tg ? tagChip(r.c, tg, cd.common, null, cd.src) : null,
       h('span', { class: 'cnt', text: cnt }), nr ? noCloseChip() : null, vw);
   }
   function renderCard(r, cd, D, open, tg) {
@@ -2137,7 +2158,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
   function miniCard(r, x) {
     var lab = kindLabel(x.k, x.common);
     return h('section', { class: 'card mini', 'data-k': x.k, 'data-d': x.d, 'aria-label': lab + ' ' + dlabel(x.d) },
-      h('div', { class: 'ch' }, h('h3', null, lab), h('span', { class: 'cdate', text: dlabel(x.d) }), tagChip(r.c, x.tag, x.common),
+      h('div', { class: 'ch' }, h('h3', null, lab), h('span', { class: 'cdate', text: dlabel(x.d) }), tagChip(r.c, x.tag, x.common, null, x.src),
         linkTo({ c: r.c, k: x.k }, { class: 'go', title: M.ki[x.k].label + ' 탭 (최신 ' + dlabel(x.d) + ')' }, M.ki[x.k].label + ' 탭에서 보기 →')));
   }
   function chipTitle(r, d) { return dlabel(d) + ' · ' + I.tkText(I.tkCounts(M, r.c, d)); }   // 티커 탭 날짜 칩 = 날짜 · 종목 수 (같은 함수)
@@ -2181,7 +2202,10 @@ tr.dhr,.cty.m,.nt.m{display:none}
     $('listctl').hidden = true; $('jump').hidden = true;
     var main = $('main'); main.textContent = '';
     var ds = I.datesFor(M, r.c, r.k);
-    if (!ds.length || (!r.d && r.k !== 'all')) { main.append(h('div', { class: 'empty', text: I.CTY[r.c] + ' 에 올라간 리포트가 아직 없습니다.' })); return; }
+    if (!ds.length || (!r.d && r.k !== 'all')) {
+      main.append(h('div', { class: 'empty', text: I.CTY[r.c] + ' 에 올라간 ' + (r.k === 'all' ? '' : M.ki[r.k].label + ' ') + '리포트가 아직 없습니다.' }));
+      return;
+    }
     if (!r.d) { renderLatest(r, ds, main); return; }
     var cards = I.cardsAt(M, r.c, r.d, r.k === 'all' ? null : r.k);
     var nDoc = 0, tk = I.tkCountsOf(cards); cards.forEach(function (cd) { nDoc += cd.n; });
@@ -2457,9 +2481,15 @@ tr.dhr,.cty.m,.nt.m{display:none}
 
   // ── 전체 목록 탭 (기간 전체 세로 나열 — 그 나라 + 공통) ──
   function inCountry(e, C) {
-    var m = /_(kr|us)$/.exec(e.sec);
-    if (m) return m[1].toUpperCase() === C;
+    var m = /^(.+)_(kr|us)$/.exec(e.sec);
+    if (m && I.COMMON_KINDS[m[1]] === m[2]) return true;      // 공통 종류 (인덱스) = 두 나라 다
+    if (m) return m[2].toUpperCase() === C;
     return e.c === C || e.c === '공통';
+  }
+  // 구역 이름 — 공통 종류 구역 (index_us) = 카드와 같은 말 '인덱스 (공통)'
+  function secLabel(s) {
+    var m = /^(.+)_(kr|us)$/.exec(s.id);
+    return m && I.COMMON_KINDS[m[1]] === m[2] ? kindLabel(m[1], true) : s.label;
   }
   function index(entries) {
     SEC = {};
@@ -2504,7 +2534,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
       var txt;
       if (Q.length) { var vc = visibleCount(S, s.id); if (!vc.nAny) return; txt = vc.n + '건'; }
       else txt = S.dates.length + '일';
-      nav.append(h('a', { class: 'chip', href: '#sec-' + s.id }, s.label, h('span', { class: 'n', text: txt })));
+      nav.append(h('a', { class: 'chip', href: '#sec-' + s.id }, secLabel(s), h('span', { class: 'n', text: txt })));
     });
   }
   function setMode(id, mode, date) { ST[id] = { mode: mode, date: date || '' }; renderSection(id); }
@@ -2563,7 +2593,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
       if (hidden) tbody.append(h('tr', { class: 'more' }, h('td', { colspan: '4' },
         '그 밖의 문서 ' + num(hidden) + '개 — ', h('button', { type: 'button', onclick: showAll, text: '모든 파일 보기' }))));
     });
-    return { el: h('div', { class: 'tblwrap' }, h('table', null, h('caption', { class: 'sr', text: S.def.label + ' 리포트 목록' }), thead, tbody)), shown: shown };
+    return { el: h('div', { class: 'tblwrap' }, h('table', null, h('caption', { class: 'sr', text: secLabel(S.def) + ' 리포트 목록' }), thead, tbody)), shown: shown };
   }
 
   function renderSection(id) {
@@ -2630,7 +2660,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
           btn.setAttribute('aria-expanded', String(!c));
           $('body-' + s.id).hidden = c;
           UI.collapsed[s.id] = c; saveUI();
-        } }, h('span', { class: 'chev', 'aria-hidden': 'true', text: '▾' }), h('span', { class: 't', text: s.label }), h('span', { class: 'cnt' }));
+        } }, h('span', { class: 'chev', 'aria-hidden': 'true', text: '▾' }), h('span', { class: 't', text: secLabel(s) }), h('span', { class: 'cnt' }));
       main.append(h('section', { class: 'sec', id: 'sec-' + s.id, 'aria-labelledby': 'h-' + s.id },
         h('h2', { id: 'h-' + s.id }, btn), h('div', { class: 'sb', id: 'body-' + s.id, hidden: collapsed })));
       renderSection(s.id);

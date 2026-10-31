@@ -167,7 +167,8 @@ main.stage{flex:1 1 auto;min-height:0;position:relative;background:var(--bg)}
   var TC = 'tactical/(?<d>' + D + ')_(?<c>kr|us)_tactical_close/';
   var IX = 'index/(?<d>' + D + ')_(?<c>kr|us)_index_overview_close/';
   var RG = 'rrg/(?<c>kr|us)/(?<d>' + D + ')_rrg_alltickers_' + KC + '_close/';
-  var TS = 'toss/(?<c>kr|us)/(?<d>' + D + ')_' + KC + '_toss_(?<k>[a-z]+)_(?<hm>\\d{4})/';
+  // US 슬롯 폴더 = 시각(미 동부) 뒤 '_ET' (us_toss_to_web.sh · 2026-10-31 사용자 "US 토스 자동 배포 켜기") — 없으면 KR(한국 시각)
+  var TS = 'toss/(?<c>kr|us)/(?<d>' + D + ')_' + KC + '_toss_(?<k>[a-z]+)_(?<hm>\\d{4})(?:_(?<tz>ET))?/';
   var NW = 'news/(?<d>' + D + ')_daily_news_report/';
   // 티커 묶음 = {D}_{c}_{코드}_{이름} · 이름 없음 {D}_{c}_{코드} · 옛 {D}_{c}_ticker_{코드}_{이름} · 나라 없음 {D}_ticker_{코드}_{이름}
   var TK = 'ticker/(?<d>' + D + ')_(?:(?<c>kr|us)_)?(?:ticker_)?(?<t>[^_/]+)(?:_(?<s>[^/]+))?/';
@@ -260,7 +261,7 @@ main.stage{flex:1 1 auto;min-height:0;position:relative;background:var(--bg)}
   // 토스 슬롯 종류 (nix_toss_slots.json 의 label 과 같은 말)
   var TOSS_KIND = { premarket: '장전', pre: '장전', intraday: '장중', close: '장마감', nxt: 'NXT애프터' };
   function hhmm(s) { return s ? s.slice(0, 2) + ':' + s.slice(2) : ''; }
-  function slot(g) { return (TOSS_KIND[g.k] || g.k) + ' ' + hhmm(g.hm); }
+  function slot(g) { return (TOSS_KIND[g.k] || g.k) + ' ' + hhmm(g.hm) + (g.tz ? ' ' + g.tz : ''); }
   function tossOrd(g, sub) { return Number(g.hm) * 100 + sub; }
   function base(p) { return p.slice(p.lastIndexOf('/') + 1); }
   function slugName(s) {
@@ -511,7 +512,7 @@ main.stage{flex:1 1 auto;min-height:0;position:relative;background:var(--bg)}
    테스트(scripts/test_pages_latest_viewer.py)가 nix-classify + 이 블록을 node 로 떼어 같은 코드로 시험한다. */
 (function (root) {
   'use strict';
-  // 고정 주소 9곳 — Python SSOT nix_pages_manifest.VIEWER_SLOTS 와 같아야 한다 (테스트 강제). 인덱스는 US 만.
+  // 고정 주소 9곳 — Python SSOT nix_pages_manifest.VIEWER_SLOTS 와 같아야 한다 (테스트 강제). 인덱스 = KR · US 공통 (US 마감 묶음 하나 · 고정 주소 index/us).
   var SLOTS = [['market', 'kr'], ['market', 'us'], ['tactical', 'kr'], ['tactical', 'us'], ['index', 'us'],
                ['cardnews', 'kr'], ['cardnews', 'us'], ['rrg', 'kr'], ['rrg', 'us']];
   var KINDS = ['market', 'tactical', 'index', 'cardnews', 'rrg'];
@@ -564,7 +565,7 @@ main.stage{flex:1 1 auto;min-height:0;position:relative;background:var(--bg)}
     var m = SLOT_PATH.exec(p);
     if (m) {
       if (hasSlot(m[2], m[3])) return { k: m[2], c: m[3], base: m[1], via: 'path' };
-      return { error: (m[2] === 'index' ? '인덱스 리포트는 US 만 있습니다' : '이 종류·국가의 고정 주소는 없습니다') +
+      return { error: (m[2] === 'index' ? '인덱스는 KR · US 공통 리포트라 고정 주소가 index/us/ 하나입니다' : '이 종류·국가의 고정 주소는 없습니다') +
         ' (' + m[2] + '/' + m[3] + '/).', base: m[1] };
     }
     var dir = p.slice(0, p.lastIndexOf('/') + 1) || '/';

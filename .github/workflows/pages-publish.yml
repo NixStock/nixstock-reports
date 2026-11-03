@@ -1,0 +1,62 @@
+# pages-publish — 공개 리포트 사이트 배포 (Jekyll 없음 · 설정 창 안 번들 + 공통 파일만 공개 · 저장소에는 전부 보관)
+# 설치 위치 = NixStock/nixstock-reports/.github/workflows/pages-publish.yml (전환 = cutover.sh · 되돌림 = rollback.sh)
+# 설정 하나 = .github/pages_publish.json (window_days · max_bytes · heavy_window · archive_url · min_public_dates) · 조립 = .github/scripts/pages_publish_filter.py
+# 계획서 (프로젝트 저장소): claude/plans/plan_pages_build_wait_90d_actions_20261103.md · 사용자 2026-11-03 "공개는 최근 90일만 + 빌드 없는 배포"
+#
+#   push(main) ─▶ checkout (blob 없는 부분 clone · .github 만) ─▶ 필터: 창 · 예산 판정 → 희소 checkout (고른 번들 blob 만 받음)
+#              ─▶ _site 조립 (하드링크 · 목록 파일 다시 씀 · 경계 링크 = 저장소 보관 주소) ─▶ upload-pages-artifact ─▶ deploy-pages
+name: pages-publish
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 한 번에 하나 · 진행 중 배포는 취소하지 않음 (대기 중인 것만 최신으로 교체 — 최신 커밋이 앞 내용 포함)
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: checkout (blob 없는 부분 clone · .github 만)
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            .github
+          sparse-checkout-cone-mode: true
+      - name: 공개 범위 고르기 + _site 조립
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 --version
+          python3 .github/scripts/pages_publish_filter.py build \
+            --repo . --config .github/pages_publish.json --out _site \
+            --sparse on --sizes api --link on --check-links warn
+          du -sh _site
+      - name: artifact 올리기
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Pages 배포
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "_doc": "공개 리포트 사이트 artifact 범위 — 설정 하나 (pages_publish_filter.py). window_days = 공개 창 (달력일) · max_bytes = 공개 총량 예산 (null = 없음 · 넘으면 옛 날짜부터 통째 제외) · heavy_window = null 또는 {days, globs} (무거운 파일은 최근 days 만) · 창 밖 = 저장소 보관. 사용자 2026-11-03 '공개는 최근 90일만'. min_public_dates = 조립 결과 하한 (공개 날짜가 이보다 적으면 배포하지 않음 · 1 이상 정수 · 2 = 시계 · tz · 창 · 예산 이상으로 빈 사이트가 나가는 것만 막는 느슨한 값).",
+  "window_days": 90,
+  "max_bytes": 1000000000,
+  "heavy_window": null,
+  "tz": "Asia/Seoul",
+  "exclude_globs": [
+    ".DS_Store",
+    ".github/*",
+    ".gitignore",
+    ".nojekyll"
+  ],
+  "manifest": "reports_manifest.json",
+  "archive_url": "https://github.com/NixStock/nixstock-reports/blob/main/{path}",
+  "min_public_dates": 2
+}

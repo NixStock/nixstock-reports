@@ -169,6 +169,18 @@ main{padding-bottom:8px}
 .ch h3 a{color:var(--ink)}
 .ch .cnt{font-size:12.5px;color:var(--ink2);font-variant-numeric:tabular-nums}
 .ch .vw{margin-left:auto;font-size:13px;white-space:nowrap}
+/* 장중 슬롯 칩 (오전 장중 · 오후 장중 · 마감) — 활성 = R0-17 · 사유 = 칩 글자에 바로 */
+.runs{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 6px;min-width:0}
+.run{display:inline-flex;flex-wrap:wrap;align-items:center;gap:2px 6px;min-height:30px;padding:2px 10px;border:1px solid var(--line2);border-radius:20px;
+  background:var(--card2);color:var(--ink);font-size:14px;cursor:pointer;max-width:100%;text-align:left}
+.run:hover:not(:disabled){border-color:var(--gold)}
+.run[aria-pressed="true"]{border-color:var(--gold-bd);background:var(--gold-bg);color:var(--gold);font-weight:700}
+.run:disabled{cursor:default;border-style:dashed;color:var(--ink2)}
+.run .bd{font-size:14px;font-weight:700;color:var(--warn)}
+.run .bd.rp{color:var(--gold)}
+.run .why{font-weight:400}
+.rline{margin:0 0 4px;padding:4px 10px;border:1px solid var(--warn);border-radius:6px;background:var(--warn-bg);font-size:14px;font-weight:600}
+.prevc{margin-top:6px;font-size:14px}
 .gname{font-size:12.5px;color:var(--ink2);font-weight:700;margin:8px 0 2px;overflow-wrap:anywhere}
 .doc{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;padding:3px 0;min-width:0}
 .doc .dl{min-width:0;overflow-wrap:anywhere}
@@ -392,6 +404,19 @@ tr.dhr,.cty.m,.nt.m{display:none}
   // 티커 묶음 = {D}_{c}_{코드}_{이름} · 이름 없음 {D}_{c}_{코드} · 옛 {D}_{c}_ticker_{코드}_{이름} · 나라 없음 {D}_ticker_{코드}_{이름}
   var TK = 'ticker/(?<d>' + D + ')_(?:(?<c>kr|us)_)?(?:ticker_)?(?<t>[^_/]+)(?:_(?<s>[^/]+))?/';
   var TKD = '(?:' + D + '|\\d{8})';   // 옛 파일명 날짜 YYYYMMDD 도 받는다
+  // 장중 슬롯 (v2026-11-06 · 사용자 "여기에 하루 3개가 존재해여 한다 / 오전장중, 오후장중, 마감") — 슬롯 번들 안쪽 트리 = 마감과 같은 상대 경로 · 같은 파일 이름
+  //   → 경로를 마감 경로로 바꿔 아래 규칙표에 태운다 (규칙 복제 0 · 라벨 · 정렬 · 주요 여부 = 마감과 자동으로 같다)
+  var IRUN = new RegExp('^intraday/(kr|us)/(' + D + ')_\\1_intraday_(\\d{4})(?:_ET)?/(market|tactical|index|rrg)/(.+)$');
+  var IRUN_PRE = {
+    market: function (c, d) { return 'market/' + d + '_' + c + '_market_temp_close/'; },
+    tactical: function (c, d) { return 'tactical/' + d + '_' + c + '_tactical_close/'; },
+    index: function (c, d) { return 'index/' + d + '_' + c + '_index_overview_close/'; },
+    rrg: function (c, d) { return 'rrg/' + c + '/' + d + '_rrg_alltickers_' + c + '_close/'; }
+  };
+  function canonOf(p) {
+    var m = IRUN.exec(p);
+    return m ? { q: IRUN_PRE[m[4]](m[1], m[2]) + m[5], run: m[3], grp: p.slice(0, p.length - m[5].length - 1) } : null;
+  }
   var CN = 'cardnews/(?<d>' + D + ')_(?<c>kr|us)_cardnews_close/';
   // ★RRG 회전 인포 (사용자 2026-10-27 "각 rrg를 -> leading 으로 4장 … 각각은 모두 별도 폴더 · root에는 통합" ·
   //   계획 claude/plans/plan_rrg_to_from_leading_folders_20261027.md §0 C14 · §10 U9)
@@ -664,9 +689,10 @@ tr.dhr,.cty.m,.nt.m{display:none}
     for (var i = 0; i < paths.length; i++) {
       var p = paths[i];
       if (!safePath(p)) { rejected.push(p); continue; }
+      var cn = canonOf(p), q = cn ? cn.q : p;   // 장중 슬롯 = 마감 경로로 판정 (경로·묶음 = 장중 그대로)
       var hit = null, g = null;
       for (var j = 0; j < RULES.length; j++) {
-        var m = RULES[j][2].exec(p);
+        var m = RULES[j][2].exec(q);
         if (m) { hit = RULES[j]; g = m.groups || {}; break; }
       }
       if (hit && hit[1] === null) { ignored.push(p); continue; }
@@ -678,7 +704,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
         e.c = g.c ? g.c.toUpperCase() : hit[1] === 'ticker' ? '공통' : guessC(p);   // 티커 나라 없음 = 공통 (파일명 추측 안 함)
         e.show = hit[3];
         e.ord = typeof hit[4] === 'function' ? hit[4](g, T) : hit[4];
-        e.label = hit[5](g, p, T);
+        e.label = hit[5](g, q, T);
         if (e.label == null) { e.label = NOLABEL; e.nolabel = true; }
         e.k = g.k || ''; e.hm = g.hm || ''; e.slot = g.k ? slot(g) : '';
         if (hit[1] === 'ticker') { e.tk = hit[0] === 'tk_scan' ? '' : g.t; e.sub = g.s ? slugName(g.s) : ''; }
@@ -688,7 +714,8 @@ tr.dhr,.cty.m,.nt.m{display:none}
         e.show = 1; e.ord = 0; e.label = base(p); e.unmatched = true;
       }
       if (!SECIDS[e.sec]) { e.unknownSec = e.sec; e.sec = 'etc'; e.show = 1; }
-      e.grp = groupKey(p);
+      e.grp = cn ? cn.grp : groupKey(p);
+      if (cn) e.run = cn.run;
       entries.push(e);
     }
     // 2단계: 토스 대표(그날 마감 슬롯만 · 마감이 없으면 대표 없음) · RRG 대체 주요
@@ -722,7 +749,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
     return { entries: entries, ignored: ignored, rejected: rejected, labels: labels == null ? null : labels, labelErr: T.err, nolabel: nNo };
   }
 
-  root.NIX = { classify: classify, RULES: RULES, SECTIONS: SECTIONS, safePath: safePath, TOSS_KIND: TOSS_KIND, NOLABEL: NOLABEL };
+  root.NIX = { classify: classify, canonOf: canonOf, RULES: RULES, SECTIONS: SECTIONS, safePath: safePath, TOSS_KIND: TOSS_KIND, NOLABEL: NOLABEL };
 })(typeof window !== 'undefined' ? window : globalThis);
 </script>
 
@@ -753,6 +780,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
   var TAB_EXTRA = ['tc_bd', 'ix_bd', 'rg_bd', 'rg_rot'];
   var MANIFEST_NAME = 'reports_manifest.json';   // == nix_pages_manifest.MANIFEST_NAME (테스트 강제)
   var MANIFEST_SCHEMA = 1;                       // == nix_pages_manifest.SCHEMA (테스트 강제)
+  var RUN_KINDS = ['market', 'tactical', 'index', 'rrg'];   // 장중 슬롯 칩이 있는 종류 (카드뉴스 = 마감만)
 
   var DRE = /\d{4}-\d{2}-\d{2}/g;
   // 카드뉴스 = 공유 분류기(reports_index.html 과 같은 블록)에 아직 규칙이 없어 'unmatched' 로 온다 → 여기서만 보충.
@@ -822,8 +850,11 @@ tr.dhr,.cty.m,.nt.m{display:none}
     if (!gen || isNaN(Date.parse(gen))) bad('generated_at 이 시각 형식이 아닙니다 (' + JSON.stringify(j.generated_at) + ').');
     // RRG 회전 인포 라벨 표 (덤 — 없거나 어긋나도 목록은 정상 · 그 문서 라벨 = '라벨 없음 n' · 형식 검사 = 분류기 rotTable)
     var lb = j.public_labels && typeof j.public_labels === 'object' && !Array.isArray(j.public_labels) ? j.public_labels : null;
+    // 장중 슬롯 라벨 · 사유 (intraday_site) · 슬롯 상태 (intraday_status) — 덤 · 없으면(장중 문서 없는 목록) 칩 없음 = 화면 그대로
+    var obj = function (v) { return v && typeof v === 'object' && !Array.isArray(v) ? v : null; };
     return { total: j.count, paths: paths, gen: gen, labels: lb,
-             labelsErr: typeof j.public_labels_error === 'string' ? j.public_labels_error : '' };
+             labelsErr: typeof j.public_labels_error === 'string' ? j.public_labels_error : '',
+             site: obj(j.intraday_site), stat: obj(j.intraday_status) };
   }
 
   function cardnewsEntry(e) {
@@ -839,10 +870,10 @@ tr.dhr,.cty.m,.nt.m{display:none}
   //   문서 = {path, rel(묶음 기준), base, tmpl(날짜→{D}), label, ord, final, rule, tab, isDefault, uniqBase}
   //   문서 순서 = 대표 템플릿 → 분류기 대표(final) → 정렬 순서(ord) → 경로
   function bundles(paths, k, c, labels) {
-    var pre = prefixOf(k, c), sec = key(k, c), sel = [];
+    var pre = prefixOf(k, c), sec = key(k, c), sel = [], ipre = 'intraday/' + c + '/';
     for (var i = 0; i < paths.length; i++) {
       var p = paths[i];
-      if (typeof p === 'string' && p.indexOf(pre) === 0 && !sitePage(p)) sel.push(p);
+      if (typeof p === 'string' && (p.indexOf(pre) === 0 || p.indexOf(ipre) === 0) && !sitePage(p)) sel.push(p);
     }
     var res = root.NIX.classify(sel, labels);
     var by = {}, out = [];
@@ -850,7 +881,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
       if (e.rule === 'unmatched') e = cardnewsEntry(e);
       if (e.sec !== sec || !e.date || !e.grp) return;
       var b = by[e.grp];
-      if (!b) { b = by[e.grp] = { date: e.date, grp: e.grp, want: '', docs: [] }; out.push(b); }
+      if (!b) { b = by[e.grp] = { date: e.date, grp: e.grp, want: '', docs: [], run: e.run || '' }; out.push(b); }
       var rel = e.path.slice(e.grp.length + 1);
       b.docs.push({ path: e.path, rel: rel, base: base(e.path), tmpl: tmplOf(rel), label: e.label, ord: e.ord,
         final: !!e.final, rule: e.rule, tab: !!e.final || TAB_EXTRA.indexOf(e.rule) >= 0, isDefault: false, uniqBase: false });
@@ -871,7 +902,77 @@ tr.dhr,.cty.m,.nt.m{display:none}
         d.uniqBase = nb[d.base] === 1;
       });
     });
-    out.sort(function (x, y) { return x.date < y.date ? 1 : x.date > y.date ? -1 : (x.grp < y.grp ? -1 : x.grp > y.grp ? 1 : 0); });
+    out.sort(function (x, y) {   // 날짜 내림차순 → 그날 대표 순서 = 마감 → 오후 장중 → 오전 장중
+      if (x.date !== y.date) return x.date < y.date ? 1 : -1;
+      var rx = runRank(x.run), ry = runRank(y.run);
+      if (rx !== ry) return rx - ry;
+      return x.grp < y.grp ? -1 : x.grp > y.grp ? 1 : 0;
+    });
+    return out;
+  }
+  function runRank(r) { return r ? 10000 - Number(r) : 0; }
+  // 같은 날짜의 첫 묶음 (= 그날 대표) · 고유 날짜 목록 (날짜 선택 · ◀▶ 는 슬롯이 아니라 날짜 단위)
+  function dateHead(B, bi) { var i = bi; while (i > 0 && B[i - 1].date === B[bi].date) i--; return i; }
+  function dateList(B) {
+    var out = [], last = null;
+    B.forEach(function (b, i) { if (b.date !== last) { out.push({ date: b.date, bi: i }); last = b.date; } });
+    return out;
+  }
+  function runLabel(site, c, run) {
+    var a = site && site.labels && site.labels[c];
+    if (a) for (var i = 0; i < a.length; i++) if (a[i][0] === run) return a[i][1];
+    return run.slice(0, 2) + ':' + run.slice(2);
+  }
+  function runLine(chip) { return '🕒 장중 잠정 ' + chip.time + ' 기준 / 마감에 바뀔 수 있음'; }
+  function reasonOf(site, code, hm, keep) {
+    var t = site && site.reasons && site.reasons[code];
+    return t ? String(t).split('{HH:MM}').join(hm || '').split('{N}').join(String(keep || '')) : '';
+  }
+  // 문서 없는 슬롯의 코드 — 상태 파일은 마지막 배포 시점 사진이므로 시각 판정은 브라우저 시각으로 다시 한다 (ET 도 ISO 오프셋 Date.parse 만)
+  function slotCode(s, k, now) {
+    if (!s) return 'skipped';
+    if (s.code === 'planned' || s.code === 'running' || s.code === 'no_run') {
+      if (now < Date.parse(s.due)) return 'planned';
+      return now <= Date.parse(s.end) ? 'running' : 'no_run';
+    }
+    if (s.code !== 'ok') return s.code || 'no_run';
+    var kc = s.kinds && s.kinds[k];
+    if (kc && kc !== 'ok') return kc;
+    // 생성은 됐는데 이 목록에 문서가 없다 — 이 슬롯을 사이트에 올렸으면(pub) 그 종류만 없는 것(not_yet) · 안 올렸으면(소급 공개 안 함 · 공개 꺼짐 · 준비 실패) unpublished
+    return s.pub === 'published' || s.pub === 'unverified' || s.pub === 'pushed' ? 'not_yet' : 'unpublished';
+  }
+  // 날짜 + 종류 → 칩 (시간순 · 마감 맨 끝) · {run('close'=마감), label, time, bi(문서 묶음 번호 · 없으면 -1), rep(그날 대표), code, why}
+  //   B = 이 종류·국가의 묶음 ({date, run}) · 장중 라벨도 묶음도 없으면 [] (칩 없음 = 화면 그대로)
+  function runChips(B, date, c, k, site, stat, now) {
+    if (RUN_KINDS.indexOf(k) < 0) return [];
+    var idx = {}, closeBi = -1, head = -1, any = false;
+    B.forEach(function (b, i) {
+      if (b.run) any = true;
+      if (b.date !== date) return;
+      if (head < 0) head = i;
+      if (b.run) idx[b.run] = i; else if (closeBi < 0) closeBi = i;
+    });
+    if (!site && !any) return [];
+    var rows = [], seen = {};
+    ((site && site.labels && site.labels[c]) || []).forEach(function (l) { rows.push(l[0]); seen[l[0]] = 1; });
+    Object.keys(idx).forEach(function (r) { if (!seen[r]) rows.push(r); });
+    rows.sort();
+    var row = stat ? stat[c + '|' + date] || null : null, keep = site ? site.keep_sessions : 0, tz = c === 'us' ? ' ET' : '';
+    var out = rows.map(function (r) {
+      var s = row && row.slots ? row.slots[r] || null : null, bi = idx[r] === undefined ? -1 : idx[r];
+      var chip = { run: r, label: runLabel(site, c, r), time: '', bi: bi, rep: bi >= 0 && bi === head, code: 'ok', why: '' };
+      if (bi >= 0) { chip.time = s && s.at ? s.at : r.slice(0, 2) + ':' + r.slice(2) + tz; return chip; }
+      chip.code = stat ? (row ? slotCode(s, k, now) : 'retired') : '';
+      chip.why = reasonOf(site, chip.code, s ? s.due_hm : '', keep);
+      return chip;
+    });
+    var cc = { run: 'close', label: (site && site.close_label) || '마감', time: '', bi: closeBi, rep: closeBi >= 0 && closeBi === head, code: 'ok', why: '' };
+    if (closeBi < 0) {   // 마감 시각 전 = 예정 · 지나고 close_wait_s(SSOT) 안 = 생성 중(마감 체인이 도는 시간) · 그 뒤 = 문서 없음 — 사유 글자에 라벨(마감)을 다시 쓰지 않는다
+      var cd = row && row.close_due ? Date.parse(row.close_due) : NaN, cw = site && site.close_wait_s ? site.close_wait_s * 1000 : 0;
+      cc.code = isNaN(cd) ? 'no_close' : now < cd ? 'planned' : now <= cd + cw ? 'running' : 'no_close';
+      cc.why = reasonOf(site, cc.code, row ? row.close_hm : '', keep);
+    }
+    out.push(cc);
     return out;
   }
 
@@ -881,7 +982,8 @@ tr.dhr,.cty.m,.nt.m{display:none}
     var f = null;
     for (var j = 0; j < b.docs.length; j++) if (b.docs[j].final) { f = b.docs[j]; break; }
     var d = f || b.docs[0];
-    return { doc: d, note: info(b.date + ' 묶음에는 대표 문서(' + (b.want || '지정 없음') + ')가 없어 \'' + d.label + '\' 문서를 보여 줍니다.') };
+    return { doc: d, note: info(b.run ? '이 슬롯에는 대표 문서가 없어 \'' + d.label + '\' 문서를 보여 줍니다.'
+      : b.date + ' 묶음에는 대표 문서(' + (b.want || '지정 없음') + ')가 없어 \'' + d.label + '\' 문서를 보여 줍니다.') };
   }
   // f(쿼리 문서) → 묶음 안 문서: 상대 경로 일치 → 파일명 일치(묶음 안 유일) → 같은 역할(날짜만 다른 이름 · 유일)
   function findDoc(b, f) {
@@ -919,6 +1021,13 @@ tr.dhr,.cty.m,.nt.m{display:none}
         }
       }
     }
+    bi = dateHead(B, bi);                        // 그날 대표 (마감 → 오후 장중 → 오전 장중)
+    if (q.r) {                                   // r = 슬롯 HHMM · close = 마감
+      var rv = q.r === 'close' ? '' : q.r, ri = -1;
+      for (i = bi; i < B.length && B[i].date === B[bi].date; i++) if (B[i].run === rv) { ri = i; break; }
+      if (ri >= 0) bi = ri;
+      else notes.push(warn('요청한 슬롯(r=' + q.r + ')의 문서가 ' + B[bi].date + ' 에 없어 그날 대표를 보여 줍니다.'));
+    }
     var b = B[bi], f = q.f || '';
     if (f) {
       var r = findDoc(b, f);
@@ -938,7 +1047,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
   function carry(doc, bTo) {
     for (var i = 0; i < bTo.docs.length; i++) if (bTo.docs[i].tmpl === doc.tmpl) return { doc: bTo.docs[i] };
     var pd = pickDefault(bTo);
-    return { doc: pd.doc, note: info(bTo.date + ' 에는 같은 문서(\'' + doc.label + '\')가 없어 \'' + pd.doc.label + '\' 문서를 보여 줍니다.') };
+    return { doc: pd.doc, note: info((bTo.run ? '이 슬롯' : bTo.date) + ' 에는 같은 문서(\'' + doc.label + '\')가 없어 \'' + pd.doc.label + '\' 문서를 보여 줍니다.') };
   }
   function fParam(b, doc) { return doc.uniqBase ? doc.base : doc.rel; }
   function findByPath(B, path) {
@@ -951,6 +1060,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
     var qs = new URLSearchParams();
     if (slot && slot.via === 'query') { qs.set('k', slot.k); qs.set('c', slot.c); }
     qs.set('d', b.date);
+    if (b.run) qs.set('r', b.run);               // 장중 슬롯 고정 (마감 = 생략 · 옛 주소 그대로)
     qs.set('f', fParam(b, doc));
     return qs.toString();
   }
@@ -964,7 +1074,8 @@ tr.dhr,.cty.m,.nt.m{display:none}
     MANIFEST_NAME: MANIFEST_NAME, MANIFEST_SCHEMA: MANIFEST_SCHEMA,
     hasSlot: hasSlot, countries: countries, validDate: validDate, slotFrom: slotFrom, prefixOf: prefixOf, sitePage: sitePage,
     parseManifest: parseManifest, bundles: bundles, pickDefault: pickDefault, findDoc: findDoc, resolve: resolve, carry: carry,
-    fParam: fParam, findByPath: findByPath, query: query, fixedHref: fixedHref
+    fParam: fParam, findByPath: findByPath, query: query, fixedHref: fixedHref,
+    RUN_KINDS: RUN_KINDS, runRank: runRank, dateHead: dateHead, dateList: dateList, runLabel: runLabel, runLine: runLine, runChips: runChips
   };
 })(typeof window !== 'undefined' ? window : globalThis);
 </script>
@@ -1023,7 +1134,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
     });
     return out;
   }
-  function scope(name) { return { name: name, dates: [], latest: '', close: '', kd: {}, day: {} }; }
+  function scope(name) { return { name: name, dates: [], latest: '', close: '', kd: {}, kdc: {}, day: {} }; }   // kdc = 마감 묶음이 있는 날짜만 (장중 날짜를 세지 않는다)
   function cardOf(sc, d, k, type) {
     var day = sc.day[d] || (sc.day[d] = {});
     var cd = day[k];
@@ -1053,10 +1164,14 @@ tr.dhr,.cty.m,.nt.m{display:none}
       V.bundles(paths, k, c, res.labels).forEach(function (b) {
         var cm = COMMON_KINDS[k] === c, pd = V.pickDefault(b), cd = cardOf(cm ? M.com : M.cty[c], b.date, k, 'bundle');
         if (cm) cd.src = c;                                    // 공통 카드 원천 나라 (뷰어 링크 · 날짜 태그 시간대)
-        M.rep[pd.doc.path] = true;
-        cd.n += b.docs.length;
-        cd.nf += b.docs.filter(function (d) { return d.final; }).length;
-        cd.groups.push({ grp: b.grp, name: '', rep: pd.doc, note: pd.note || null,
+        var nf = b.docs.filter(function (d) { return d.final; }).length, sc0 = cm ? M.com : M.cty[c];
+        if (!b.run) { var kdc = sc0.kdc[k] = sc0.kdc[k] || []; if (kdc.indexOf(b.date) < 0) kdc.push(b.date); }
+        if (!b.run || !cd.groups.length) {     // 카드 수·대표 = 그날 대표 묶음 기준 (슬롯 수만큼 부풀지 않게 · 묶음 순서 = 대표 먼저)
+          M.rep[pd.doc.path] = true;
+          cd.n += b.docs.length;
+          cd.nf += nf;
+        }
+        cd.groups.push({ grp: b.grp, name: '', run: b.run || '', rr: V.runRank(b.run), n: b.docs.length, nf: nf, rep: pd.doc, note: pd.note || null,
           main: b.docs.filter(function (d) { return d.final && d !== pd.doc; }),
           rest: b.docs.filter(function (d) { return !d.final && d !== pd.doc; }) });
       });
@@ -1108,12 +1223,13 @@ tr.dhr,.cty.m,.nt.m{display:none}
     [M.cty.kr, M.cty.us, M.com].forEach(function (sc) {
       var all = {};
       Object.keys(sc.kd).forEach(function (k) { sc.kd[k].sort(byDesc); sc.kd[k].forEach(function (d) { all[d] = 1; }); });
+      Object.keys(sc.kdc).forEach(function (k) { sc.kdc[k].sort(byDesc); });
       sc.dates = Object.keys(all).sort(byDesc);
       sc.latest = sc.dates[0] || '';
       Object.keys(sc.day).forEach(function (d) {
         Object.keys(sc.day[d]).forEach(function (k) {
           var cd = sc.day[d][k];
-          cd.groups.sort(function (a, b) { return a.grp < b.grp ? -1 : a.grp > b.grp ? 1 : 0; });
+          cd.groups.sort(function (a, b) { var ra = a.rr || 0, rb = b.rr || 0; return ra !== rb ? ra - rb : a.grp < b.grp ? -1 : a.grp > b.grp ? 1 : 0; });
           cd.groups.forEach(function (g) { g.main.sort(byOrd); g.rest.sort(byOrd); });
           cd.slots.sort(function (a, b) {
             if (a.hm !== b.hm) return a.hm < b.hm ? -1 : 1;
@@ -1133,7 +1249,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
     CLOSE_KINDS.forEach(function (k) { if (!M.ki[k]) throw new Error('마감 종류 키 오류 — 분류기 종류에 없음: ' + k); });
     [M.cty.kr, M.cty.us].forEach(function (sc) {
       var cl = '';
-      CLOSE_KINDS.forEach(function (k) { var a = sc.kd[k]; if (a && a.length && a[0] > cl) cl = a[0]; });
+      CLOSE_KINDS.forEach(function (k) { var a = sc.kdc[k]; if (a && a.length && a[0] > cl) cl = a[0]; });
       sc.close = cl;
     });
     return M;
@@ -1806,6 +1922,8 @@ tr.dhr,.cty.m,.nt.m{display:none}
         if (r.ta) out.ta = r.ta;                 // 이름 보조 (공개 목록 ticker_names_alt) — 정식 이름과 같은 길
         if (r.taErr) out.taErr = r.taErr;
         if (r.labels) out.labels = r.labels;     // RRG 회전 인포 라벨 표 (공개 목록 public_labels) — 분류기 · 날짜 묶음이 받는다
+        if (r.site) out.site = r.site;           // 장중 슬롯 라벨 · 사유 · 상태 (공개 목록 intraday_site · intraday_status) — 칩이 받는다
+        if (r.stat) out.stat = r.stat;
         if (r.labelsErr) out.labelsErr = r.labelsErr;
         if (r.slice) { out.slice = r.slice; out.sliceC = r.sliceC || ''; }
         if (r.tl) out.tl = r.tl;
@@ -1903,6 +2021,8 @@ tr.dhr,.cty.m,.nt.m{display:none}
     return { total: j.count, paths: paths, gen: gen, slice: slice, sliceC: sliceC, tl: tl, tn: tn.map, tnErr: tnErr, fn: fn.map, fnErr: fnErr,
              ta: ta.map, taErr: taErr, fa: fa.map, faErr: faErr, labels: lb,
              labelsErr: typeof j.public_labels_error === 'string' ? j.public_labels_error : '',
+             site: j.intraday_site && typeof j.intraday_site === 'object' && !Array.isArray(j.intraday_site) ? j.intraday_site : null,
+             stat: j.intraday_status && typeof j.intraday_status === 'object' && !Array.isArray(j.intraday_status) ? j.intraday_status : null,
              lm: (res && res.headers.get('last-modified')) || '', rem: null, lim: null };
   }
   // 같은 사이트 JSON 1회 GET (티커 색인 · 조각) — 실패는 Error (화면은 그 자리에 사유를 그린다 · 페이지 오류 화면 아님)
@@ -2116,6 +2236,46 @@ tr.dhr,.cty.m,.nt.m{display:none}
       tg ? h('span', { class: 'cdate', text: mdl(D) }) : null, tg ? tagChip(r.c, tg, cd.common, null, cd.src) : null,
       h('span', { class: 'cnt', text: cnt }), nr ? noCloseChip() : null, vw);
   }
+  // 장중 슬롯 카드 (v2026-11-06) — 칩 3개 + 선택 슬롯 문서 (새로고침 없음) · 칩 계산 = 뷰어 코어 runChips (고정 주소 뷰어와 같은 코드)
+  function runCard(el, r, cd, D, open, chips) {
+    var vc = cd.src || r.c, cnt = el.querySelector('.cnt'), vw = el.querySelector('.vw'), u0 = vw ? vw.getAttribute('href') : '';
+    var bar = h('div', { class: 'runs', role: 'group', 'aria-label': '오전 장중 · 오후 장중 · 마감 선택' }), btns = [], panes = [];
+    cd.groups.forEach(function (g, i) {
+      var chip = chips.filter(function (c) { return c.bi === i; })[0];
+      var p = h('div', { class: 'runpane', hidden: i !== 0 });
+      if (g.run && chip) p.append(h('div', { class: 'rline', role: 'note', text: V.runLine(chip) }));
+      if (g.rep) p.append(docRow(g.rep, '대표', 'rp'));
+      g.main.forEach(function (d) { p.append(docRow(d, null)); });
+      var more = moreList(g.rest, open);
+      if (more) p.append(more);
+      if (g.note) p.append(h('div', { class: 'cnote', text: 'ℹ️ ' + g.note.text }));
+      panes.push(p);
+    });
+    chips.forEach(function (c) {
+      var b = h('button', { class: 'run', type: 'button', 'aria-pressed': String(c.bi === 0), disabled: c.bi < 0,
+        onclick: function () {
+          var g = cd.groups[c.bi];
+          panes.forEach(function (p, i) { p.hidden = i !== c.bi; });
+          btns.forEach(function (x) { x.el.setAttribute('aria-pressed', String(x.c === c)); });
+          if (cnt) cnt.textContent = '주요 ' + num(g.nf) + ' · 전체 ' + num(g.n);
+          if (vw) vw.setAttribute('href', c.bi === 0 ? u0 : cd.k + '/' + vc + '/?d=' + D + (g.run ? '&r=' + g.run : ''));
+        } },
+        h('span', { text: c.label + (c.time ? ' ' + c.time : '') }),
+        c.bi >= 0 && c.run !== 'close' ? h('span', { class: 'bd', text: '잠정' }) : null,
+        c.rep ? h('span', { class: 'bd rp', text: '대표' }) : null,
+        c.bi < 0 && c.why ? h('span', { class: 'why', text: c.why }) : null);
+      btns.push({ el: b, c: c });
+      bar.append(b);
+    });
+    el.append(bar);
+    panes.forEach(function (p) { el.append(p); });
+    if (!cd.groups.some(function (g) { return !g.run; })) {     // 그날 마감 없음 → 직전 마감 링크 (마감 날짜 kdc 기준 · 장중 날짜를 세지 않는다)
+      var dc = (cd.common ? M.com : M.cty[r.c]).kdc[cd.k] || [], pc = '';
+      for (var i = 0; i < dc.length; i++) if (dc[i] < D) { pc = dc[i]; break; }
+      if (pc) el.append(h('div', { class: 'prevc' }, linkTo({ c: r.c, k: cd.k, d: pc }, { title: M.ki[cd.k].label + ' ' + dlabel(pc) }, '직전 마감 ' + mdl(pc) + ' 보기 →')));
+    }
+    return el;
+  }
   function renderCard(r, cd, D, open, tg) {
     var latestK = I.datesFor(M, r.c, cd.k)[0];
     var el = h('section', { class: 'card' + (cd.type === 'toss' ? ' wide' : ''), 'data-k': cd.k, 'data-d': D, 'aria-label': kindLabel(cd.k, cd.common) },
@@ -2143,6 +2303,8 @@ tr.dhr,.cty.m,.nt.m{display:none}
       el.append(box);
       return el;
     }
+    var chips = cd.type === 'bundle' && DATA ? V.runChips(cd.groups.map(function (g) { return { date: D, run: g.run || '' }; }), D, cd.src || r.c, cd.k, DATA.site || null, DATA.stat || null, Date.now()) : [];
+    if (chips.length) return runCard(el, r, cd, D, open, chips);
     var multi = cd.groups.length > 1;
     cd.groups.forEach(function (g) {
       if (multi || g.name) el.append(h('div', { class: 'gname', text: g.name || g.grp }));
@@ -2581,6 +2743,7 @@ tr.dhr,.cty.m,.nt.m{display:none}
         tr.append(h('td', { class: 'nm' },
           h('span', { class: 'cty m', text: e.c }),
           h('a', { href: u, title: PAGES_BASE + e.path, text: e.label }),
+          e.run ? h('span', { class: 'nbdg', text: V.runLabel(DATA && DATA.site, String(e.c).toLowerCase(), e.run) + ' 잠정' }) : null,
           badges[i] ? h('span', { class: 'bdg', text: '대표' }) : null,
           h('a', { class: 'nt m', href: u, target: '_blank', rel: 'noopener', 'aria-label': e.label + ' 새 탭에서 열기', text: '새 탭 ↗' }),
           e.sub ? h('span', { class: 'sub2', text: e.sub }) : null,

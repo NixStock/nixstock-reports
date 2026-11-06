@@ -1,7 +1,7 @@
 {"schema":1,
-"generated_at":"2026-11-07T00:32:34+09:00",
+"generated_at":"2026-11-07T03:01:38+09:00",
 "repo":"NixStock/nixstock-reports",
-"count":8499,
+"count":8503,
 "public_labels":{"rrg_rotation":{"countries":{"kr":{"directions":[["to_leading","상승"],["from_leading","하락"]],"scopes":[["tactical","Tactical"],["universe","전체"],["ks200","KOSPI 200"],["kq150","KOSDAQ 150"],["kospi","KOSPI (200 제외)"],["kosdaq","KOSDAQ (150 제외)"],["etf_etc","기타 ETF / ETN"]]},"us":{"directions":[["to_leading","상승"],["from_leading","하락"]],"scopes":[["index","Index"],["tactical","Tactical"],["universe","전체"],["us500","S&P 500"],["us100","Nasdaq 100"],["us30","Dow 30"],["us400","S&P MidCap 400"],["us600","S&P SmallCap 600"],["us2000","Russell 2000"],["etc_ticker","기타 주식"],["etc_etf","기타 ETF / ETN"]]}},"fmt":{"combined":"RRG {scope} 회전","direction":"RRG {scope} {direction}","full":"{label} 4쪽 원본"}}},
 "dirs":{
 "cardnews/2026-10-02_kr_cardnews_close":["kr_cardnews_2026-10-02.html"],
@@ -1665,6 +1665,7 @@
 "toss/us/2026-11-05_us_toss_premarket_0700_ET":["toss_backdata_2026-11-05.html","toss_us_프리마켓_2100_거래대금·산업_to_web_2026-11-05.html","us_index_charts_2026-11-05.html","us_toss_intraday_pre_2026-11-05.html"],
 "toss/us/2026-11-05_us_toss_premarket_0930_ET":["toss_backdata_2026-11-05.html","toss_us_프리마켓_2330_거래대금·산업_to_web_2026-11-05.html","us_index_charts_2026-11-05.html","us_toss_intraday_pre_2026-11-05.html"],
 "toss/us/2026-11-06_us_toss_intraday_1030_ET":["toss_backdata_2026-11-06.html","toss_us_정규장_0030_거래대금·산업_to_web_2026-11-06.html","us_index_charts_2026-11-06.html","us_toss_intraday_intraday_2026-11-06.html"],
+"toss/us/2026-11-06_us_toss_intraday_1300_ET":["toss_backdata_2026-11-06.html","toss_us_정규장_0300_거래대금·산업_to_web_2026-11-06.html","us_index_charts_2026-11-06.html","us_toss_intraday_intraday_2026-11-06.html"],
 "toss/us/2026-11-06_us_toss_premarket_0700_ET":["toss_backdata_2026-11-06.html","toss_us_프리마켓_2100_거래대금·산업_to_web_2026-11-06.html","us_index_charts_2026-11-06.html","us_toss_intraday_pre_2026-11-06.html"],
 "toss/us/2026-11-06_us_toss_premarket_0930_ET":["toss_backdata_2026-11-06.html","toss_us_프리마켓_2330_거래대금·산업_to_web_2026-11-06.html","us_index_charts_2026-11-06.html","us_toss_intraday_pre_2026-11-06.html"]
 }}
